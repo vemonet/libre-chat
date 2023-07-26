@@ -12,6 +12,8 @@ from libre_llm.ui import gradio_app
 DESCRIPTION = """API for a chatbot powered by llama2, hosted at Maastricht University.
 
 Checkout the [UI at /](/)
+
+[Source code on GitHub](https://github.com/vemonet/libre-llm)
 """
 
 app = FastAPI(

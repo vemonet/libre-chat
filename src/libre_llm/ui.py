@@ -8,6 +8,8 @@ from libre_llm.llm import query_llm
 DESCRIPTION = """Chat with llama2, hosted at Maastrich University
 
 See the API documentation at [/docs](/docs)
+
+[Source code on GitHub](https://github.com/vemonet/libre-llm)
 """
 
 
@@ -15,8 +17,8 @@ def gradio_app(dbqa):
     def get_chatbot_resp(message: str, history: List[tuple[str, str]]) -> str:
         log.debug(f"Running inference for: {message}")
         res = query_llm(dbqa, message, history)
-        history.append((message, res))
-        return message
+        history.append(("", res))
+        # return res
 
     # https://www.gradio.app/guides/creating-a-chatbot-fast
     # https://www.gradio.app/guides/creating-a-custom-chatbot-with-blocks

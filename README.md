@@ -22,7 +22,10 @@ Easily deploy a Chatbot locally with a web UI and API.
 - No need for GPU, will work even on your laptop CPU (takes about 1min to answer though)
 - Use `langchain` to support performant open source models inference: [Llama-2-7b](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)/[13b](https://huggingface.co/llamaste/Llama-2-13b-chat-hf)/[70b](https://huggingface.co/llamaste/Llama-2-70b-chat-hf), all [Llama-2-GPTQ](https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ), all [Llama-2-GGML](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)
 
+![UI screenshot](https://raw.github.com/vemonet/libre-llm/main/docs/screenshot.png)
+
 Inspired by:
+
 - https://github.com/kennethleungty/Llama-2-Open-Source-LLM-CPU-Inference
 - https://github.com/liltom-eth/llama2-webui
 
