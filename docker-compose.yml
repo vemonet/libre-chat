@@ -1,0 +1,19 @@
+version: "3"
+services:
+
+  libre-llm:
+    build: .
+    volumes:
+    # - ./models:/app/models
+    - ./:/app
+    ports:
+      - 8000:8000
+    entrypoint: uvicorn src.libre_llm.api:app --reload
+    # shm_size: '16g'
+    # deploy:  # Enable 1 GPU in this container
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]

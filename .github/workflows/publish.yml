@@ -1,0 +1,36 @@
+name: Publish package
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+
+  tests:
+    uses: vemonet/libre-llm/.github/workflows/test.yml@main
+    secrets: inherit
+
+  publish:
+    needs: tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        pipx install build
+
+    - name: Build package
+      run: python -m build
+
+    - name: Publish package
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_TOKEN }}

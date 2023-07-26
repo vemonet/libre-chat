@@ -1,0 +1,40 @@
+models/
+vectorstore/
+gradio_cached_examples/
+docker-compose.prod.yml
+
+# Python artefacts
+build/
+*.egg-info
+.eggs/
+dist/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+
+# Virtual envs
+.venv/
+venv/
+.env
+
+# Notebooks
+.ipynb_checkpoints
+.virtual_documents/
+.cache/
+.config/
+.ipython/
+.jupyter/
+.local/
+.npm/
+.bash_history
+__pycache__/
+
+# MacOS
+.DS_Store
+
+# IDEs
+.idea/
+.vscode/

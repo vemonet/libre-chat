@@ -1,0 +1,205 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+requires-python = ">=3.7"
+name = "libre-llm"
+description = "API and UI to deploy LLM models"
+readme = "README.md"
+license = { file = "LICENSE.txt" }
+authors = [
+    { name = "Vincent Emonet", email = "vincent.emonet@gmail.com" },
+]
+maintainers = [
+    { name = "Vincent Emonet", email = "vincent.emonet@gmail.com" },
+]
+keywords = [
+    "Python",
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dynamic = ["version"]
+
+dependencies = [
+    "typer >=0.6.0",
+    "fastapi",
+    "gradio",
+    "uvicorn",
+    "gunicorn",
+    "langchain",
+    "ctransformers >=0.2.5",
+    "faiss-cpu >=1.7.4",
+    "sentence_transformers",
+]
+
+
+[project.scripts]
+libre-llm = "libre_llm.__main__:cli"
+
+
+[project.optional-dependencies]
+test = [
+    "pytest >=7.4.0",
+    "pytest-cov >=3.0.0",
+    "pre-commit >=3.3.0",
+    "mypy >=1.4.1",
+    "httpx",
+]
+doc = [
+    "mkdocs >=1.4.2",
+    "mkdocs-material >=8.2.7",
+    "mkdocstrings[python] >=0.19.1",
+    "mdx-include >=1.4.1",
+    "mkdocs-markdownextradata-plugin >=0.2.5",
+]
+
+
+[project.urls]
+Homepage = "https://github.com/vemonet/libre-llm"
+Documentation = "https://github.com/vemonet/libre-llm"
+History = "https://github.com/vemonet/libre-llm/releases"
+Tracker = "https://github.com/vemonet/libre-llm/issues"
+Source = "https://github.com/vemonet/libre-llm"
+
+
+# ENVIRONMENTS AND SCRIPTS
+[tool.hatch.envs.default]
+features = [
+    "test",
+    "doc",
+]
+post-install-commands = [
+    "pre-commit install",
+]
+
+[tool.hatch.envs.default.scripts]
+# dev = "python tests/dev.py {args}"
+dev = "uvicorn src.libre_llm.api:app --reload {args}"
+fmt = [
+    "pre-commit run --all --all-files",
+    # "myp  y",
+]
+test = [
+    "fmt",
+    "pytest {args}",
+]
+cov = [
+    "pytest --cov-report html {args}",
+    "python -c 'import webbrowser; webbrowser.open(\"http://0.0.0.0:3000\")'",
+    "python -m http.server 3000 --directory ./htmlcov",
+]
+docs = "mkdocs serve -a localhost:8001"
+
+
+[[tool.hatch.envs.all.matrix]]
+python = ["3.7", "3.8", "3.9", "3.10", "3.11"]
+
+
+## TOOLS
+[tool.hatch.build]
+sources = ["src"]
+
+[tool.hatch.version]
+path = "src/libre_llm/__init__.py"
+
+# If you need to import packages from git URLs
+# [tool.hatch.metadata]
+# allow-direct-references = true
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+
+[tool.coverage.report]
+omit = ["tests/*"]
+
+
+[tool.mypy]
+files = ["src/"]
+strict = true
+implicit_reexport = true
+follow_imports = "normal"
+ignore_missing_imports = true
+pretty = true
+show_column_numbers = true
+warn_no_return = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_any_generics = true
+
+
+[tool.pytest.ini_options]
+addopts = [
+    "-vvv",
+    "--cov=src",
+    "--color=yes",
+    "--cov-report=term-missing",
+    # "--cov-fail-under=85",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning:httpx.*:"
+]
+
+
+[tool.black]
+color = true
+line-length = 120
+target-version = ['py38']
+skip-string-normalization = false
+
+
+# https://github.com/charliermarsh/ruff#supported-rules
+[tool.ruff]
+src = ["src", "tests"]
+target-version = "py38"
+line-length = 120
+select = [
+    "I",     # isort
+    "N",     # pep8-naming
+    "S",     # bandit
+    "A",     # flake8-builtins
+    "YTT",   # flake8-2020
+    "B",     # flake8-bugbear
+    "C",     # flake8-comprehensions
+    "ICN",   # flake8-import-conventions
+    "SIM",   # flake8-simplify
+    "TID",   # flake8-tidy-imports
+    "Q",     # flake8-quotes
+    # "FBT",   # flake8-boolean-trap
+    "F",     # pyflakes
+    "UP",    # pyupgrade
+    "E",     # pycodestyle errors
+    "W",     # pycodestyle warnings
+    "PLC",   # pylint convention
+    "PLE",   # pylint error
+    # "PLR",   # pylint refactor Magic value used in comparison, consider replacing 400 with a constant variable
+    "PLW",   # pylint warning
+    "RUF",   # ruff specific
+    "T",
+]
+ignore = [
+    "B007", # Loop control variable `x` not used within loop body
+    "E501", # line too long
+    "B008", # do not perform function calls in argument defaults
+    "B006", # do not use mutable data structures for argument defaults
+    "C901", # too complex
+    "S101", # Use of `assert` detected
+    "T201", "T203", # remove print and pprint
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["I", "F401"] # module imported but unused
+
+[tool.ruff.mccabe]
+max-complexity = 10
