@@ -16,9 +16,12 @@ See the API documentation at [/docs](/docs)
 def gradio_app(dbqa):
     def get_chatbot_resp(message: str, history: List[tuple[str, str]]) -> str:
         log.debug(f"Running inference for: {message}")
+        log.debug(f"With message history: {history}")
         res = query_llm(dbqa, message, history)
-        history.append(("", res))
-        # return res
+        # gradio auto add the response at the top of the list instead of the bottom
+        # history.append((res, None))
+        # history.insert(0, (None, res))
+        return res
 
     # https://www.gradio.app/guides/creating-a-chatbot-fast
     # https://www.gradio.app/guides/creating-a-custom-chatbot-with-blocks
