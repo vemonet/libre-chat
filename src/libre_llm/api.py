@@ -1,6 +1,6 @@
 import time
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, List, Optional
 
 from fastapi import Body, FastAPI, Request, Response
 from starlette.middleware.cors import CORSMiddleware
@@ -49,12 +49,12 @@ async def add_process_time_header(request: Request, call_next: Any) -> Response:
 @dataclass
 class Prompt:
     prompt: str
-    history_with_input: list[tuple[str, str]] = field(default_factory=lambda: [])
-    system_prompt: str | None = None
-    max_new_tokens: int | None = None
-    temperature: float | None = None
-    top_p: float | None = None
-    top_k: int | None = None
+    history_with_input: List[tuple[str, str]] = field(default_factory=lambda: [])
+    system_prompt: Optional[str] = None
+    max_new_tokens: Optional[int] = None
+    temperature: Optional[float] = None
+    top_p: Optional[float] = None
+    top_k: Optional[int] = None
 
 
 example_prompt = {"prompt": "What is the capital of the Netherlands?"}
@@ -66,7 +66,7 @@ dbqa = setup_dbqa(cfg)
 @app.post("/prompt", description=DESCRIPTION, response_description="Prompt response", response_model={})
 def send_prompt(
     prompt: Prompt = Body(..., example=example_prompt),
-) -> list[tuple[str, str]]:
+) -> List[tuple[str, str]]:
     if len(prompt.prompt) < 1:
         raise ValueError("Provide a `prompt`")
     return dbqa({"query": prompt.prompt})

@@ -27,12 +27,15 @@ def gradio_app(dbqa):
     # https://www.gradio.app/guides/creating-a-custom-chatbot-with-blocks
     chat = gr.ChatInterface(
         get_chatbot_resp,
-        chatbot=gr.Chatbot(height=500),
+        chatbot=gr.Chatbot(height=600),
         textbox=gr.Textbox(placeholder="Ask me anything", container=False, scale=7),
         title="🦙 llama2 chat",
         description=DESCRIPTION,
         theme="soft",
-        examples=["What is the capital of the Netherlands?", "Are tomatoes vegetables?"],
+        examples=[
+            "What is the capital of the Netherlands?",
+            "How can I instantiate a logger with logging and a timestamp in python?",
+        ],
         cache_examples=False,  # Error in GitHub action when enabled
         retry_btn=None,
         undo_btn="Delete Previous",
