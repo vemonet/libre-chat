@@ -25,7 +25,7 @@ def gradio_app(dbqa):
         description=DESCRIPTION,
         theme="soft",
         examples=["What is the capital of the Netherlands?", "Are tomatoes vegetables?"],
-        cache_examples=True,
+        cache_examples=False,  # Error in GitHub action when enabled
         retry_btn=None,
         undo_btn="Delete Previous",
         clear_btn="Clear",

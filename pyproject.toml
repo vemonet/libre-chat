@@ -50,7 +50,7 @@ libre-llm = "libre_llm.__main__:cli"
 test = [
     "pytest >=7.4.0",
     "pytest-cov >=3.0.0",
-    "pre-commit >=3.3.0",
+    "pre-commit",
     "mypy >=1.4.1",
     "httpx",
 ]

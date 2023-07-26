@@ -16,4 +16,4 @@ ADD . .
 
 RUN pip install -e .
 
-ENTRYPOINT [ "gunicorn", "src.libre_llm.api:app" ]
+ENTRYPOINT [ "gunicorn", "src.libre_llm.api:app", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000" ]
