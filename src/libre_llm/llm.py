@@ -3,13 +3,15 @@
         Module: Open-source LLM Setup
 ===========================================
 """
+from typing import List, Optional
+
 from langchain import PromptTemplate
 from langchain.chains import RetrievalQA
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.llms import CTransformers
 from langchain.vectorstores import FAISS
 
-from libre_llm.config import LlmConfig
+from libre_llm.config import LlmConfig, log
 
 
 def build_llm(cfg: LlmConfig):
@@ -50,3 +52,12 @@ def setup_dbqa(cfg: LlmConfig = LlmConfig()):
     dbqa = build_retrieval_qa(cfg, llm, qa_prompt, vectordb)
 
     return dbqa
+
+
+def query_llm(dbqa, prompt: str, history: Optional[List[tuple[str, str]]] = None):
+    # TODO: handle history
+    res = dbqa({"query": prompt})
+    log.debug(f"Complete response from the LLM: {res}")
+    if "result" not in res:
+        raise Exception(f"No result was returned by the LLM: {res}")
+    return res["result"]

@@ -1,6 +1,9 @@
+from typing import List
+
 import gradio as gr
 
 from libre_llm.config import log
+from libre_llm.llm import query_llm
 
 DESCRIPTION = """Chat with llama2, hosted at Maastrich University
 
@@ -9,11 +12,11 @@ See the API documentation at [/docs](/docs)
 
 
 def gradio_app(dbqa):
-    def get_chatbot_resp(message: str, history: list[tuple[str, str]]) -> list[tuple[str, str]]:
+    def get_chatbot_resp(message: str, history: List[tuple[str, str]]) -> str:
         log.debug(f"Running inference for: {message}")
-        res = dbqa({"query": message})["result"]
+        res = query_llm(dbqa, message, history)
         history.append((message, res))
-        return history
+        return message
 
     # https://www.gradio.app/guides/creating-a-chatbot-fast
     # https://www.gradio.app/guides/creating-a-custom-chatbot-with-blocks
