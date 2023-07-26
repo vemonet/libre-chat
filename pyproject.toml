@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 requires-python = ">=3.7"
 name = "libre-llm"
-description = "API and UI to deploy LLM models"
+description = "Free and Open Source LLM chatbot web API and UI. Self-hosted, offline capable and easy to setup. Powered by langchain and llama2."
 readme = "README.md"
 license = { file = "LICENSE.txt" }
 authors = [

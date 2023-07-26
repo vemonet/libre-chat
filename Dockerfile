@@ -8,9 +8,11 @@ WORKDIR /app
 
 RUN pip install --upgrade pip
 
-ADD . .
+ADD download.sh .
 
 RUN ./download.sh
+
+ADD . .
 
 RUN pip install -e .
 

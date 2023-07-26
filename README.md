@@ -1,6 +1,6 @@
 <div align="center">
 
-# Libre LLM
+# 🦙 Libre LLM
 
 <!--
 [![PyPI - Version](https://img.shields.io/pypi/v/libre-llm.svg?logo=pypi&label=PyPI&logoColor=silver)](https://pypi.org/project/libre-llm/)
@@ -17,8 +17,8 @@
 
 Easily deploy a Chatbot locally with a web UI and API.
 
-- Free and Open Source LLM chatbot web API and UI. 
-- Self-hosted, offline capable and easy to setup. 
+- Free and Open Source LLM chatbot web API and UI.
+- Self-hosted, offline capable and easy to setup.
 - No need for GPU, will work even on your laptop CPU (takes about 1min to answer though)
 - Use `langchain` to support performant open source models inference: [Llama-2-7b](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)/[13b](https://huggingface.co/llamaste/Llama-2-13b-chat-hf)/[70b](https://huggingface.co/llamaste/Llama-2-70b-chat-hf), all [Llama-2-GPTQ](https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ), all [Llama-2-GGML](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)
 
