@@ -1,9 +1,9 @@
-from typing import List
+"""Module: web UI for LLM"""
+from typing import List, Tuple
 
 import gradio as gr
 
-from libre_llm.config import log
-from libre_llm.llm import query_llm
+from libre_llm.utils import defaults, log
 
 DESCRIPTION = """Chat with llama2, hosted at Maastrich University
 
@@ -13,15 +13,21 @@ See the API documentation at [/docs](/docs)
 """
 
 
-def gradio_app(dbqa):
-    def get_chatbot_resp(message: str, history: List[tuple[str, str]]) -> str:
+def gradio_app(
+    llm,
+    title: str = defaults.title,
+    description: str = defaults.description,
+    examples: List[str] = [defaults.example_prompt],
+):
+    # TODO: title, description, examples
+    def get_chatbot_resp(message: str, history: List[Tuple[str, str]]) -> str:
         log.debug(f"Running inference for: {message}")
         log.debug(f"With message history: {history}")
-        res = query_llm(dbqa, message, history)
+        res = llm.query(message, history)
         # gradio auto add the response at the top of the list instead of the bottom
         # history.append((res, None))
         # history.insert(0, (None, res))
-        return res
+        return res["result"]
 
     # https://www.gradio.app/guides/creating-a-chatbot-fast
     # https://www.gradio.app/guides/creating-a-custom-chatbot-with-blocks
@@ -29,13 +35,10 @@ def gradio_app(dbqa):
         get_chatbot_resp,
         chatbot=gr.Chatbot(height=600),
         textbox=gr.Textbox(placeholder="Ask me anything", container=False, scale=7),
-        title="🦙 llama2 chat",
-        description=DESCRIPTION,
+        title=title,
+        description=description,
         theme="soft",
-        examples=[
-            "What is the capital of the Netherlands?",
-            "How can I instantiate a logger with logging and a timestamp in python?",
-        ],
+        examples=examples,
         cache_examples=False,  # Error in GitHub action when enabled
         retry_btn=None,
         undo_btn="Delete Previous",

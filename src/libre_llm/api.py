@@ -1,13 +1,13 @@
+"""Module: API for LLM"""
 import time
-from dataclasses import dataclass, field
-from typing import Any, List, Optional
+from typing import Any, List, Tuple
 
 from fastapi import Body, FastAPI, Request, Response
 from starlette.middleware.cors import CORSMiddleware
 
-from libre_llm.config import LlmConfig
-from libre_llm.llm import setup_dbqa
+from libre_llm.llm import Llm
 from libre_llm.ui import gradio_app
+from libre_llm.utils import Prompt
 
 DESCRIPTION = """API for a chatbot powered by llama2, hosted at Maastricht University.
 
@@ -41,36 +41,20 @@ app.add_middleware(
 async def add_process_time_header(request: Request, call_next: Any) -> Response:
     start_time = time.time()
     response: Response = await call_next(request)
-    process_time = time.time() - start_time
-    response.headers["X-Process-Time"] = str(process_time)
+    response.headers["X-Process-Time"] = str(time.time() - start_time)
     return response
 
 
-@dataclass
-class Prompt:
-    prompt: str
-    history_with_input: List[tuple[str, str]] = field(default_factory=lambda: [])
-    system_prompt: Optional[str] = None
-    max_new_tokens: Optional[int] = None
-    temperature: Optional[float] = None
-    top_p: Optional[float] = None
-    top_k: Optional[int] = None
-
-
 example_prompt = {"prompt": "What is the capital of the Netherlands?"}
-
-cfg = LlmConfig()
-dbqa = setup_dbqa(cfg)
+llm = Llm()
 
 
 @app.post("/prompt", description=DESCRIPTION, response_description="Prompt response", response_model={})
 def send_prompt(
     prompt: Prompt = Body(..., example=example_prompt),
-) -> List[tuple[str, str]]:
-    if len(prompt.prompt) < 1:
-        raise ValueError("Provide a `prompt`")
-    return dbqa({"query": prompt.prompt})
+) -> List[Tuple[str, str]]:
+    return llm.query(prompt.prompt)
 
 
 # https://github.com/gradio-app/gradio/issues/1608
-app.mount("/", gradio_app(dbqa))
+app.mount("/", gradio_app(llm))

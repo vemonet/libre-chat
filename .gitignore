@@ -1,5 +1,6 @@
 models/
 vectorstore/
+data/
 gradio_cached_examples/
 docker-compose.prod.yml
 
