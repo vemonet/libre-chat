@@ -2,18 +2,12 @@
 
 # 🦙 Libre LLM
 
-[![Coverage Status](https://coveralls.io/repos/github/vemonet/libre-llm/badge.svg?branch=main)](https://coveralls.io/github/vemonet/libre-llm?branch=main)
+[![Publish package](https://github.com/vemonet/libre-llm/actions/workflows/publish.yml/badge.svg)](https://github.com/vemonet/libre-llm/actions/workflows/publish.yml) [![Test package](https://github.com/vemonet/libre-llm/actions/workflows/test.yml/badge.svg)](https://github.com/vemonet/libre-llm/actions/workflows/test.yml) [![Coverage Status](https://coveralls.io/repos/github/vemonet/libre-llm/badge.svg?branch=main)](https://coveralls.io/github/vemonet/libre-llm?branch=main)
 
-<!--
 [![PyPI - Version](https://img.shields.io/pypi/v/libre-llm.svg?logo=pypi&label=PyPI&logoColor=silver)](https://pypi.org/project/libre-llm/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/libre-llm.svg?logo=python&label=Python&logoColor=silver)](https://pypi.org/project/libre-llm/)
 [![license](https://img.shields.io/pypi/l/libre-llm.svg?color=%2334D058)](https://github.com/vemonet/libre-llm/blob/main/LICENSE.txt)
 [![code style - black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-
-[![Test package](https://github.com/vemonet/libre-llm/actions/workflows/test.yml/badge.svg)](https://github.com/vemonet/libre-llm/actions/workflows/test.yml)
-[![Publish package](https://github.com/vemonet/libre-llm/actions/workflows/publish.yml/badge.svg)](https://github.com/vemonet/libre-llm/actions/workflows/publish.yml)
-
--->
 
 </div>
 
@@ -94,7 +88,7 @@ services:
       - 8000:8000
 ```
 
-And the `llm.yml` file with your settings:
+And the `llm.yml` file with your settings in the same folder as the `docker-compose.yml`:
 
 ```yaml
 model_path: "models/llama-2-7b-chat.ggmlv3.q3_K_L.bin"
@@ -118,7 +112,11 @@ template:
     Assistant:
 ```
 
-The instructions below are if you want to run it in development
+Finally start your chat service with:
+
+```bash
+docker compose up
+```
 
 ## 🧑‍💻 Development setup
 
