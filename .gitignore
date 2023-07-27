@@ -19,7 +19,6 @@ coverage.xml
 # Virtual envs
 .venv/
 venv/
-.env
 
 # Notebooks
 .ipynb_checkpoints

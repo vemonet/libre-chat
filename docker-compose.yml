@@ -8,7 +8,7 @@ services:
     - ./:/app
     ports:
       - 8000:8000
-    entrypoint: uvicorn src.libre_llm.api:app --reload
+    entrypoint: uvicorn tests.main:app --reload
     # shm_size: '16g'
     # deploy:  # Enable 1 GPU in this container
     #   resources:

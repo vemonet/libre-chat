@@ -67,6 +67,44 @@ import libre_llm
 
 -->
 
+## 🐳 Deploy with docker
+
+If you just want to quickly deploy it you can use docker:
+
+```bash
+docker run -it -p 8000:8000 ghcr.io/vemonet/libre-llm:main
+```
+
+You can configure the deployment using environment variables.
+
+For this using a `docker compose` and a `.env` file is easier. First create the `docker-compose.yml` file:
+
+```yml
+version: "3"
+services:
+  libre-llm:
+    image: ghcr.io/vemonet/libre-llm:main
+    env_file: .env
+    volumes:
+    - ./models:/app/models
+    ports:
+      - 8000:8000
+```
+
+And the `.env` file with your settings:
+
+```bash
+MODEL_PATH="models/llama-2-7b-chat.ggmlv3.q3_K_L.bin"
+VECTOR_DB_PATH="vectorstore/db_faiss"
+DATA_PATH="data/"
+EXAMPLE_PROMPT="What is the capital of the Netherlands?"
+TITLE="🦙 Libre LLM chat"
+VERSION="0.1.0"
+DESCRIPTION="Open source and free chatbot powered by langchain and llama2.\n\nSee: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vemonet/libre-llm)"
+```
+
+The instructions below are if you want to run it in development
+
 ## 🧑‍💻 Development setup
 
 The final section of the README is for if you want to run the package in development, and get involved by making a code contribution.
@@ -80,16 +118,6 @@ Clone the repository:
 git clone https://github.com/vemonet/libre-llm
 cd libre-llm
 ```
-### 🐳 Deploy with docker
-
-If you just want to quickly deploy it you can use docker:
-
-```bash
-docker compose up
-```
-
-The instructions below are if you want to run it in development
-
 ### 🐣 Install dependencies
 
 Install [Hatch](https://hatch.pypa.io), this will automatically handle virtual environments and make sure all dependencies are installed when you run a script in the project:
@@ -158,3 +186,11 @@ The deployment of new releases is done automatically by a GitHub Action workflow
 3. Create a new release on GitHub, which will automatically trigger the publish workflow, and publish the new release to PyPI.
 
 You can also manually trigger the workflow from the Actions tab in your GitHub repository webpage.
+
+## To do
+
+- [ ] Check if runs fine when no internet
+- [ ] Try with 70B model
+- [ ] Check without any vectorstore
+- [ ] Try building a vectorstore from new data
+- [ ] Create better UI with Svelte, served by FastAPI

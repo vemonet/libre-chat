@@ -2,7 +2,7 @@ import json
 
 from fastapi.testclient import TestClient
 
-from libre_llm.api import app
+from tests.main import app
 
 client = TestClient(app)
 

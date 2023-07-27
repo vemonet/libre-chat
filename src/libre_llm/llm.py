@@ -1,4 +1,5 @@
 """Module: Open-source LLM setup"""
+import os
 from typing import List, Optional, Tuple
 
 import torch
@@ -10,7 +11,7 @@ from langchain.llms import CTransformers
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 
-from libre_llm.utils import log
+from libre_llm.utils import log, settings
 
 
 class Llm:
@@ -20,10 +21,10 @@ class Llm:
 
     def __init__(
         self,
-        model_path: str = "models/llama-2-7b-chat.ggmlv3.q3_K_L.bin",
-        model_type: str = "llama",
-        vector_db_path: str = "vectorstore/db_faiss",
-        data_path: str = "data/",
+        model_path: str = settings.MODEL_PATH,
+        model_type: str = settings.MODEL_TYPE,
+        vector_db_path: str = settings.VECTOR_DB_PATH,
+        data_path: str = settings.DATA_PATH,
         return_source_documents: bool = True,
         vector_count: float = 2,
         chunk_size: int = 500,
@@ -61,7 +62,8 @@ Helpful answer:
         else:
             log.info("No GPU detected, using CPU")
             self.device = torch.device("cpu")
-
+        if not os.path.exists(self.data_path):
+            os.makedirs(self.data_path)
         self.setup_dbqa()
 
     def setup_dbqa(self):
@@ -107,7 +109,7 @@ Helpful answer:
         """Query the built LLM"""
         # TODO: handle history
         if len(prompt) < 1:
-            raise ValueError("Provide a `prompt`")
+            raise ValueError("Provide a prompt")
         res = self.dbqa({"query": prompt})
         log.debug(f"Complete response from the LLM: {res}")
         if "result" not in res:

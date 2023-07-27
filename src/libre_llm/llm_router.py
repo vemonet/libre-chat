@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 from fastapi import APIRouter, Body
 
-from libre_llm.utils import Prompt, defaults
+from libre_llm.utils import Prompt, settings
 
 __all__ = [
     "LlmRouter",
@@ -52,17 +52,16 @@ class LlmRouter(APIRouter):
         *args: Any,
         llm: Any,
         path: str = "/",
-        title: str = defaults.title,
-        description: str = defaults.description,
-        version: str = defaults.version,
+        title: str = settings.TITLE,
+        description: str = settings.DESCRIPTION,
+        version: str = settings.VERSION,
         public_url: str = "https://your-endpoint/sparql",
-        favicon: str = defaults.favicon,
+        favicon: str = settings.FAVICON,
         examples: Optional[List[str]] = None,
         **kwargs: Any,
     ) -> None:
         """
-        Constructor of the SPARQL endpoint, everything happens here.
-        FastAPI calls are defined in this constructor
+        Constructor of the LLM API router with the actual calls
         """
         self.llm = llm
         self.title = title
@@ -70,9 +69,9 @@ class LlmRouter(APIRouter):
         self.version = version
         self.path = path
         self.favicon = favicon
-        self.examples = examples if examples else [defaults.example_prompt]
+        self.examples = examples if examples else [settings.EXAMPLE_PROMPT]
         if len(self.examples) < 1:
-            self.examples.append(defaults.example_prompt)
+            self.examples.append(settings.EXAMPLE_PROMPT)
         example_prompt = {"prompt": self.examples[0]}
 
         # Instantiate APIRouter

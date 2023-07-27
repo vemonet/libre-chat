@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from libre_llm.llm_router import LlmRouter
 from libre_llm.ui import gradio_app
-from libre_llm.utils import defaults
+from libre_llm.utils import settings
 
 __all__ = [
     "LlmEndpoint",
@@ -23,13 +23,13 @@ class LlmEndpoint(FastAPI):
         *args: Any,
         llm: Any,
         path: str = "/",
-        title: str = defaults.title,
-        description: str = defaults.description,
-        version: str = defaults.version,
+        title: str = settings.TITLE,
+        description: str = settings.DESCRIPTION,
+        version: str = settings.VERSION,
         examples: Optional[List[str]] = None,
         cors_enabled: bool = True,
         public_url: str = "https://your-endpoint/sparql",
-        favicon: str = defaults.favicon,
+        favicon: str = settings.FAVICON,
         **kwargs: Any,
     ) -> None:
         """

@@ -82,7 +82,7 @@ post-install-commands = [
 
 [tool.hatch.envs.default.scripts]
 # dev = "python tests/dev.py {args}"
-dev = "uvicorn src.libre_llm.api:app --reload {args}"
+dev = "uvicorn tests.main:app --reload {args}"
 fmt = [
     "pre-commit run --all --all-files",
     # "myp  y",

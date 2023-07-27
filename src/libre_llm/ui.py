@@ -3,26 +3,18 @@ from typing import List, Tuple
 
 import gradio as gr
 
-from libre_llm.utils import defaults, log
-
-DESCRIPTION = """Chat with llama2, hosted at Maastrich University
-
-See the API documentation at [/docs](/docs)
-
-[Source code on GitHub](https://github.com/vemonet/libre-llm)
-"""
+from libre_llm.utils import log, settings
 
 
 def gradio_app(
     llm,
-    title: str = defaults.title,
-    description: str = defaults.description,
-    examples: List[str] = [defaults.example_prompt],
+    title: str = settings.TITLE,
+    description: str = settings.DESCRIPTION,
+    examples: List[str] = [settings.EXAMPLE_PROMPT],
 ):
     # TODO: title, description, examples
     def get_chatbot_resp(message: str, history: List[Tuple[str, str]]) -> str:
-        log.debug(f"Running inference for: {message}")
-        log.debug(f"With message history: {history}")
+        log.debug(f"Running inference for: {message}, with message history: {history}")
         res = llm.query(message, history)
         # gradio auto add the response at the top of the list instead of the bottom
         # history.append((res, None))

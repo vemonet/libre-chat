@@ -58,18 +58,25 @@ jobs:
       uses: coverallsapp/github-action@v2
 
 
-  publish-docs:
-    name: Update documentation website
-    if: github.ref == 'refs/heads/main'
-    needs: [tests, CodeQL-Analysis]
+  update-docs:
+    if: ${{ github.event_name == 'push' }}
+    needs: [ tests ]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: "pages"
+      cancel-in-progress: false
+
     steps:
       - uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.11
+          python-version: 3.9
 
       - name: Install dependencies
         run: |
@@ -79,4 +86,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          mkdocs gh-deploy
+          mkdocs build -d docs-dist
+        # mkdocs gh-deploy
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: './docs-dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
