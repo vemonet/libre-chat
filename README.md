@@ -22,11 +22,6 @@ Easily deploy a Chatbot locally with a web UI and API.
 
 ![UI screenshot](https://raw.github.com/vemonet/libre-llm/main/docs/screenshot.png)
 
-Inspired by:
-
-- https://github.com/kennethleungty/Llama-2-Open-Source-LLM-CPU-Inference
-- https://github.com/liltom-eth/llama2-webui
-
 <!--
 
 ## 📦️ Installation
@@ -41,10 +36,10 @@ pip install libre-llm
 
 ### ⌨️ Use as a command-line interface
 
-You can easily use your package from your terminal after installing `libre-llm` with pip:
+You can easily start a new chat web service including UI and API using your terminal:
 
 ```bash
-libre-llm
+libre-llm start
 ```
 
 Get a full rundown of the available options with:
@@ -55,12 +50,21 @@ libre-llm --help
 
 ### 🐍 Use with python
 
- Use this package in python scripts:
+Or you can use this package in python scripts:
 
  ```python
-import libre_llm
+from libre_llm.llm import Llm
+from libre_llm.llm_endpoint import LlmEndpoint
 
-# TODO: add example to use your package
+llm = Llm(
+    model_path="models/llama-2-7b-chat.ggmlv3.q3_K_L.bin",
+    vector_path=None
+)
+print(llm.query("What is the capital of the Netherlands?"))
+
+# Create and deploy a FastAPI app based on your LLM
+app = LlmEndpoint(llm=llm)
+uvicorn.run(app)
  ```
 
 -->
@@ -93,14 +97,14 @@ And the `llm.yml` file with your settings in the same folder as the `docker-comp
 ```yaml
 model_path: "models/llama-2-7b-chat.ggmlv3.q3_K_L.bin"
 vector_path: "vectorstore/db_faiss" # Path to the vectorstore, set to null to not use a vectostore
-data_path: "data/" # For documents to vectorize if needed
+data_path: "data/" # For documents to vectorize into a new vectorstore
 info:
   title: "🦙 Libre LLM chat"
   version: "0.1.0"
   description: |
     Open source and free chatbot powered by langchain and llama2.
 
-    See: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vemonet/libre-llm)"
+    See: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vemonet/libre-llm)
   example_prompt: "What is the capital of the Netherlands?"
 template:
   variables: [input, history]
@@ -120,7 +124,7 @@ docker compose up
 
 ## 🧑‍💻 Development setup
 
-The final section of the README is for if you want to run the package in development, and get involved by making a code contribution.
+The final section of the README is for if you want to run the package in development. Feel free to contribute!
 
 
 ### 📥️ Clone
@@ -170,7 +174,7 @@ hatch run all:test
 
 The documentation is automatically generated from the markdown files in the `docs` folder and python docstring comments, and published by a GitHub Actions workflow.
 
-Start the docs on [http://localhost:8001](http://localhost:8001){:target="_blank"}
+Start the docs on [http://localhost:8001](http://localhost:8001)
 
 ```bash
 hatch run docs

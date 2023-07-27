@@ -7,7 +7,7 @@ info:
   description: |
     Open source and free chatbot powered by langchain and llama2.
 
-    See: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vemonet/libre-llm)"
+    See: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vemonet/libre-llm)
   example_prompt: "What is the capital of the Netherlands?"
 template:
   variables: [input, history]

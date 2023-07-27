@@ -35,7 +35,7 @@ class SettingsTemplate(BaseSettings):
 
 class SettingsInfo(BaseSettings):
     example_prompt: str = "What is the capital of the Netherlands?"
-    title: str = "🦙 Llama2 chat"
+    title: str = "🦙 Libre LLM chat"
     version: str = "0.1.0"
     description: str = """Open source and free chatbot powered by langchain and llama2.
 
