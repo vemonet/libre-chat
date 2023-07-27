@@ -4,7 +4,7 @@ on: [push, pull_request, workflow_call, workflow_dispatch]
 jobs:
 
   CodeQL-Analysis:
-    name: CodeQL analysis
+    name: 🔎 CodeQL analysis
     runs-on: ubuntu-latest
     permissions:
       security-events: write # required for all workflows
@@ -30,7 +30,7 @@ jobs:
 
 
   tests:
-    name: Run tests
+    name: ✅ Run tests
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

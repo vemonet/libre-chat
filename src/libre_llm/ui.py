@@ -8,9 +8,9 @@ from libre_llm.utils import log, settings
 
 def gradio_app(
     llm,
-    title: str = settings.TITLE,
-    description: str = settings.DESCRIPTION,
-    examples: List[str] = [settings.EXAMPLE_PROMPT],
+    title: str = settings.info.title,
+    description: str = settings.info.description,
+    examples: List[str] = [settings.info.example_prompt],
 ):
     # TODO: title, description, examples
     def get_chatbot_resp(message: str, history: List[Tuple[str, str]]) -> str:

@@ -2,6 +2,8 @@
 
 # 🦙 Libre LLM
 
+[![Coverage Status](https://coveralls.io/repos/github/vemonet/libre-llm/badge.svg?branch=main)](https://coveralls.io/github/vemonet/libre-llm?branch=main)
+
 <!--
 [![PyPI - Version](https://img.shields.io/pypi/v/libre-llm.svg?logo=pypi&label=PyPI&logoColor=silver)](https://pypi.org/project/libre-llm/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/libre-llm.svg?logo=python&label=Python&logoColor=silver)](https://pypi.org/project/libre-llm/)
@@ -14,6 +16,8 @@
 -->
 
 </div>
+
+> ⚠️ Development on this project has just started, use it with caution
 
 Easily deploy a Chatbot locally with a web UI and API.
 
@@ -79,28 +83,39 @@ You can configure the deployment using environment variables.
 
 For this using a `docker compose` and a `.env` file is easier. First create the `docker-compose.yml` file:
 
-```yml
+```yaml
 version: "3"
 services:
   libre-llm:
     image: ghcr.io/vemonet/libre-llm:main
-    env_file: .env
     volumes:
-    - ./models:/app/models
+    - ./llm.yml:/app/llm.yml
     ports:
       - 8000:8000
 ```
 
-And the `.env` file with your settings:
+And the `llm.yml` file with your settings:
 
-```bash
-MODEL_PATH="models/llama-2-7b-chat.ggmlv3.q3_K_L.bin"
-VECTOR_DB_PATH="vectorstore/db_faiss"
-DATA_PATH="data/"
-EXAMPLE_PROMPT="What is the capital of the Netherlands?"
-TITLE="🦙 Libre LLM chat"
-VERSION="0.1.0"
-DESCRIPTION="Open source and free chatbot powered by langchain and llama2.\n\nSee: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vemonet/libre-llm)"
+```yaml
+model_path: "models/llama-2-7b-chat.ggmlv3.q3_K_L.bin"
+vector_path: "vectorstore/db_faiss" # Path to the vectorstore, set to null to not use a vectostore
+data_path: "data/" # For documents to vectorize if needed
+info:
+  title: "🦙 Libre LLM chat"
+  version: "0.1.0"
+  description: |
+    Open source and free chatbot powered by langchain and llama2.
+
+    See: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vemonet/libre-llm)"
+  example_prompt: "What is the capital of the Netherlands?"
+template:
+  variables: [input, history]
+  prompt: |
+    Your are an assistant, please help me!
+
+    {history}
+    Human: {input}
+    Assistant:
 ```
 
 The instructions below are if you want to run it in development

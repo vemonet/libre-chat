@@ -23,13 +23,13 @@ class LlmEndpoint(FastAPI):
         *args: Any,
         llm: Any,
         path: str = "/",
-        title: str = settings.TITLE,
-        description: str = settings.DESCRIPTION,
-        version: str = settings.VERSION,
+        title: str = settings.info.title,
+        description: str = settings.info.description,
+        version: str = settings.info.version,
         examples: Optional[List[str]] = None,
         cors_enabled: bool = True,
         public_url: str = "https://your-endpoint/sparql",
-        favicon: str = settings.FAVICON,
+        favicon: str = settings.info.favicon,
         **kwargs: Any,
     ) -> None:
         """

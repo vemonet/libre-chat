@@ -52,11 +52,11 @@ class LlmRouter(APIRouter):
         *args: Any,
         llm: Any,
         path: str = "/",
-        title: str = settings.TITLE,
-        description: str = settings.DESCRIPTION,
-        version: str = settings.VERSION,
+        title: str = settings.info.title,
+        description: str = settings.info.description,
+        version: str = settings.info.version,
         public_url: str = "https://your-endpoint/sparql",
-        favicon: str = settings.FAVICON,
+        favicon: str = settings.info.favicon,
         examples: Optional[List[str]] = None,
         **kwargs: Any,
     ) -> None:
@@ -69,9 +69,9 @@ class LlmRouter(APIRouter):
         self.version = version
         self.path = path
         self.favicon = favicon
-        self.examples = examples if examples else [settings.EXAMPLE_PROMPT]
+        self.examples = examples if examples else [settings.info.example_prompt]
         if len(self.examples) < 1:
-            self.examples.append(settings.EXAMPLE_PROMPT)
+            self.examples.append(settings.info.example_prompt)
         example_prompt = {"prompt": self.examples[0]}
 
         # Instantiate APIRouter

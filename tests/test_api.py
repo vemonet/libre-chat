@@ -7,8 +7,8 @@ from tests.main import app
 client = TestClient(app)
 
 
-def test_post_prompt():
-    """Test POST prompt"""
+def test_post_prompt_vectorstore():
+    """Test POST prompt using model with vectorstore"""
     prompt = {"prompt": "What is the capital of the Netherlands?"}
     response = client.post(
         "/prompt",
@@ -17,8 +17,6 @@ def test_post_prompt():
     )
     resp = response.json()
     assert response.status_code == 200
-    assert len(resp) >= 1
-    assert len(resp["result"]) >= 1
     assert len(resp["source_documents"]) >= 1
     assert "amsterdam" in resp["result"].lower()
 
