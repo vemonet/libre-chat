@@ -124,6 +124,12 @@ You can easily start a new chat web service including UI and API using your term
 libre-llm start
 ```
 
+Provide a specific config file:
+
+```bash
+libre-llm start tests/llm-with-vectorstore.yml
+```
+
 Get a full rundown of the available options with:
 
 ```bash

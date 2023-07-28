@@ -12,7 +12,6 @@ cli = typer.Typer(help="Deploy API and web UI for LLMs, such as llama2, using la
 @cli.command("start")
 def start(
     config: str = typer.Argument(settings.config_path, help="Path to the libre-llm YAML config file"),
-    # : Annotated[Optional[str], typer.Argument()] = None
     # model: str = typer.Option(settings.llm.model_path, help="Path to the model binary"),
     # vector: str = typer.Option(settings.vector.vector_path, help="Path to the vector db folder"),
     host: str = typer.Option("localhost", help="Host URL"),
