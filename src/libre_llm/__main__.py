@@ -11,7 +11,8 @@ cli = typer.Typer(help="Deploy API and web UI for LLMs, such as llama2, using la
 
 @cli.command("start")
 def start(
-    config: str = typer.Option(settings.llm.model_path, help="Path to the libre-llm YAML config file, usually llm.yml"),
+    config: str = typer.Argument(settings.config_path, help="Path to the libre-llm YAML config file"),
+    # : Annotated[Optional[str], typer.Argument()] = None
     # model: str = typer.Option(settings.llm.model_path, help="Path to the model binary"),
     # vector: str = typer.Option(settings.vector.vector_path, help="Path to the vector db folder"),
     host: str = typer.Option("localhost", help="Host URL"),
@@ -40,6 +41,9 @@ def start(
         template_prompt=settings.template.prompt,
     )
     app = LlmEndpoint(llm=llm, settings=settings)
+    log_config = uvicorn.config.LOGGING_CONFIG
+    log_config["formatters"]["access"]["fmt"] = "%(levelprefix)s [%(asctime)s] [%(module)s:%(funcName)s] %(message)s"
+    log_config["formatters"]["default"]["fmt"] = "%(levelprefix)s [%(asctime)s] [%(module)s:%(funcName)s] %(message)s"
     uvicorn.run(
         app,
         host=host,
@@ -47,6 +51,7 @@ def start(
         reload=False,
         log_level="debug" if debug else "info",
         workers=workers,
+        log_config=log_config,
     )
 
 

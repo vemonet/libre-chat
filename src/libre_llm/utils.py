@@ -110,7 +110,7 @@ class ColoredFormatter(logging.Formatter):
         return log_msg.replace(log_level, colored_log_level, 1)
 
 
-log = logging.getLogger("uvicorn")
+log = logging.getLogger("uvicorn.access")
 if len(log.handlers) > 0:
     log.handlers[0].setFormatter(
         ColoredFormatter("%(levelname)s:     [%(asctime)s] [%(module)s:%(funcName)s] %(message)s")
@@ -125,8 +125,9 @@ CYAN = "\033[36m"
 def parse_config(path: str = settings.config_path):
     if os.path.exists(path):
         with open(path) as file:
-            return parse_yaml_raw_as(Settings, file.read())
-        log.info(f"Loaded config from {BOLD}{YELLOW}{path}{END}")
+            cfg = parse_yaml_raw_as(Settings, file.read())
+            log.info(f"Loaded config from {BOLD}{YELLOW}{path}{END}")
+            return cfg
     else:
         return settings
 
@@ -141,7 +142,7 @@ def download_file(url, path):
             for chunk in response.iter_content(chunk_size=8192):  # Adjust the chunk size as needed
                 file.write(chunk)
     if ddl_path.endswith(".zip"):
-        log.ingo(f"Unzipping {ddl_path} to {path}")
+        log.info(f"Unzipping {ddl_path} to {path}")
         with zipfile.ZipFile(ddl_path, "r") as zip_ref:
             zip_ref.extractall(path)
     else:

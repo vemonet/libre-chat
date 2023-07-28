@@ -6,7 +6,7 @@ llm:
   temperature: 0.01
   max_new_tokens: 256
 template:
-  # Always use input for the human input variable
+  # Always use input for the human input variable with a generic agent
   variables: [input, history]
   prompt: |
     Your are an assistant, please help me
@@ -15,9 +15,8 @@ template:
     Human: {input}
     Assistant:
 vector:
-  vector_path: null # Path to the vectorstore to do QA retrieval
-  # Set to null to deploy a generic conversational agent, otherwise:
-  # vector_path: ./vectorstore/db_faiss
+  vector_path: null # Path to the vectorstore to do QA retrieval, e.g. ./vectorstore/db_faiss
+  # Set to null to deploy a generic conversational agent
   vector_download: null
   embeddings_path: ./embeddings/all-MiniLM-L6-v2 # Embeddings used to generate the vectors
   # You can also directly use embeddings model from HuggingFace:

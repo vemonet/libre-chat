@@ -17,12 +17,15 @@
 
 > ⚠️ Development on this project has just started, use it with caution
 
-Easily deploy a chatbot web service locally with a web UI and API.
+Easily deploy a Large Language Model (LLM) chatbot web service locally with a web UI and API.
 
-- 🌐 Free and Open Source LLM chatbot with web UI and API.
+- 🌐 Free and Open Source LLM with web UI and API.
 - 🏡 Fully self-hosted, offline capable, and easy to setup. No need for any API key to any service.
 - ⚡ No need for GPU, this will work even on your laptop CPU (but takes about 1min to answer on recent laptops)
-- 🦜 Use [`LangChain`](https://python.langchain.com) to support performant open source models inference: all [Llama-2-GGML](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)/[13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf)/[70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf)), all [Llama-2-GPTQ](https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ)
+- 🦜 Use [`LangChain`](https://python.langchain.com) to support performant open source models inference:
+  - all [Llama-2-GGML](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)/[13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf)/[70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf))
+  - all [Llama-2-GPTQ](https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ)
+
 
 ![UI screenshot](https://raw.github.com/vemonet/libre-llm/main/docs/screenshot.png)
 
@@ -58,6 +61,7 @@ llm:
   temperature: 0.01
   max_new_tokens: 256
 template:
+  # Always use input for the human input variable with a generic agent
   variables: [input, history]
   prompt: |
     Your are an assistant, please help me
@@ -66,9 +70,8 @@ template:
     Human: {input}
     Assistant:
 vector:
-  vector_path: null # Path to the vectorstore to do QA retrieval
-  # Set to null to deploy a generic conversational agent, otherwise:
-  # vector_path: ./vectorstore/db_faiss
+  vector_path: null # Path to the vectorstore to do QA retrieval, e.g. ./vectorstore/db_faiss
+  # Set to null to deploy a generic conversational agent
   vector_download: null
   embeddings_path: ./embeddings/all-MiniLM-L6-v2 # Embeddings used to generate the vectors
   # You can also directly use embeddings model from HuggingFace:
@@ -88,13 +91,13 @@ info:
     See: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vemonet/libre-llm)
   examples:
   - "What is the capital of the Netherlands?"
-  - "How can I create a logger with timestamp with python logging?"
+  - "How can I create a logger with timestamp using python logging?"
   contact:
     name: "Vincent Emonet"
     email: "vincent.emonet@gmail.com"
   license_info:
     name: "MIT license"
-    url: "https://raw.github.com/vemonet/libre-llm/main/LICENSE"
+    url: "https://raw.github.com/vemonet/libre-llm/main/LICENSE.txt"
 ```
 
 Finally start your chat service with:

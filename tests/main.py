@@ -5,7 +5,6 @@ from libre_llm.utils import parse_config
 # Run default model, used in docker container
 # Config is retrieved from env variables
 
-# llm = Llm(vector_path=None)
 settings = parse_config("llm.yml")
 llm = Llm(
     model_path=settings.llm.model_path,

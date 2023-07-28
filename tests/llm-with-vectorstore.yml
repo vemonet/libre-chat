@@ -6,7 +6,7 @@ llm:
   temperature: 0.01
   max_new_tokens: 256
 template:
-  # Always use input for the human input variable
+  # Always use variables that where previously used when creating the vectors
   variables: ["question", "context"]
   prompt: |
     Use the following pieces of information to answer the user's question.
