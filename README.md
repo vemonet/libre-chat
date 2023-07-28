@@ -2,35 +2,36 @@
 
 # 🦙 Libre LLM
 
-[![Publish package](https://github.com/vemonet/libre-llm/actions/workflows/publish.yml/badge.svg)](https://github.com/vemonet/libre-llm/actions/workflows/publish.yml) [![Test package](https://github.com/vemonet/libre-llm/actions/workflows/test.yml/badge.svg)](https://github.com/vemonet/libre-llm/actions/workflows/test.yml) [![Coverage Status](https://coveralls.io/repos/github/vemonet/libre-llm/badge.svg?branch=main)](https://coveralls.io/github/vemonet/libre-llm?branch=main)
+[![Publish package](https://github.com/vemonet/libre-chat/actions/workflows/publish.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/publish.yml) [![Test package](https://github.com/vemonet/libre-chat/actions/workflows/test.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/test.yml) [![Coverage Status](https://coveralls.io/repos/github/vemonet/libre-chat/badge.svg?branch=main)](https://coveralls.io/github/vemonet/libre-chat?branch=main)
 
-[![PyPI - Version](https://img.shields.io/pypi/v/libre-llm.svg?logo=pypi&label=PyPI&logoColor=silver)](https://pypi.org/project/libre-llm/)
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/libre-llm.svg?logo=python&label=Python&logoColor=silver)](https://pypi.org/project/libre-llm/)
-[![license](https://img.shields.io/pypi/l/libre-llm.svg?color=%2334D058)](https://github.com/vemonet/libre-llm/blob/main/LICENSE.txt)
+[![PyPI - Version](https://img.shields.io/pypi/v/libre-chat.svg?logo=pypi&label=PyPI&logoColor=silver)](https://pypi.org/project/libre-chat/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/libre-chat.svg?logo=python&label=Python&logoColor=silver)](https://pypi.org/project/libre-chat/)
+[![license](https://img.shields.io/pypi/l/libre-chat.svg?color=%2334D058)](https://github.com/vemonet/libre-chat/blob/main/LICENSE.txt)
 [![code style - black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 </div>
 
 > ⚠️ Development on this project has just started, use it with caution
 
-Easily deploy a Large Language Model (LLM) chatbot web service locally with a web UI and API.
+Easily configure and deploy a self-hosted chat web service based on open source Large Language Models.
 
-- 🌐 Free and Open Source LLM with web UI and API.
-- 🏡 Fully self-hosted, offline capable, and easy to setup. No need for any API key to any service.
+- 🌐 Free and Open Source chatbot web service with UI and API
+- 🏡 Fully self-hosted, not tied to any service, and offline capable. Models and embeddings are pre-downloaded, you are insured your prompts are not send to anyone, and it can run off-line if necessary. Forget about API keys!
+- 🧞 Easy to setup, no need to program, just configure the service with a YAML file, and start it in 1 command
 - ⚡ No need for GPU, this will work even on your laptop CPU (but takes about 1min to answer on recent laptops)
 - 🦜 Use [`LangChain`](https://python.langchain.com) to support performant open source models inference:
   - all [Llama-2-GGML](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)/[13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf)/[70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf))
   - all [Llama-2-GPTQ](https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ)
 
 
-![UI screenshot](https://raw.github.com/vemonet/libre-llm/main/docs/screenshot.png)
+![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/screenshot.png)
 
 ## 🐳 Deploy with docker
 
 If you just want to quickly deploy it using the pre-trained model `Llama-2-7B-Chat-GGML`, you can use docker:
 
 ```bash
-docker run -it -p 8000:8000 ghcr.io/vemonet/libre-llm:main
+docker run -it -p 8000:8000 ghcr.io/vemonet/libre-chat:main
 ```
 
 You can configure the deployment using environment variables. For this using a `docker compose` and a `.env` file is easier, first create the `docker-compose.yml` file:
@@ -38,15 +39,15 @@ You can configure the deployment using environment variables. For this using a `
 ```yaml
 version: "3"
 services:
-  libre-llm:
-    image: ghcr.io/vemonet/libre-llm:main
+  libre-chat:
+    image: ghcr.io/vemonet/libre-chat:main
     volumes:
-    - ./llm.yml:/app/llm.yml
+    - ./chat.yml:/app/chat.yml
     ports:
       - 8000:8000
 ```
 
-And create a `llm.yml` file with your configuration in the same folder as the `docker-compose.yml`:
+And create a `chat.yml` file with your configuration in the same folder as the `docker-compose.yml`:
 
 ```yaml
 llm:
@@ -79,12 +80,12 @@ vector:
   chunk_size: 500
   chunk_overlap: 50
 info:
-  title: "🦙 Libre LLM chat"
+  title: "🦙 Libre Chat"
   version: "0.1.0"
   description: |
-    Open source and free chatbot powered by langchain and llama2.
+    Open source and free chatbot powered by LangChain and llama2.
 
-    See: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vemonet/libre-llm)
+    See: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vemonet/libre-chat)
   examples:
   - "What is the capital of the Netherlands?"
   - "How can I create a logger with timestamp using python logging?"
@@ -93,7 +94,7 @@ info:
     email: "vincent.emonet@gmail.com"
   license_info:
     name: "MIT license"
-    url: "https://raw.github.com/vemonet/libre-llm/main/LICENSE.txt"
+    url: "https://raw.github.com/vemonet/libre-chat/main/LICENSE.txt"
 ```
 
 Finally start your chat service with:
@@ -107,7 +108,7 @@ docker compose up
 This package requires Python >=3.7, simply install it with `pipx` or `pip`:
 
 ```bash
-pip install libre-llm
+pip install libre-chat
 ```
 
 ### ⌨️ Use as a command-line interface
@@ -115,19 +116,19 @@ pip install libre-llm
 You can easily start a new chat web service including UI and API using your terminal:
 
 ```bash
-libre-llm start
+libre-chat start
 ```
 
 Provide a specific config file:
 
 ```bash
-libre-llm start tests/llm-with-vectorstore.yml
+libre-chat start tests/llm-with-vectorstore.yml
 ```
 
 Get a full rundown of the available options with:
 
 ```bash
-libre-llm --help
+libre-chat --help
 ```
 
 ### 🐍 Use with python
@@ -135,8 +136,8 @@ libre-llm --help
 Or you can use this package in python scripts:
 
  ```python
-from libre_llm.llm import Llm
-from libre_llm.llm_endpoint import LlmEndpoint
+from libre_chat.llm import Llm
+from libre_chat.chat_endpoint import ChatEndpoint
 
 llm = Llm(
     model_path="models/llama-2-7b-chat.ggmlv3.q3_K_L.bin",
@@ -145,7 +146,7 @@ llm = Llm(
 print(llm.query("What is the capital of the Netherlands?"))
 
 # Create and deploy a FastAPI app based on your LLM
-app = LlmEndpoint(llm=llm)
+app = ChatEndpoint(llm=llm)
 uvicorn.run(app)
  ```
 
@@ -159,8 +160,8 @@ The final section of the README is for if you want to run the package in develop
 Clone the repository:
 
 ```bash
-git clone https://github.com/vemonet/libre-llm
-cd libre-llm
+git clone https://github.com/vemonet/libre-chat
+cd libre-chat
 ```
 ### 🐣 Install dependencies
 

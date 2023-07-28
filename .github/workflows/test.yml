@@ -84,6 +84,7 @@ jobs:
         hatch run test --cov-report xml:coverage.xml
 
     - name: ☂️ Upload coverage to Coveralls
+      if: ${{ matrix.os == 'ubuntu-latest' }}
       uses: coverallsapp/github-action@v2
 
 

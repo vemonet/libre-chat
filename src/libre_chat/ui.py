@@ -3,7 +3,7 @@ from typing import List, Tuple
 
 import gradio as gr
 
-from libre_llm.utils import log
+from libre_chat.utils import log
 
 
 def gradio_app(llm):

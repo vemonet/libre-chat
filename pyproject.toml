@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 requires-python = ">=3.7"
-name = "libre-llm"
+name = "libre-chat"
 description = "Free and Open Source Large Language Model (LLM) chatbot web UI and API. Self-hosted, offline capable and easy to setup. Powered by LangChain and llama2."
 readme = "README.md"
 license = { file = "LICENSE.txt" }
@@ -46,7 +46,7 @@ dependencies = [
 
 
 [project.scripts]
-libre-llm = "libre_llm.__main__:cli"
+libre-chat = "libre_chat.__main__:cli"
 
 
 [project.optional-dependencies]
@@ -68,11 +68,11 @@ doc = [
 
 
 [project.urls]
-Homepage = "https://github.com/vemonet/libre-llm"
-Documentation = "https://github.com/vemonet/libre-llm"
-History = "https://github.com/vemonet/libre-llm/releases"
-Tracker = "https://github.com/vemonet/libre-llm/issues"
-Source = "https://github.com/vemonet/libre-llm"
+Homepage = "https://github.com/vemonet/libre-chat"
+Documentation = "https://github.com/vemonet/libre-chat"
+History = "https://github.com/vemonet/libre-chat/releases"
+Tracker = "https://github.com/vemonet/libre-chat/issues"
+Source = "https://github.com/vemonet/libre-chat"
 
 
 # ENVIRONMENTS AND SCRIPTS
@@ -88,7 +88,7 @@ post-install-commands = [
 [tool.hatch.envs.default.scripts]
 # dev = "python tests/dev.py {args}"
 dev = "uvicorn tests.main:app --reload {args}"
-vector = "libre-llm start tests/llm-with-vectorstore.yml"
+vector = "libre-chat start tests/llm-with-vectorstore.yml"
 fmt = [
     "pre-commit run --all --all-files",
     # "myp  y",
@@ -116,7 +116,7 @@ python = ["3.8", "3.9", "3.10", "3.11"]
 sources = ["src"]
 
 [tool.hatch.version]
-path = "src/libre_llm/__init__.py"
+path = "src/libre_chat/__init__.py"
 
 # If you need to import packages from git URLs
 # [tool.hatch.metadata]

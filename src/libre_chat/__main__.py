@@ -5,17 +5,17 @@ from typing import Optional
 import typer
 import uvicorn
 
-from libre_llm import __version__
-from libre_llm.llm import Llm
-from libre_llm.llm_endpoint import LlmEndpoint
-from libre_llm.utils import BOLD, END, default_conf, parse_config
+from libre_chat import __version__
+from libre_chat.chat_endpoint import ChatEndpoint
+from libre_chat.llm import Llm
+from libre_chat.utils import BOLD, END, default_conf, parse_config
 
 cli = typer.Typer(help="Deploy API and web UI for LLMs, such as llama2, using langchain.")
 
 
 @cli.command("start")
 def start(
-    config: str = typer.Argument(default_conf.config_path, help="Path to the libre-llm YAML configuration file"),
+    config: str = typer.Argument(default_conf.config_path, help="Path to the libre-chat YAML configuration file"),
     # model: str = typer.Option(conf.llm.model_path, help="Path to the model binary"),
     # vector: str = typer.Option(conf.vector.vector_path, help="Path to the vector db folder"),
     host: str = typer.Option("localhost", help="Host URL"),
@@ -26,7 +26,7 @@ def start(
     logging.basicConfig(level=logging.getLevelName(log.upper()))
     conf = parse_config(config)
     llm = Llm(conf=conf)
-    app = LlmEndpoint(llm=llm, conf=conf)
+    app = ChatEndpoint(llm=llm, conf=conf)
     log_config = uvicorn.config.LOGGING_CONFIG
     log_config["formatters"]["access"]["fmt"] = "%(levelprefix)s [%(asctime)s] [%(module)s:%(funcName)s] %(message)s"
     log_config["formatters"]["default"]["fmt"] = "%(levelprefix)s [%(asctime)s] [%(module)s:%(funcName)s] %(message)s"
@@ -43,7 +43,7 @@ def start(
 
 @cli.command("build")
 def build(
-    config: str = typer.Argument(default_conf.config_path, help="Path to the libre-llm YAML configuration file"),
+    config: str = typer.Argument(default_conf.config_path, help="Path to the libre-chat YAML configuration file"),
     vector: Optional[str] = typer.Option(None, help="Path to the vector db folder"),
     documents: Optional[str] = typer.Option(None, help="Path to the folder containing documents to vectorize"),
     log: str = typer.Option("info", help="Log level (info, debug, warn, error)"),

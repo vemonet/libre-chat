@@ -4,16 +4,16 @@ from typing import Any, List, Optional
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 
-from libre_llm.llm_router import LlmRouter
-from libre_llm.ui import gradio_app
-from libre_llm.utils import LlmConf, default_conf
+from libre_chat.chat_router import ChatRouter
+from libre_chat.ui import gradio_app
+from libre_chat.utils import ChatConf, default_conf
 
 __all__ = [
-    "LlmEndpoint",
+    "ChatEndpoint",
 ]
 
 
-class LlmEndpoint(FastAPI):
+class ChatEndpoint(FastAPI):
     """
     Class to deploy a LLM endpoint with API and web UI.
     """
@@ -23,7 +23,7 @@ class LlmEndpoint(FastAPI):
         *args: Any,
         llm: Any,
         path: str = "/prompt",
-        conf: Optional[LlmConf] = None,
+        conf: Optional[ChatConf] = None,
         examples: Optional[List[str]] = None,
         cors_enabled: bool = True,
         **kwargs: Any,
@@ -50,13 +50,13 @@ class LlmEndpoint(FastAPI):
             **kwargs,
         )
 
-        llm_router = LlmRouter(
+        chat_router = ChatRouter(
             llm=self.llm,
             path=self.path,
             conf=self.conf,
             examples=self.examples,
         )
-        self.include_router(llm_router)
+        self.include_router(chat_router)
 
         if cors_enabled:
             self.add_middleware(

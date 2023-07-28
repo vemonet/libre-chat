@@ -1,6 +1,6 @@
 from typer.testing import CliRunner
 
-from libre_llm.__main__ import cli
+from libre_chat.__main__ import cli
 
 runner = CliRunner()
 

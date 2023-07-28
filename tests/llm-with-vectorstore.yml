@@ -30,12 +30,12 @@ vector:
   chunk_size: 500
   chunk_overlap: 50
 info:
-  title: "🦙 Libre LLM chat"
+  title: "🦙 Libre Chat"
   version: "0.1.0"
   description: |
-    Open source and free chatbot powered by langchain and llama2.
+    Open source and free chatbot powered by LangChain and llama2.
 
-    See: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vemonet/libre-llm)
+    See: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vemonet/libre-chat)
   examples:
   - What is the capital of the Netherlands?
   - How can I create a logger with timestamp using python logging?
@@ -45,4 +45,4 @@ info:
     email: "vincent.emonet@gmail.com"
   license_info:
     name: "MIT license"
-    url: "https://raw.github.com/vemonet/libre-llm/main/LICENSE.txt"
+    url: "https://raw.github.com/vemonet/libre-chat/main/LICENSE.txt"

@@ -7,7 +7,7 @@ on:
 jobs:
 
   tests:
-    uses: vemonet/libre-llm/.github/workflows/test.yml@main
+    uses: vemonet/libre-chat/.github/workflows/test.yml@main
     secrets: inherit
 
   publish:

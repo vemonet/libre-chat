@@ -1,7 +1,10 @@
+import os
+import shutil
+
 import pytest
 
-from libre_llm.llm import Llm
-from libre_llm.utils import parse_config
+from libre_chat.llm import Llm
+from libre_chat.utils import parse_config
 
 llm = Llm(conf=parse_config("tests/llm-with-vectorstore.yml"))
 
@@ -20,8 +23,8 @@ def test_failed_query():
     assert str(exc_info.value) == "Provide a prompt"
 
 
-# def test_build_vectorstore():
-#     """Test building the vectorstore"""
-#     shutil.rmtree(llm.conf.vector.vector_path)
-#     assert len(resp["source_documents"]) >= 1
-#     assert "amsterdam" in resp["result"].lower()
+def test_build_vectorstore():
+    """Test building the vectorstore"""
+    shutil.rmtree(llm.conf.vector.vector_path)
+    llm.build_vectorstore()
+    assert os.path.exists(llm.conf.vector.vector_path)

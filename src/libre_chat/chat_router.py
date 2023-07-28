@@ -3,10 +3,10 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 from fastapi import APIRouter, Body, Request, Response
 
-from libre_llm.utils import LlmConf, Prompt, default_conf
+from libre_chat.utils import ChatConf, Prompt, default_conf
 
 __all__ = [
-    "LlmRouter",
+    "ChatRouter",
 ]
 
 api_responses: Optional[Dict[Union[int, str], Dict[str, Any]]] = {
@@ -49,7 +49,7 @@ class PromptResponse:
     source_documents: Optional[List[Dict]] = None
 
 
-class LlmRouter(APIRouter):
+class ChatRouter(APIRouter):
     """
     Class to deploy a LLM router with FastAPI.
     """
@@ -59,7 +59,7 @@ class LlmRouter(APIRouter):
         *args: Any,
         llm: Any,
         path: str = "/prompt",
-        conf: LlmConf = None,
+        conf: ChatConf = None,
         examples: Optional[List[str]] = None,
         **kwargs: Any,
     ) -> None:

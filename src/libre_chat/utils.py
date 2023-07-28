@@ -27,21 +27,21 @@ class SettingsTemplate(BaseSettings):
     variables: Optional[List[str]] = None
 
     class Config:
-        env_prefix = "librellm_"
+        env_prefix = "librechat_"
 
 
 class SettingsInfo(BaseSettings):
     examples: List[str] = ["What is the capital of the Netherlands?"]
-    title: str = "🦙 Libre LLM chat"
+    title: str = "🦙 Libre Chat"
     version: str = "0.1.0"
-    description: str = """Open source and free chatbot powered by langchain and llama2.
+    description: str = """Open source and free chatbot powered by LangChain and llama2.
 
-See: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vemonet/libre-llm)"""
+See: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vemonet/libre-chat)"""
     public_url: str = "https://your-endpoint-url"
-    favicon: str = "https://rdflib.readthedocs.io/en/stable/_static/RDFlib.png"
+    favicon: str = "https://raw.github.com/vemonet/libre-chat/main/docs/assets/logo.svg"
     license_info: Dict[str, str] = {
         "name": "MIT license",
-        "url": "https://raw.github.com/vemonet/libre-llm/main/LICENSE",
+        "url": "https://raw.github.com/vemonet/libre-chat/main/LICENSE",
     }
     contact: Dict[str, str] = {
         "name": "Vincent Emonet",
@@ -49,7 +49,7 @@ See: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vem
     }
 
     class Config:
-        env_prefix = "librellm_"
+        env_prefix = "librechat_"
 
 
 class SettingsVector(BaseSettings):
@@ -65,7 +65,7 @@ class SettingsVector(BaseSettings):
     chunk_overlap: int = 50
 
     class Config:
-        env_prefix = "librellm_"
+        env_prefix = "librechat_"
 
 
 class SettingsLlm(BaseSettings):
@@ -76,21 +76,21 @@ class SettingsLlm(BaseSettings):
     temperature: float = 0.01
 
     class Config:
-        env_prefix = "librellm_"
+        env_prefix = "librechat_"
 
 
-class LlmConf(BaseSettings):
-    config_path: str = "llm.yml"
+class ChatConf(BaseSettings):
+    config_path: str = "chat.yml"
     llm: SettingsLlm = SettingsLlm()
     vector: SettingsVector = SettingsVector()
     info: SettingsInfo = SettingsInfo()
     template: SettingsTemplate = SettingsTemplate()
 
     class Config:
-        env_prefix = "librellm_"
+        env_prefix = "librechat_"
 
 
-default_conf = LlmConf()
+default_conf = ChatConf()
 
 
 class ColoredFormatter(logging.Formatter):
@@ -125,8 +125,8 @@ CYAN = "\033[36m"
 def parse_config(path: str = default_conf.config_path):
     if os.path.exists(path):
         with open(path) as file:
-            cfg = parse_yaml_raw_as(LlmConf, file.read())
-            log.info(f"Loaded config from {BOLD}{YELLOW}{path}{END}")
+            cfg = parse_yaml_raw_as(ChatConf, file.read())
+            log.info(f"📋 Loaded config from {BOLD}{YELLOW}{path}{END}")
             return cfg
     else:
         return default_conf
@@ -134,21 +134,20 @@ def parse_config(path: str = default_conf.config_path):
 
 def download_file(url, path):
     ddl_path = f"{path}-ddl" if not url.endswith(".zip") else f"{path}.zip"
-    log.info(f"Downloading {url} to {ddl_path}")
-    # 3h timeout
-    with requests.get(url, stream=True, timeout=10800) as response:
+    log.info(f"📥 Downloading {url} to {ddl_path}")
+    with requests.get(url, stream=True, timeout=10800) as response:  # 3h timeout
         response.raise_for_status()
         with open(ddl_path, "wb") as file:
             for chunk in response.iter_content(chunk_size=8192):  # Adjust the chunk size as needed
                 file.write(chunk)
     if ddl_path.endswith(".zip"):
-        log.info(f"Unzipping {ddl_path} to {path}")
+        log.info(f"🤐 Unzipping {ddl_path} to {path}")
         with zipfile.ZipFile(ddl_path, "r") as zip_ref:
             zip_ref.extractall(path)
     else:
         shutil.move(ddl_path, path)
 
-    log.info(f"Downloaded: {url} in {path}")
+    log.info(f"✅ Downloaded: {url} in {path}")
 
 
 def parallel_download(files_list: List[Dict[str, str]]):
@@ -161,7 +160,6 @@ def parallel_download(files_list: List[Dict[str, str]]):
             if not os.path.exists(parent_folder):
                 os.makedirs(parent_folder)
             if f["path"] and not os.path.exists(f["path"]) and f["url"]:
-                # log.info(f"Downloading {f['url']} to {f['path']}")
                 future = executor.submit(download_file, f["url"], f["path"])
                 futures.append(future)
         for future in futures:

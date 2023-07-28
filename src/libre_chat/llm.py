@@ -12,7 +12,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 
-from libre_llm.utils import BOLD, CYAN, END, LlmConf, default_conf, log, parallel_download
+from libre_chat.utils import BOLD, CYAN, END, ChatConf, default_conf, log, parallel_download
 
 __all__ = [
     "Llm",
@@ -26,7 +26,7 @@ class Llm:
 
     def __init__(
         self,
-        conf: Optional[LlmConf] = None,
+        conf: Optional[ChatConf] = None,
         model_path: Optional[str] = None,
         model_type: Optional[str] = None,
         model_download: Optional[str] = None,
@@ -69,9 +69,9 @@ class Llm:
 
         if torch.cuda.is_available():
             self.device = torch.device(0)
-            log.info(f"Using GPU: {self.device}")
+            log.info(f"⚡ Using GPU: {self.device}")
         else:
-            log.info("No GPU detected, using CPU")
+            log.info("💽 No GPU detected, using CPU")
             self.device = torch.device("cpu")
         if not os.path.exists(self.documents_path):
             os.makedirs(self.documents_path)
@@ -106,7 +106,7 @@ class Llm:
 
     def setup_dbqa(self):
         """Setup the model and vector db for QA"""
-        log.info(f"Loading CTransformers model from {BOLD}{self.model_path}{END}")
+        log.info(f"🤖 Loading CTransformers model from {BOLD}{self.model_path}{END}")
         # Instantiate local CTransformers model
         llm = CTransformers(
             model=self.model_path,
@@ -115,7 +115,7 @@ class Llm:
         )
         if self.vector_path:
             log.info(
-                f"Loading vector database at {BOLD}{self.vector_path}{END}, with embeddings from {BOLD}{self.embeddings_path}{END}"
+                f"🗄️ Loading vector database at {BOLD}{self.vector_path}{END}, with embeddings from {BOLD}{self.embeddings_path}{END}"
             )
             embeddings = HuggingFaceEmbeddings(model_name=self.embeddings_path, model_kwargs={"device": self.device})
             vectordb = FAISS.load_local(self.vector_path, embeddings)
@@ -128,7 +128,7 @@ class Llm:
                 chain_type_kwargs={"prompt": self.template},
             )
         else:
-            log.info("No vector database provided, using a generic LLM")
+            log.info("🦜 No vector database provided, using a generic LLM")
             self.conversation = ConversationChain(
                 llm=llm, prompt=self.template, verbose=True, memory=ConversationBufferMemory()
             )
@@ -136,14 +136,14 @@ class Llm:
     def build_vectorstore(self, documents_path: Optional[str] = None):
         """Build vectorstore from PDF documents with FAISS."""
         if self.vector_path and os.path.exists(self.vector_path):
-            log.info(f"Reusing existing vectorstore at {BOLD}{self.vector_path}{END}, skip building the vectorstore")
+            log.info(f"♻️ Reusing existing vectorstore at {BOLD}{self.vector_path}{END}, skip building the vectorstore")
             return self.vector_path
         if not documents_path:
             documents_path = self.documents_path
         docs_count = len(os.listdir(documents_path))
         if docs_count > 0:
             log.info(
-                f"No vectorstore found at {self.vector_path}. Building the vectorstore from the {BOLD}{CYAN}{docs_count}{END} documents found in {BOLD}{documents_path}{END}"
+                f"🏗️ No vectorstore found at {self.vector_path}. Building the vectorstore from the {BOLD}{CYAN}{docs_count}{END} documents found in {BOLD}{documents_path}{END}"
             )
             loader = DirectoryLoader(documents_path, glob="*.pdf", loader_cls=PyPDFLoader)
             documents = loader.load()
@@ -153,19 +153,19 @@ class Llm:
             vectorstore = FAISS.from_documents(texts, embeddings)
             vectorstore.save_local(self.vector_path)
         else:
-            log.warn(f"No documents found in {documents_path}, could not build the vectorstore")
+            log.warn(f"⚠️ No documents found in {documents_path}, could not build the vectorstore")
         return self.vector_path
 
     def query(self, prompt: str, history: Optional[List[Tuple[str, str]]] = None):
         """Query the built LLM"""
-        log.info(f"Querying the LLM with prompt: {prompt}")
+        log.info(f"💬 Querying the LLM with prompt: {prompt}")
         if len(prompt) < 1:
             raise ValueError("Provide a prompt")
 
         if self.vector_path:
             # TODO: handle history
             res = self.dbqa({"query": prompt})
-            log.debug(f"Complete response from the LLM: {res}")
+            log.debug(f"💭 Complete response from the LLM: {res}")
             if "result" not in res:
                 raise Exception(f"No result was returned by the LLM: {res}")
         else:

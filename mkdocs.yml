@@ -1,9 +1,9 @@
-site_name: Libre LLM
+site_name: Libre Chat
 site_description: API and UI to deploy LLM models
 site_author: Vincent Emonet
-site_url: https://vemonet.github.io/libre-llm
-repo_name: vemonet/libre-llm
-repo_url: https://github.com/vemonet/libre-llm
+site_url: https://vemonet.github.io/libre-chat
+repo_name: vemonet/libre-chat
+repo_url: https://github.com/vemonet/libre-chat
 edit_uri: "edit/main/docs/"
 copyright: Copyright &copy; 2023 Vincent Emonet
 
@@ -54,10 +54,10 @@ nav:
     - Development: development.md
   - Code reference:
       - LLM: Llm.md
-      - LLM Endpoint: LlmEndpoint.md
-      - LLM Router: LlmRouter.md
-      - LLM Config: LlmConf.md
-  - Issues: https://github.com/vemonet/libre-llm/issues" target="_blank
+      - LLM Endpoint: ChatEndpoint.md
+      - LLM Router: ChatRouter.md
+      - LLM Config: ChatConf.md
+  - Issues: https://github.com/vemonet/libre-chat/issues" target="_blank
 
 plugins:
 # - admonition
@@ -94,7 +94,7 @@ extra_css:
 extra:
   social:
     - icon: fontawesome/brands/python
-      link: https://pypi.org/project/libre-llm
+      link: https://pypi.org/project/libre-chat
     - icon: fontawesome/brands/github
       link: https://github.com/vemonet
     # - icon: fontawesome/brands/docker

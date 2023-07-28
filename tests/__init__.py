@@ -1,1 +1,1 @@
-"""Tests for :mod:`libre_llm`."""
+"""Tests for :mod:`libre_chat`."""

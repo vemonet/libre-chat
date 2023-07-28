@@ -1,8 +1,8 @@
-[![Version](https://img.shields.io/pypi/v/libre-llm)](https://pypi.org/project/libre-llm) [![Python versions](https://img.shields.io/pypi/pyversions/libre-llm)](https://pypi.org/project/libre-llm) [![Pull requests welcome](https://img.shields.io/badge/pull%20requests-welcome-brightgreen)](https://github.com/vemonet/libre-llm/fork)
+[![Version](https://img.shields.io/pypi/v/libre-chat)](https://pypi.org/project/libre-chat) [![Python versions](https://img.shields.io/pypi/pyversions/libre-chat)](https://pypi.org/project/libre-chat) [![Pull requests welcome](https://img.shields.io/badge/pull%20requests-welcome-brightgreen)](https://github.com/vemonet/libre-chat/fork)
 
-[![Run tests](https://github.com/vemonet/libre-llm/actions/workflows/tests.yml/badge.svg)](https://github.com/vemonet/libre-llm/actions/workflows/tests.yml) [![CodeQL](https://github.com/vemonet/libre-llm/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/vemonet/libre-llm/actions/workflows/codeql-analysis.yml) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=vemonet_libre-llm&metric=coverage)](https://sonarcloud.io/dashboard?id=vemonet_libre-llm)
+[![Run tests](https://github.com/vemonet/libre-chat/actions/workflows/tests.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/tests.yml) [![CodeQL](https://github.com/vemonet/libre-chat/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/codeql-analysis.yml) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=vemonet_libre-chat&metric=coverage)](https://sonarcloud.io/dashboard?id=vemonet_libre-chat)
 
-[![Publish to PyPI](https://github.com/vemonet/libre-llm/actions/workflows/publish.yml/badge.svg)](https://github.com/vemonet/libre-llm/actions/workflows/publish.yml) [![Publish docs](https://github.com/vemonet/libre-llm/actions/workflows/docs.yml/badge.svg)](https://github.com/vemonet/libre-llm/actions/workflows/docs.yml)
+[![Publish to PyPI](https://github.com/vemonet/libre-chat/actions/workflows/publish.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/publish.yml) [![Publish docs](https://github.com/vemonet/libre-chat/actions/workflows/docs.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/docs.yml)
 
 
 
@@ -11,8 +11,8 @@
 Clone the repository and go in the project folder:
 
 ```bash
-git clone https://github.com/vemonet/libre-llm
-cd libre-llm
+git clone https://github.com/vemonet/libre-chat
+cd libre-chat
 ```
 
 To install the project for development you can either use [`venv`](https://docs.python.org/3/library/venv.html) to create a virtual environment yourself, or use [`hatch`](https://hatch.pypa.io) to automatically handle virtual environments for you.
@@ -100,7 +100,7 @@ To install the project for development you can either use [`venv`](https://docs.
 
 ## ✅ Run the tests
 
-[![Python application](https://github.com/vemonet/libre-llm/actions/workflows/test.yml/badge.svg)](https://github.com/vemonet/libre-llm/actions/workflows/test.yml){:target="_blank"}
+[![Python application](https://github.com/vemonet/libre-chat/actions/workflows/test.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/test.yml){:target="_blank"}
 
 Tests are automatically run by a GitHub Actions workflow when new code is pushed to the GitHub repository.
 
@@ -137,7 +137,7 @@ The tests use the [```nanopub-java```](https://github.com/Nanopublication/nanopu
 
 ## 📖 Generate docs
 
-[![Publish docs](https://github.com/vemonet/libre-llm/actions/workflows/docs.yml/badge.svg)](https://github.com/vemonet/libre-llm/actions/workflows/docs.yml){:target="_blank"}
+[![Publish docs](https://github.com/vemonet/libre-chat/actions/workflows/docs.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/docs.yml){:target="_blank"}
 
 The documentation (this website) is automatically generated from the markdown files in the `docs` folder and python docstring comments, and published by a GitHub Actions workflow.
 
@@ -158,9 +158,9 @@ Serve the docs on [http://localhost:8008](http://localhost:8008){:target="_blank
 
 ## 🏷️ Publish a new release
 
-[![Publish to PyPI](https://github.com/vemonet/libre-llm/actions/workflows/publish.yml/badge.svg)](https://github.com/vemonet/libre-llm/actions/workflows/publish.yml){:target="_blank"}
+[![Publish to PyPI](https://github.com/vemonet/libre-chat/actions/workflows/publish.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/publish.yml){:target="_blank"}
 
-1. Increment the `__version__` in `libre_llm/__init__.py`
+1. Increment the `__version__` in `libre_chat/__init__.py`
 2. Push to GitHub
 3. Create a new release on GitHub
 4. A GitHub Action workflow will automatically publish the new version to PyPI

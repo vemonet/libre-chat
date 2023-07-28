@@ -1,3 +1,3 @@
 # LLM
 
-::: libre_llm.llm.Llm
+::: libre_chat.llm.Llm

@@ -1,11 +1,11 @@
 version: "3"
 services:
 
-  libre-llm:
+  libre-chat:
     # build: .
-    image: ghcr.io/vemonet/libre-llm:main
+    image: ghcr.io/vemonet/libre-chat:main
     volumes:
-    - ./llm.yml:/app/llm.yml
+    - ./chat.yml:/app/chat.yml
     # - ./models:/app/models
     # - ./:/app
     ports:
