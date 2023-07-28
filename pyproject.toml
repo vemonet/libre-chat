@@ -39,6 +39,7 @@ dependencies = [
     "faiss-cpu >=1.7.4",
     "sentence_transformers",
     "pydantic-yaml",
+    "requests",
     # "pydantic <2.0.0",
 ]
 
@@ -152,7 +153,9 @@ addopts = [
     # "--cov-fail-under=85",
 ]
 filterwarnings = [
-    "ignore::DeprecationWarning:httpx.*:"
+    "ignore::DeprecationWarning:httpx.*:",
+    "ignore::DeprecationWarning:setuptools.*:",
+    "ignore::DeprecationWarning:gradio.*:"
 ]
 
 

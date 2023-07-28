@@ -35,11 +35,11 @@ def start(
 def build(
     model: str = typer.Option(settings.model_path, help="Path to the model binary"),
     vector: str = typer.Option(settings.vector_path, help="Path to the vector db folder"),
-    data: str = typer.Option(settings.data_path, help="Path to the data folder to vectorize"),
+    data: str = typer.Option(settings.documents_path, help="Path to the data folder to vectorize"),
     debug: bool = typer.Option(True, help="Display debug logs"),
 ) -> None:
     print(f"Vectorizing documents from {data} to the vector db {vector}")
-    llm = Llm(model_path=model, vector_path=vector, data_path=data)
+    llm = Llm(model_path=model, vector_path=vector, documents_path=data)
     vector_path = llm.build_vector_db()
     print(f"Data vectorized in {vector_path}")
 

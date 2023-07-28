@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 from fastapi import APIRouter, Body
@@ -42,6 +43,12 @@ api_responses: Optional[Dict[Union[int, str], Dict[str, Any]]] = {
 }
 
 
+@dataclass
+class PromptResponse:
+    result: str
+    source_documents: Optional[List[Dict]]
+
+
 class LlmRouter(APIRouter):
     """
     Class to deploy a LLM router with FastAPI.
@@ -55,7 +62,7 @@ class LlmRouter(APIRouter):
         title: str = settings.info.title,
         description: str = settings.info.description,
         version: str = settings.info.version,
-        public_url: str = "https://your-endpoint/sparql",
+        public_url: str = settings.info.public_url,
         favicon: str = settings.info.favicon,
         examples: Optional[List[str]] = None,
         **kwargs: Any,
@@ -81,7 +88,12 @@ class LlmRouter(APIRouter):
             **kwargs,
         )
 
-        @self.post("/prompt", description=self.description, response_description="Prompt response", response_model={})
+        @self.post(
+            "/prompt",
+            description=self.description,
+            response_description="Prompt response",
+            response_model=PromptResponse,
+        )
         def send_prompt(
             prompt: Prompt = Body(..., example=example_prompt),
         ) -> List[Tuple[str, str]]:

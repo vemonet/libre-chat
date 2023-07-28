@@ -1,5 +1,5 @@
 """Module: web UI for LLM"""
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 import gradio as gr
 
@@ -10,7 +10,7 @@ def gradio_app(
     llm,
     title: str = settings.info.title,
     description: str = settings.info.description,
-    examples: List[str] = [settings.info.example_prompt],
+    examples: Optional[List[str]] = None,
 ):
     # TODO: title, description, examples
     def get_chatbot_resp(message: str, history: List[Tuple[str, str]]) -> str:
@@ -21,6 +21,8 @@ def gradio_app(
         # history.insert(0, (None, res))
         return res["result"]
 
+    if not examples:
+        examples = [settings.info.example_prompt]
     # https://www.gradio.app/guides/creating-a-chatbot-fast
     # https://www.gradio.app/guides/creating-a-custom-chatbot-with-blocks
     chat = gr.ChatInterface(

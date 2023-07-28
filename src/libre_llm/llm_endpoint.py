@@ -28,7 +28,7 @@ class LlmEndpoint(FastAPI):
         version: str = settings.info.version,
         examples: Optional[List[str]] = None,
         cors_enabled: bool = True,
-        public_url: str = "https://your-endpoint/sparql",
+        public_url: str = settings.info.public_url,
         favicon: str = settings.info.favicon,
         **kwargs: Any,
     ) -> None:
@@ -40,6 +40,8 @@ class LlmEndpoint(FastAPI):
         self.title = title
         self.description = description
         self.version = version
+        if not examples:
+            examples = [settings.info.example_prompt]
 
         # Instantiate FastAPI
         super().__init__(
@@ -47,11 +49,8 @@ class LlmEndpoint(FastAPI):
             title=title,
             description=description,
             version=version,
-            license_info={"name": "MIT license", "url": "https://raw.github.com/vemonet/libre-llm/main/LICENSE"},
-            contact={
-                "name": "Vincent Emonet",
-                "email": "vincent.emonet@gmail.com",
-            },
+            license_info=settings.info.license_info,
+            contact=settings.info.contact,
             **kwargs,
         )
 

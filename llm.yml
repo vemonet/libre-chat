@@ -1,6 +1,18 @@
-model_path: "models/llama-2-7b-chat.ggmlv3.q3_K_L.bin"
-vector_path: "vectorstore/db_faiss" # Path to the vectorstore, set to null to not use a vectostore
-data_path: "data/" # For documents to vectorize if needed
+model_path: ./models/llama-2-7b-chat.ggmlv3.q3_K_L.bin
+model_download: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.ggmlv3.q3_K_L.bin
+embeddings_path: ./embeddings/all-MiniLM-L6-v2
+embeddings_download: https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/v0.2/all-MiniLM-L6-v2.zip
+# embeddings_path: sentence-transformers/all-MiniLM-L6-v2 # You can also directly use embeddings model from HuggingFace
+vector_path: ./vectorstore/db_faiss # Path to the vectorstore, set to null to not use a vectostore
+# vector_download: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.ggmlv3.q3_K_L.bin
+documents_path: ./documents # For documents to vectorize if needed
+temperature: 0.01
+max_new_tokens: 256
+vector:
+  return_source_documents: true
+  vector_count: 2
+  chunk_size: 500
+  chunk_overlap: 50
 info:
   title: "🦙 Libre LLM chat"
   version: "0.1.0"
@@ -9,6 +21,12 @@ info:
 
     See: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vemonet/libre-llm)
   example_prompt: "What is the capital of the Netherlands?"
+  contact:
+    name: "Vincent Emonet"
+    email: "vincent.emonet@gmail.com"
+  license_info:
+    name: "MIT license"
+    url: "https://raw.github.com/vemonet/libre-llm/main/LICENSE"
 template:
   variables: [input, history]
   prompt: |

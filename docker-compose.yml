@@ -2,13 +2,17 @@ version: "3"
 services:
 
   libre-llm:
-    build: .
+    # build: .
+    image: ghcr.io/vemonet/libre-llm:main
     volumes:
+    - ./llm.yml:/app/llm.yml
     # - ./models:/app/models
-    - ./:/app
+    # - ./:/app
     ports:
       - 8000:8000
-    entrypoint: uvicorn tests.main:app --reload
+    # entrypoint: uvicorn tests.main:app --reload
+    # networks:
+    #   - no-internet
     # shm_size: '16g'
     # deploy:  # Enable 1 GPU in this container
     #   resources:
@@ -17,3 +21,8 @@ services:
     #         - driver: nvidia
     #           count: 1
     #           capabilities: [gpu]
+
+# networks:
+#   no-internet:
+#     driver: bridge
+#     internal: true

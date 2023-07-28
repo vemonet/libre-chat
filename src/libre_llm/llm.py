@@ -12,7 +12,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 
-from libre_llm.utils import log, settings
+from libre_llm.utils import BOLD, END, log, parallel_download, settings
 
 
 class Llm:
@@ -24,14 +24,18 @@ class Llm:
         self,
         model_path: str = settings.model_path,
         model_type: str = settings.model_type,
+        model_download: str = settings.model_download,
+        embeddings_path: str = settings.embeddings_path,
+        embeddings_download: str = settings.embeddings_download,
         vector_path: str = settings.vector_path,
-        data_path: str = settings.data_path,
-        return_source_documents: bool = True,
-        vector_count: float = 2,
-        chunk_size: int = 500,
-        chunk_overlap: int = 50,
-        max_new_tokens: int = 256,
-        temperature: float = 0.01,
+        vector_download: str = settings.vector_download,
+        documents_path: str = settings.documents_path,
+        max_new_tokens: int = settings.max_new_tokens,
+        temperature: float = settings.temperature,
+        return_source_documents: bool = settings.vector.return_source_documents,
+        vector_count: int = settings.vector.vector_count,
+        chunk_size: int = settings.vector.chunk_size,
+        chunk_overlap: int = settings.vector.chunk_overlap,
         template_variables: Optional[List[str]] = None,
         template_prompt: Optional[str] = None,
     ) -> None:
@@ -40,8 +44,12 @@ class Llm:
         """
         self.model_path = model_path
         self.model_type = model_type
+        self.model_download = model_download
+        self.embeddings_path = embeddings_path
+        self.embeddings_download = embeddings_download
         self.vector_path = vector_path
-        self.data_path = data_path
+        self.vector_download = vector_download
+        self.documents_path = documents_path
         self.return_source_documents = return_source_documents
         self.vector_count = vector_count
         self.chunk_size = chunk_size
@@ -56,8 +64,8 @@ class Llm:
         else:
             log.info("No GPU detected, using CPU")
             self.device = torch.device("cpu")
-        if not os.path.exists(self.data_path):
-            os.makedirs(self.data_path)
+        if not os.path.exists(self.documents_path):
+            os.makedirs(self.documents_path)
 
         if not self.template_prompt:
             if self.vector_path:
@@ -70,10 +78,24 @@ class Llm:
             raise ValueError("You should provide at least 1 template variable")
 
         self.template = PromptTemplate(template=self.template_prompt, input_variables=self.template_variables)
+        self.download_data()
         self.setup_dbqa()
+
+    def download_data(self):
+        """Download data"""
+        ddl_list = []
+        # if not os.path.exists(self.model_path) and self.model_download:
+        ddl_list.append({"url": self.model_download, "path": self.model_path})
+        ddl_list.append({"url": self.embeddings_download, "path": self.embeddings_path})
+        ddl_list.append({"url": self.vector_download, "path": self.vector_path})
+        parallel_download(ddl_list)
+        # asyncio.run(parallel_download(ddl_list))
+        # if not os.path.exists(self.model_path):
+        #     raise ValueError(f"Could not find a model at the path provided: {self.model_path}")
 
     def setup_dbqa(self):
         """Setup the model and vector db for QA"""
+        log.info(f"Loading CTransformers model from {BOLD}{self.model_path}{END}")
         # Instantiate local CTransformers model
         llm = CTransformers(
             model=self.model_path,
@@ -81,10 +103,13 @@ class Llm:
             config={"max_new_tokens": self.max_new_tokens, "temperature": self.temperature},
         )
         if self.vector_path:
-            log.info(f"Loading and using vector database at {self.vector_path}")
-            embeddings = HuggingFaceEmbeddings(
-                model_name="sentence-transformers/all-MiniLM-L6-v2", model_kwargs={"device": self.device}
+            log.info(
+                f"Loading vector database at {BOLD}{self.vector_path}{END}, with embeddings from {BOLD}{self.embeddings_path}{END}"
             )
+            embeddings = HuggingFaceEmbeddings(model_name=self.embeddings_path, model_kwargs={"device": self.device})
+            # embeddings = HuggingFaceEmbeddings(
+            #     model_name="sentence-transformers/all-MiniLM-L6-v2", model_kwargs={"device": self.device}
+            # )
             vectordb = FAISS.load_local(self.vector_path, embeddings)
 
             self.dbqa = RetrievalQA.from_chain_type(
@@ -100,18 +125,16 @@ class Llm:
                 llm=llm, prompt=self.template, verbose=True, memory=ConversationBufferMemory()
             )
 
-    def build_vector_db(self, data_path: Optional[str] = None):
+    def build_vector_db(self, documents_path: Optional[str] = None):
         """Build vector database with FAISS from PDF documents"""
-        if not data_path:
-            data_path = self.data_path
-            log.info(f"Building vector db from {data_path}")
-        loader = DirectoryLoader(self.data_path, glob="*.pdf", loader_cls=PyPDFLoader)
+        if not documents_path:
+            documents_path = self.documents_path
+            log.info(f"Building vector db from {documents_path}")
+        loader = DirectoryLoader(self.documents_path, glob="*.pdf", loader_cls=PyPDFLoader)
         documents = loader.load()
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap)
         texts = text_splitter.split_documents(documents)
-        embeddings = HuggingFaceEmbeddings(
-            model_name="sentence-transformers/all-MiniLM-L6-v2", model_kwargs={"device": "cpu"}
-        )
+        embeddings = HuggingFaceEmbeddings(model_name=self.embeddings_path, model_kwargs={"device": "cpu"})
         vectorstore = FAISS.from_documents(texts, embeddings)
         vectorstore.save_local(self.vector_path)
         return self.vector_path
