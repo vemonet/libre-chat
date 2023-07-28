@@ -22,7 +22,7 @@ def gradio_app(
         return res["result"]
 
     if not examples:
-        examples = [settings.info.example_prompt]
+        examples = settings.info.examples
     # https://www.gradio.app/guides/creating-a-chatbot-fast
     # https://www.gradio.app/guides/creating-a-custom-chatbot-with-blocks
     chat = gr.ChatInterface(

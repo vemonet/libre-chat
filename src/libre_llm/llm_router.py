@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from fastapi import APIRouter, Body
+from fastapi import APIRouter, Body, Request, Response
 
-from libre_llm.utils import Prompt, settings
+from libre_llm.utils import Prompt, Settings, settings
 
 __all__ = [
     "LlmRouter",
@@ -46,7 +46,7 @@ api_responses: Optional[Dict[Union[int, str], Dict[str, Any]]] = {
 @dataclass
 class PromptResponse:
     result: str
-    source_documents: Optional[List[Dict]]
+    source_documents: Optional[List[Dict]] = None
 
 
 class LlmRouter(APIRouter):
@@ -57,29 +57,23 @@ class LlmRouter(APIRouter):
     def __init__(
         self,
         *args: Any,
+        path: str = "/prompt",
         llm: Any,
-        path: str = "/",
-        title: str = settings.info.title,
-        description: str = settings.info.description,
-        version: str = settings.info.version,
-        public_url: str = settings.info.public_url,
-        favicon: str = settings.info.favicon,
+        settings: Settings = settings,
         examples: Optional[List[str]] = None,
         **kwargs: Any,
     ) -> None:
         """
         Constructor of the LLM API router with the actual calls
         """
-        self.llm = llm
-        self.title = title
-        self.description = description
-        self.version = version
         self.path = path
-        self.favicon = favicon
-        self.examples = examples if examples else [settings.info.example_prompt]
-        if len(self.examples) < 1:
-            self.examples.append(settings.info.example_prompt)
-        example_prompt = {"prompt": self.examples[0]}
+        self.llm = llm
+        self.settings = settings
+        self.title = self.settings.info.title
+        self.description = self.settings.info.description
+        self.version = self.settings.info.version
+        self.examples = examples if examples else self.settings.info.examples
+        example_post = {"prompt": self.examples[0]}
 
         # Instantiate APIRouter
         super().__init__(
@@ -89,12 +83,33 @@ class LlmRouter(APIRouter):
         )
 
         @self.post(
-            "/prompt",
+            self.path,
+            name="Prompt the LLM",
             description=self.description,
             response_description="Prompt response",
             response_model=PromptResponse,
         )
-        def send_prompt(
-            prompt: Prompt = Body(..., example=example_prompt),
+        def post_prompt(
+            request: Request,
+            prompt: Prompt = Body(..., example=example_post),
         ) -> List[Tuple[str, str]]:
-            return self.llm.query(prompt.prompt)
+            """Send a prompt to the chatbot through HTTP POST operation.
+
+            :param request: The HTTP POST request with a .body()
+            :param query: SPARQL query input.
+            """
+            return get_prompt(request, prompt.prompt)
+
+        @self.get(
+            self.path,
+            name="Prompt the LLM",
+            description=self.description,
+            response_model=PromptResponse,
+        )
+        def get_prompt(request: Request, prompt: str) -> Response:
+            """Send a prompt to the chatbot through HTTP GET operation.
+
+            :param request: The HTTP GET request with a .body()
+            :param query: SPARQL query input.
+            """
+            return self.llm.query(prompt)

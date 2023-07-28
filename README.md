@@ -50,11 +50,35 @@ services:
 And create a `llm.yml` file with your settings in the same folder as the `docker-compose.yml`:
 
 ```yaml
-model_path: ./models/llama-2-7b-chat.ggmlv3.q3_K_L.bin
-embeddings_path: sentence-transformers/all-MiniLM-L6-v2
-# You can also directly use the path to a local embeddings model, e.g. ./embeddings/all-MiniLM-L6-v2
-vector_path: ./vectorstore/db_faiss # Path to the vectorstore, set to null to not use a vectostore
-documents_path: ./documents/ # For documents to vectorize if needed
+llm:
+  model_type: llama
+  model_path: ./models/llama-2-7b-chat.ggmlv3.q3_K_L.bin
+  # We recommend to predownload the files, but you can provide download URLs that will be used if the files are not present
+  model_download: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.ggmlv3.q3_K_L.bin
+  temperature: 0.01
+  max_new_tokens: 256
+template:
+  variables: [input, history]
+  prompt: |
+    Your are an assistant, please help me
+
+    {history}
+    Human: {input}
+    Assistant:
+vector:
+  vector_path: null # Path to the vectorstore to do QA retrieval
+  # Set to null to deploy a generic conversational agent, otherwise:
+  # vector_path: ./vectorstore/db_faiss
+  vector_download: null
+  embeddings_path: ./embeddings/all-MiniLM-L6-v2 # Embeddings used to generate the vectors
+  # You can also directly use embeddings model from HuggingFace:
+  # embeddings_path: sentence-transformers/all-MiniLM-L6-v2
+  embeddings_download: https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/v0.2/all-MiniLM-L6-v2.zip
+  documents_path: ./documents # For documents to vectorize
+  return_source_documents: true
+  vector_count: 2
+  chunk_size: 500
+  chunk_overlap: 50
 info:
   title: "🦙 Libre LLM chat"
   version: "0.1.0"
@@ -62,16 +86,15 @@ info:
     Open source and free chatbot powered by langchain and llama2.
 
     See: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vemonet/libre-llm)
-  example_prompt: What is the capital of the Netherlands?
-template:
-  variables: [input, history]
-  prompt: |
-    Your are an assistant, please help me!
-
-    {history}
-    Human: {input}
-    Assistant:
-
+  examples:
+  - "What is the capital of the Netherlands?"
+  - "How can I create a logger with timestamp with python logging?"
+  contact:
+    name: "Vincent Emonet"
+    email: "vincent.emonet@gmail.com"
+  license_info:
+    name: "MIT license"
+    url: "https://raw.github.com/vemonet/libre-llm/main/LICENSE"
 ```
 
 Finally start your chat service with:

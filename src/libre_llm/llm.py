@@ -14,6 +14,10 @@ from langchain.vectorstores import FAISS
 
 from libre_llm.utils import BOLD, END, log, parallel_download, settings
 
+__all__ = [
+    "Llm",
+]
+
 
 class Llm:
     """
@@ -21,17 +25,17 @@ class Llm:
     """
 
     def __init__(
-        self,
-        model_path: str = settings.model_path,
-        model_type: str = settings.model_type,
-        model_download: str = settings.model_download,
-        embeddings_path: str = settings.embeddings_path,
-        embeddings_download: str = settings.embeddings_download,
-        vector_path: str = settings.vector_path,
-        vector_download: str = settings.vector_download,
-        documents_path: str = settings.documents_path,
-        max_new_tokens: int = settings.max_new_tokens,
-        temperature: float = settings.temperature,
+        self,  # cfg: Settings = settings,
+        model_path: str = settings.llm.model_path,
+        model_type: str = settings.llm.model_type,
+        model_download: str = settings.llm.model_download,
+        embeddings_path: str = settings.vector.embeddings_path,
+        embeddings_download: str = settings.vector.embeddings_download,
+        vector_path: str = settings.vector.vector_path,
+        vector_download: str = settings.vector.vector_download,
+        documents_path: str = settings.vector.documents_path,
+        max_new_tokens: int = settings.llm.max_new_tokens,
+        temperature: float = settings.llm.temperature,
         return_source_documents: bool = settings.vector.return_source_documents,
         vector_count: int = settings.vector.vector_count,
         chunk_size: int = settings.vector.chunk_size,
@@ -70,7 +74,7 @@ class Llm:
         if not self.template_prompt:
             if self.vector_path:
                 self.template_prompt = DEFAULT_QA_TEMPLATE
-                self.template_variables = ["context", "question"]
+                self.template_variables = ["question", "context"]
             else:
                 self.template_prompt = DEFAULT_GENERIC_TEMPLATE
                 self.template_variables = ["input", "history"]

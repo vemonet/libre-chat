@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from libre_llm.llm_router import LlmRouter
 from libre_llm.ui import gradio_app
-from libre_llm.utils import settings
+from libre_llm.utils import Settings, settings
 
 __all__ = [
     "LlmEndpoint",
@@ -22,47 +22,39 @@ class LlmEndpoint(FastAPI):
         self,
         *args: Any,
         llm: Any,
-        path: str = "/",
-        title: str = settings.info.title,
-        description: str = settings.info.description,
-        version: str = settings.info.version,
+        settings: Settings = settings,
+        path: str = "/prompt",
         examples: Optional[List[str]] = None,
         cors_enabled: bool = True,
-        public_url: str = settings.info.public_url,
-        favicon: str = settings.info.favicon,
         **kwargs: Any,
     ) -> None:
         """
         Constructor of the SPARQL endpoint, everything happens here.
         FastAPI calls are defined in this constructor
         """
+        self.path = path
         self.llm = llm
-        self.title = title
-        self.description = description
-        self.version = version
-        if not examples:
-            examples = [settings.info.example_prompt]
+        self.settings = settings
+        self.examples = examples
+        if not self.examples:
+            self.examples = settings.info.examples
 
         # Instantiate FastAPI
         super().__init__(
             *args,
-            title=title,
-            description=description,
-            version=version,
-            license_info=settings.info.license_info,
-            contact=settings.info.contact,
+            title=self.settings.info.title,
+            description=self.settings.info.description,
+            version=self.settings.info.version,
+            license_info=self.settings.info.license_info,
+            contact=self.settings.info.contact,
             **kwargs,
         )
 
         llm_router = LlmRouter(
             llm=self.llm,
-            path=path,
-            title=title,
-            description=description,
-            version=version,
-            examples=examples,
-            public_url=public_url,
-            favicon=favicon,
+            path=self.path,
+            settings=self.settings,
+            examples=self.examples,
         )
         self.include_router(llm_router)
 
@@ -82,4 +74,7 @@ class LlmEndpoint(FastAPI):
             response.headers["X-Process-Time"] = str(time.time() - start_time)
             return response
 
-        self.mount("/", gradio_app(self.llm, self.title, self.description, examples))
+        self.mount(
+            "/",
+            gradio_app(self.llm, self.settings.info.title, self.settings.info.description, self.settings.info.examples),
+        )

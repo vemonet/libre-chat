@@ -7,17 +7,19 @@ llm:
   max_new_tokens: 256
 template:
   # Always use input for the human input variable
-  variables: [input, history]
+  variables: ["question", "context"]
   prompt: |
-    Your are an assistant, please help me
+    Use the following pieces of information to answer the user's question.
+    If you don't know the answer, just say that you don't know, don't try to make up an answer.
 
-    {history}
-    Human: {input}
-    Assistant:
+    Context: {context}
+    Question: {question}
+
+    Only return the helpful answer below and nothing else.
+    Helpful answer:
+
 vector:
-  vector_path: null # Path to the vectorstore to do QA retrieval
-  # Set to null to deploy a generic conversational agent, otherwise:
-  # vector_path: ./vectorstore/db_faiss
+  vector_path: ./vectorstore/db_faiss # Path to the vectorstore to do QA retrieval
   vector_download: null
   embeddings_path: ./embeddings/all-MiniLM-L6-v2 # Embeddings used to generate the vectors
   # You can also directly use embeddings model from HuggingFace:

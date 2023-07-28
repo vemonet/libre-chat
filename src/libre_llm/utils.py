@@ -31,7 +31,7 @@ class SettingsTemplate(BaseSettings):
 
 
 class SettingsInfo(BaseSettings):
-    example_prompt: str = "What is the capital of the Netherlands?"
+    examples: List[str] = ["What is the capital of the Netherlands?"]
     title: str = "🦙 Libre LLM chat"
     version: str = "0.1.0"
     description: str = """Open source and free chatbot powered by langchain and llama2.
@@ -53,6 +53,12 @@ See: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vem
 
 
 class SettingsVector(BaseSettings):
+    embeddings_path: str = "sentence-transformers/all-MiniLM-L6-v2"
+    # or embeddings_path: str = "./embeddings/all-MiniLM-L6-v2"
+    embeddings_download: Optional[str] = None
+    vector_path: Optional[str] = None  # "vectorstore/db_faiss"
+    vector_download: Optional[str] = None
+    documents_path: str = "documents/"
     return_source_documents: bool = True
     vector_count: int = 2
     chunk_size: int = 500
@@ -62,21 +68,23 @@ class SettingsVector(BaseSettings):
         env_prefix = "librellm_"
 
 
-class Settings(BaseSettings):
-    config_path: str = "llm.yml"
-    model_path: str = "models/llama-2-7b-chat.ggmlv3.q3_K_L.bin"
+class SettingsLlm(BaseSettings):
     model_type: str = "llama"
+    model_path: str = "models/llama-2-7b-chat.ggmlv3.q3_K_L.bin"
     model_download: Optional[str] = None
-    embeddings_path: str = "sentence-transformers/all-MiniLM-L6-v2"  # or "./embeddings/all-MiniLM-L6-v2"
-    embeddings_download: Optional[str] = None
-    vector_path: Optional[str] = "vectorstore/db_faiss"
-    vector_download: Optional[str] = None
-    documents_path: str = "documents/"
     max_new_tokens: int = 256
     temperature: float = 0.01
+
+    class Config:
+        env_prefix = "librellm_"
+
+
+class Settings(BaseSettings):
+    config_path: str = "llm.yml"
+    llm: SettingsLlm = SettingsLlm()
+    vector: SettingsVector = SettingsVector()
     info: SettingsInfo = SettingsInfo()
     template: SettingsTemplate = SettingsTemplate()
-    vector: SettingsVector = SettingsVector()
 
     class Config:
         env_prefix = "librellm_"
@@ -84,22 +92,43 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
+
+class ColoredFormatter(logging.Formatter):
+    COLORS: Dict[str, str] = {
+        "DEBUG": "\033[92m",  # Grey
+        "INFO": "\033[32m",  # Green
+        "WARNING": "\033[93m",  # Yellow
+        "ERROR": "\033[91m",  # Red
+        "CRITICAL": "\033[91m",  # Red
+    }
+
+    def format(self, record):  # noqa: A003
+        log_level = record.levelname
+        color_prefix = self.COLORS.get(log_level, END)
+        log_msg = super().format(record)
+        colored_log_level = f"{color_prefix}{log_level}{END}"
+        return log_msg.replace(log_level, colored_log_level, 1)
+
+
 log = logging.getLogger("uvicorn")
+if len(log.handlers) > 0:
+    log.handlers[0].setFormatter(
+        ColoredFormatter("%(levelname)s:     [%(asctime)s] [%(module)s:%(funcName)s] %(message)s")
+    )
 BOLD = "\033[1m"
 END = "\033[0m"
 RED = "\033[91m"
 YELLOW = "\033[33m"
 CYAN = "\033[36m"
-# log.setLevel(logging.getLevelName("INFO"))
-# formatter = logging.Formatter("%(asctime)s %(levelname)s: [%(module)s:%(funcName)s] %(message)s")
-# console_handler = logging.StreamHandler()
-# console_handler.setFormatter(formatter)
-# log.addHandler(console_handler)
 
-if os.path.exists(settings.config_path):
-    with open(settings.config_path) as file:
-        settings = parse_yaml_raw_as(Settings, file.read())
-        log.info(f"Loaded config from {YELLOW}{settings.config_path}")
+
+def parse_config(path: str = settings.config_path):
+    if os.path.exists(path):
+        with open(path) as file:
+            return parse_yaml_raw_as(Settings, file.read())
+        log.info(f"Loaded config from {BOLD}{YELLOW}{path}{END}")
+    else:
+        return settings
 
 
 def download_file(url, path):
