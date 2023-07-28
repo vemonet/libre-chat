@@ -79,7 +79,7 @@ class SettingsLlm(BaseSettings):
         env_prefix = "librellm_"
 
 
-class Settings(BaseSettings):
+class LlmConf(BaseSettings):
     config_path: str = "llm.yml"
     llm: SettingsLlm = SettingsLlm()
     vector: SettingsVector = SettingsVector()
@@ -90,7 +90,7 @@ class Settings(BaseSettings):
         env_prefix = "librellm_"
 
 
-settings = Settings()
+default_conf = LlmConf()
 
 
 class ColoredFormatter(logging.Formatter):
@@ -122,14 +122,14 @@ YELLOW = "\033[33m"
 CYAN = "\033[36m"
 
 
-def parse_config(path: str = settings.config_path):
+def parse_config(path: str = default_conf.config_path):
     if os.path.exists(path):
         with open(path) as file:
-            cfg = parse_yaml_raw_as(Settings, file.read())
+            cfg = parse_yaml_raw_as(LlmConf, file.read())
             log.info(f"Loaded config from {BOLD}{YELLOW}{path}{END}")
             return cfg
     else:
-        return settings
+        return default_conf
 
 
 def download_file(url, path):

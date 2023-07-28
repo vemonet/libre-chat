@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from libre_llm.llm_router import LlmRouter
 from libre_llm.ui import gradio_app
-from libre_llm.utils import Settings, settings
+from libre_llm.utils import LlmConf, default_conf
 
 __all__ = [
     "LlmEndpoint",
@@ -22,8 +22,8 @@ class LlmEndpoint(FastAPI):
         self,
         *args: Any,
         llm: Any,
-        settings: Settings = settings,
         path: str = "/prompt",
+        conf: Optional[LlmConf] = None,
         examples: Optional[List[str]] = None,
         cors_enabled: bool = True,
         **kwargs: Any,
@@ -34,26 +34,26 @@ class LlmEndpoint(FastAPI):
         """
         self.path = path
         self.llm = llm
-        self.settings = settings
+        self.conf = conf if conf else default_conf
         self.examples = examples
         if not self.examples:
-            self.examples = settings.info.examples
+            self.examples = conf.info.examples
 
         # Instantiate FastAPI
         super().__init__(
             *args,
-            title=self.settings.info.title,
-            description=self.settings.info.description,
-            version=self.settings.info.version,
-            license_info=self.settings.info.license_info,
-            contact=self.settings.info.contact,
+            title=self.conf.info.title,
+            description=self.conf.info.description,
+            version=self.conf.info.version,
+            license_info=self.conf.info.license_info,
+            contact=self.conf.info.contact,
             **kwargs,
         )
 
         llm_router = LlmRouter(
             llm=self.llm,
             path=self.path,
-            settings=self.settings,
+            conf=self.conf,
             examples=self.examples,
         )
         self.include_router(llm_router)
@@ -76,5 +76,5 @@ class LlmEndpoint(FastAPI):
 
         self.mount(
             "/",
-            gradio_app(self.llm, self.settings.info.title, self.settings.info.description, self.settings.info.examples),
+            gradio_app(self.llm),
         )

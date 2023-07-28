@@ -12,7 +12,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 
-from libre_llm.utils import BOLD, CYAN, END, log, parallel_download, settings
+from libre_llm.utils import BOLD, CYAN, END, LlmConf, default_conf, log, parallel_download
 
 __all__ = [
     "Llm",
@@ -25,43 +25,48 @@ class Llm:
     """
 
     def __init__(
-        self,  # cfg: Settings = settings,
-        model_path: str = settings.llm.model_path,
-        model_type: str = settings.llm.model_type,
-        model_download: str = settings.llm.model_download,
-        embeddings_path: str = settings.vector.embeddings_path,
-        embeddings_download: str = settings.vector.embeddings_download,
-        vector_path: str = settings.vector.vector_path,
-        vector_download: str = settings.vector.vector_download,
-        documents_path: str = settings.vector.documents_path,
-        max_new_tokens: int = settings.llm.max_new_tokens,
-        temperature: float = settings.llm.temperature,
-        return_source_documents: bool = settings.vector.return_source_documents,
-        vector_count: int = settings.vector.vector_count,
-        chunk_size: int = settings.vector.chunk_size,
-        chunk_overlap: int = settings.vector.chunk_overlap,
+        self,
+        conf: Optional[LlmConf] = None,
+        model_path: Optional[str] = None,
+        model_type: Optional[str] = None,
+        model_download: Optional[str] = None,
+        embeddings_path: Optional[str] = None,
+        embeddings_download: Optional[str] = None,
+        vector_path: Optional[str] = None,
+        vector_download: Optional[str] = None,
+        documents_path: Optional[str] = None,
         template_variables: Optional[List[str]] = None,
         template_prompt: Optional[str] = None,
+        max_new_tokens: Optional[int] = None,
+        temperature: Optional[float] = None,
+        return_source_documents: Optional[bool] = None,
+        vector_count: Optional[int] = None,
+        chunk_size: Optional[int] = None,
+        chunk_overlap: Optional[int] = None,
     ) -> None:
         """
         Constructor for the LLM
         """
-        self.model_path = model_path
-        self.model_type = model_type
-        self.model_download = model_download
-        self.embeddings_path = embeddings_path
-        self.embeddings_download = embeddings_download
-        self.vector_path = vector_path
-        self.vector_download = vector_download
-        self.documents_path = documents_path
-        self.return_source_documents = return_source_documents
-        self.vector_count = vector_count
-        self.chunk_size = chunk_size
-        self.chunk_overlap = chunk_overlap
-        self.max_new_tokens = max_new_tokens
-        self.temperature = temperature
-        self.template_variables = template_variables
-        self.template_prompt = template_prompt
+        self.conf = conf if conf else default_conf
+        self.model_path = model_path if model_path else self.conf.llm.model_path
+        self.model_type = model_type if model_type else self.conf.llm.model_type
+        self.model_download = model_download if model_download else self.conf.llm.model_download
+        self.embeddings_path = embeddings_path if embeddings_path else self.conf.vector.embeddings_path
+        self.embeddings_download = embeddings_download if embeddings_download else self.conf.vector.embeddings_download
+        self.vector_path = vector_path if vector_path else self.conf.vector.vector_path
+        self.vector_download = vector_download if vector_download else self.conf.vector.vector_download
+        self.documents_path = documents_path if documents_path else self.conf.vector.documents_path
+        self.return_source_documents = (
+            return_source_documents if return_source_documents else self.conf.vector.return_source_documents
+        )
+        self.vector_count = vector_count if vector_count else self.conf.vector.vector_count
+        self.chunk_size = chunk_size if chunk_size else self.conf.vector.chunk_size
+        self.chunk_overlap = chunk_overlap if chunk_overlap else self.conf.vector.chunk_overlap
+        self.max_new_tokens = max_new_tokens if max_new_tokens else self.conf.llm.max_new_tokens
+        self.temperature = temperature if temperature else self.conf.llm.temperature
+        self.template_variables = template_variables if template_variables else self.conf.template.variables
+        self.template_prompt = template_prompt if template_prompt else self.conf.template.prompt
+
         if torch.cuda.is_available():
             self.device = torch.device(0)
             log.info(f"Using GPU: {self.device}")

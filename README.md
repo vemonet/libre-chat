@@ -46,7 +46,7 @@ services:
       - 8000:8000
 ```
 
-And create a `llm.yml` file with your settings in the same folder as the `docker-compose.yml`:
+And create a `llm.yml` file with your configuration in the same folder as the `docker-compose.yml`:
 
 ```yaml
 llm:

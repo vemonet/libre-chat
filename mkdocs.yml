@@ -56,7 +56,7 @@ nav:
       - LLM: Llm.md
       - LLM Endpoint: LlmEndpoint.md
       - LLM Router: LlmRouter.md
-      - Settings: LlmSettings.md
+      - LLM Config: LlmConf.md
   - Issues: https://github.com/vemonet/libre-llm/issues" target="_blank
 
 plugins:

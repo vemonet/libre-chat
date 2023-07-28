@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 from fastapi import APIRouter, Body, Request, Response
 
-from libre_llm.utils import Prompt, Settings, settings
+from libre_llm.utils import LlmConf, Prompt, default_conf
 
 __all__ = [
     "LlmRouter",
@@ -57,9 +57,9 @@ class LlmRouter(APIRouter):
     def __init__(
         self,
         *args: Any,
-        path: str = "/prompt",
         llm: Any,
-        settings: Settings = settings,
+        path: str = "/prompt",
+        conf: LlmConf = None,
         examples: Optional[List[str]] = None,
         **kwargs: Any,
     ) -> None:
@@ -68,11 +68,11 @@ class LlmRouter(APIRouter):
         """
         self.path = path
         self.llm = llm
-        self.settings = settings
-        self.title = self.settings.info.title
-        self.description = self.settings.info.description
-        self.version = self.settings.info.version
-        self.examples = examples if examples else self.settings.info.examples
+        self.conf = conf if conf else default_conf
+        self.title = self.conf.info.title
+        self.description = self.conf.info.description
+        self.version = self.conf.info.version
+        self.examples = examples if examples else self.conf.info.examples
         example_post = {"prompt": self.examples[0]}
 
         # Instantiate APIRouter

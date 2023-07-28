@@ -78,10 +78,6 @@ jobs:
     - name: Install dependencies
       run: |
         pipx install hatch
-        mkdir -p vectorstore/db_faiss
-        cd vectorstore/db_faiss
-        wget -N https://github.com/kennethleungty/Llama-2-Open-Source-LLM-CPU-Inference/raw/b95e89aa56cf66e7d6b5e48bc17205ba1f5a7fa9/vectorstore/db_faiss/index.faiss
-        wget -N https://github.com/kennethleungty/Llama-2-Open-Source-LLM-CPU-Inference/raw/b95e89aa56cf66e7d6b5e48bc17205ba1f5a7fa9/vectorstore/db_faiss/index.pkl
 
     - name: Test with coverage
       run: |
