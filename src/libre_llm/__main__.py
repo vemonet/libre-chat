@@ -1,12 +1,16 @@
+import logging
+
 import typer
 import uvicorn
 
 from libre_llm import __version__
 from libre_llm.llm import Llm
 from libre_llm.llm_endpoint import LlmEndpoint
-from libre_llm.utils import parse_config, settings
+from libre_llm.utils import BOLD, END, parse_config, settings
 
 cli = typer.Typer(help="Deploy API and web UI for LLMs, such as llama2, using langchain.")
+
+logging.basicConfig(level=logging.INFO)
 
 
 @cli.command("start")
@@ -58,13 +62,15 @@ def start(
 def build(
     model: str = typer.Option(settings.llm.model_path, help="Path to the model binary"),
     vector: str = typer.Option(settings.vector.vector_path, help="Path to the vector db folder"),
-    data: str = typer.Option(settings.vector.documents_path, help="Path to the data folder to vectorize"),
+    documents: str = typer.Option(
+        settings.vector.documents_path, help="Path to the folder containing documents to vectorize"
+    ),
     debug: bool = typer.Option(True, help="Display debug logs"),
 ) -> None:
-    print(f"Vectorizing documents from {data} to the vector db {vector}")
-    llm = Llm(model_path=model, vector_path=vector, documents_path=data)
-    vector_path = llm.build_vector_db()
-    print(f"Data vectorized in {vector_path}")
+    print(f"Vectorizing documents from {BOLD}{documents}{END} to the vectorstore {vector}")
+    llm = Llm(model_path=model, vector_path=vector, documents_path=documents)
+    vector_path = llm.build_vectorstore()
+    print(f"Documents successfully vectorized in {BOLD}{vector_path}{END}")
 
 
 @cli.command("version")

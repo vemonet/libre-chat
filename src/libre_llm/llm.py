@@ -12,7 +12,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 
-from libre_llm.utils import BOLD, END, log, parallel_download, settings
+from libre_llm.utils import BOLD, CYAN, END, log, parallel_download, settings
 
 __all__ = [
     "Llm",
@@ -83,6 +83,8 @@ class Llm:
 
         self.template = PromptTemplate(template=self.template_prompt, input_variables=self.template_variables)
         self.download_data()
+        if self.vector_path:
+            self.build_vectorstore()
         self.setup_dbqa()
 
     def download_data(self):
@@ -111,9 +113,6 @@ class Llm:
                 f"Loading vector database at {BOLD}{self.vector_path}{END}, with embeddings from {BOLD}{self.embeddings_path}{END}"
             )
             embeddings = HuggingFaceEmbeddings(model_name=self.embeddings_path, model_kwargs={"device": self.device})
-            # embeddings = HuggingFaceEmbeddings(
-            #     model_name="sentence-transformers/all-MiniLM-L6-v2", model_kwargs={"device": self.device}
-            # )
             vectordb = FAISS.load_local(self.vector_path, embeddings)
 
             self.dbqa = RetrievalQA.from_chain_type(
@@ -129,22 +128,32 @@ class Llm:
                 llm=llm, prompt=self.template, verbose=True, memory=ConversationBufferMemory()
             )
 
-    def build_vector_db(self, documents_path: Optional[str] = None):
-        """Build vector database with FAISS from PDF documents"""
+    def build_vectorstore(self, documents_path: Optional[str] = None):
+        """Build vectorstore from PDF documents with FAISS."""
+        if self.vector_path and os.path.exists(self.vector_path):
+            log.info(f"Reusing existing vectorstore at {BOLD}{self.vector_path}{END}, skip building the vectorstore")
+            return self.vector_path
         if not documents_path:
             documents_path = self.documents_path
-            log.info(f"Building vector db from {documents_path}")
-        loader = DirectoryLoader(self.documents_path, glob="*.pdf", loader_cls=PyPDFLoader)
-        documents = loader.load()
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap)
-        texts = text_splitter.split_documents(documents)
-        embeddings = HuggingFaceEmbeddings(model_name=self.embeddings_path, model_kwargs={"device": "cpu"})
-        vectorstore = FAISS.from_documents(texts, embeddings)
-        vectorstore.save_local(self.vector_path)
+        docs_count = len(os.listdir(documents_path))
+        if docs_count > 0:
+            log.info(
+                f"No vectorstore found at {self.vector_path}. Building the vectorstore from the {BOLD}{CYAN}{docs_count}{END} documents found in {BOLD}{documents_path}{END}"
+            )
+            loader = DirectoryLoader(documents_path, glob="*.pdf", loader_cls=PyPDFLoader)
+            documents = loader.load()
+            text_splitter = RecursiveCharacterTextSplitter(chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap)
+            texts = text_splitter.split_documents(documents)
+            embeddings = HuggingFaceEmbeddings(model_name=self.embeddings_path, model_kwargs={"device": self.device})
+            vectorstore = FAISS.from_documents(texts, embeddings)
+            vectorstore.save_local(self.vector_path)
+        else:
+            log.warn(f"No documents found in {documents_path}, could not build the vectorstore")
         return self.vector_path
 
     def query(self, prompt: str, history: Optional[List[Tuple[str, str]]] = None):
         """Query the built LLM"""
+        log.info(f"Querying the LLM with prompt: {prompt}")
         if len(prompt) < 1:
             raise ValueError("Provide a prompt")
 

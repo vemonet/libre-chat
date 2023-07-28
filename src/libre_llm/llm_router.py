@@ -82,6 +82,20 @@ class LlmRouter(APIRouter):
             **kwargs,
         )
 
+        @self.get(
+            self.path,
+            name="Prompt the LLM",
+            description=self.description,
+            response_model=PromptResponse,
+        )
+        def get_prompt(request: Request, prompt: str = self.examples[0]) -> Response:
+            """Send a prompt to the chatbot through HTTP GET operation.
+
+            :param request: The HTTP GET request with a .body()
+            :param prompt: Prompt to send to the LLM
+            """
+            return self.llm.query(prompt)
+
         @self.post(
             self.path,
             name="Prompt the LLM",
@@ -96,20 +110,6 @@ class LlmRouter(APIRouter):
             """Send a prompt to the chatbot through HTTP POST operation.
 
             :param request: The HTTP POST request with a .body()
-            :param query: SPARQL query input.
+            :param prompt: Prompt to send to the LLM.
             """
             return get_prompt(request, prompt.prompt)
-
-        @self.get(
-            self.path,
-            name="Prompt the LLM",
-            description=self.description,
-            response_model=PromptResponse,
-        )
-        def get_prompt(request: Request, prompt: str) -> Response:
-            """Send a prompt to the chatbot through HTTP GET operation.
-
-            :param request: The HTTP GET request with a .body()
-            :param query: SPARQL query input.
-            """
-            return self.llm.query(prompt)

@@ -6,6 +6,7 @@ from libre_llm.utils import parse_config
 # Config is retrieved from env variables
 
 settings = parse_config("llm.yml")
+# settings = parse_config("tests/llm-with-vectorstore.yml")
 llm = Llm(
     model_path=settings.llm.model_path,
     model_type=settings.llm.model_type,

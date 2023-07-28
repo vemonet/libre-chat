@@ -1,5 +1,3 @@
-mkdir -p data
-
 # https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML
 mkdir -p models
 cd models
@@ -17,3 +15,4 @@ mkdir -p embeddings
 cd embeddings
 wget -N https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/v0.2/all-MiniLM-L6-v2.zip
 unzip -d all-MiniLM-L6-v2 all-MiniLM-L6-v2.zip
+cd ..

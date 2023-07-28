@@ -4,14 +4,10 @@
 
 [![Publish package](https://github.com/vemonet/libre-llm/actions/workflows/publish.yml/badge.svg)](https://github.com/vemonet/libre-llm/actions/workflows/publish.yml) [![Test package](https://github.com/vemonet/libre-llm/actions/workflows/test.yml/badge.svg)](https://github.com/vemonet/libre-llm/actions/workflows/test.yml) [![Coverage Status](https://coveralls.io/repos/github/vemonet/libre-llm/badge.svg?branch=main)](https://coveralls.io/github/vemonet/libre-llm?branch=main)
 
-<!--
-
 [![PyPI - Version](https://img.shields.io/pypi/v/libre-llm.svg?logo=pypi&label=PyPI&logoColor=silver)](https://pypi.org/project/libre-llm/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/libre-llm.svg?logo=python&label=Python&logoColor=silver)](https://pypi.org/project/libre-llm/)
 [![license](https://img.shields.io/pypi/l/libre-llm.svg?color=%2334D058)](https://github.com/vemonet/libre-llm/blob/main/LICENSE.txt)
 [![code style - black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-
--->
 
 </div>
 
@@ -31,7 +27,7 @@ Easily deploy a Large Language Model (LLM) chatbot web service locally with a we
 
 ## 🐳 Deploy with docker
 
-If you just want to quickly deploy it, you can use docker:
+If you just want to quickly deploy it using the pre-trained model `Llama-2-7B-Chat-GGML`, you can use docker:
 
 ```bash
 docker run -it -p 8000:8000 ghcr.io/vemonet/libre-llm:main
@@ -106,8 +102,6 @@ Finally start your chat service with:
 docker compose up
 ```
 
-<!--
-
 ## 📦️ Usage with pip
 
 This package requires Python >=3.7, simply install it with `pipx` or `pip`:
@@ -154,8 +148,6 @@ print(llm.query("What is the capital of the Netherlands?"))
 app = LlmEndpoint(llm=llm)
 uvicorn.run(app)
  ```
-
--->
 
 ## 🧑‍💻 Development setup
 

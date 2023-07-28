@@ -1,9 +1,9 @@
 models/
 vectorstore/
 embeddings/
-documents/
 data/
 gradio_cached_examples/
+sentence-transformers/
 docker-compose.prod.yml
 
 # Python artefacts

@@ -38,6 +38,7 @@ dependencies = [
     "ctransformers >=0.2.5",
     "faiss-cpu >=1.7.4",
     "sentence_transformers",
+    "pypdf",
     "pydantic-yaml",
     "requests",
     # "pydantic <2.0.0",
@@ -87,6 +88,7 @@ post-install-commands = [
 [tool.hatch.envs.default.scripts]
 # dev = "python tests/dev.py {args}"
 dev = "uvicorn tests.main:app --reload {args}"
+vector = "libre-llm start tests/llm-with-vectorstore.yml"
 fmt = [
     "pre-commit run --all --all-files",
     # "myp  y",
