@@ -37,7 +37,6 @@ info:
   examples:
   - What is the capital of the Netherlands?
   - How can I create a logger with timestamp using python logging?
-  - Which drug can be repurposed for Alzheimer?
   contact:
     name: "Vincent Emonet"
     email: "vincent.emonet@gmail.com"

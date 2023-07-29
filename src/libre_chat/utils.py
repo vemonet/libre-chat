@@ -38,6 +38,7 @@ class SettingsInfo(BaseSettings):
 
 See: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vemonet/libre-chat)"""
     public_url: str = "https://your-endpoint-url"
+    repository_url: str = "https://github.com/vemonet/libre-chat"
     favicon: str = "https://raw.github.com/vemonet/libre-chat/main/docs/assets/logo.svg"
     license_info: Dict[str, str] = {
         "name": "MIT license",

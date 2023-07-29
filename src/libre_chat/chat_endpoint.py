@@ -3,6 +3,8 @@ from typing import Any, List, Optional
 
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 
 from libre_chat.chat_router import ChatRouter
 from libre_chat.ui import gradio_app
@@ -75,6 +77,23 @@ class ChatEndpoint(FastAPI):
             return response
 
         self.mount(
-            "/",
+            "/gradio",
             gradio_app(self.llm),
         )
+
+        # self.mount("/static", StaticFiles(directory="src/libre_chat/static"), name="static")
+        templates = Jinja2Templates(directory="src/libre_chat/templates")
+
+        @self.get("/", response_class=HTMLResponse)
+        def chat_ui(request: Request):
+            return templates.TemplateResponse(
+                "index.html",
+                {
+                    "request": request,
+                    "title": self.conf.info.title,
+                    "description": self.conf.info.description,
+                    "repository_url": self.conf.info.repository_url,
+                    "examples": self.conf.info.examples
+                    # "description": self.conf.info.description.replace("`", "\`")
+                },
+            )

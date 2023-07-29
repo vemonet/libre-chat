@@ -5,6 +5,10 @@ import gradio as gr
 
 from libre_chat.utils import log
 
+# https://github.com/mainadennis/An-AI-Chatbot-in-Python-and-Flask/tree/main
+# https://medium.com/@aakashthoriya/basic-chatbot-using-html-css-and-javascript-f534e202befd
+# https://www.codewithfaraz.com/content/133/create-your-own-chatbot-with-html-css-and-javascript
+
 
 def gradio_app(llm):
     def get_chatbot_resp(message: str, history: List[Tuple[str, str]]) -> str:

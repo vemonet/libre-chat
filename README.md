@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🦙 Libre LLM
+# 🦙 Libre Chat
 
 [![Publish package](https://github.com/vemonet/libre-chat/actions/workflows/publish.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/publish.yml) [![Test package](https://github.com/vemonet/libre-chat/actions/workflows/test.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/test.yml) [![Coverage Status](https://coveralls.io/repos/github/vemonet/libre-chat/badge.svg?branch=main)](https://coveralls.io/github/vemonet/libre-chat?branch=main)
 
@@ -13,7 +13,7 @@
 
 > ⚠️ Development on this project has just started, use it with caution
 
-Easily configure and deploy a self-hosted chat web service based on open source Large Language Models.
+Easily configure and deploy a self-hosted chat web service based on open source Large Language Models (LLMs).
 
 - 🌐 Free and Open Source chatbot web service with UI and API
 - 🏡 Fully self-hosted, not tied to any service, and offline capable. Models and embeddings are pre-downloaded, you are insured your prompts are not send to anyone, and it can run off-line if necessary. Forget about API keys!
@@ -22,6 +22,7 @@ Easily configure and deploy a self-hosted chat web service based on open source 
 - 🦜 Use [`LangChain`](https://python.langchain.com) to support performant open source models inference:
   - all [Llama-2-GGML](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)/[13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf)/[70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf))
   - all [Llama-2-GPTQ](https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ)
+- 📚 Automatically build similarity vectors from PDF documents, and use them to have the chatbot search documents for you.
 
 
 ![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/screenshot.png)

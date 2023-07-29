@@ -31,6 +31,7 @@ dynamic = ["version"]
 dependencies = [
     "typer >=0.6.0",
     "fastapi",
+    "jinja2",
     "gradio",
     "uvicorn",
     "gunicorn",
