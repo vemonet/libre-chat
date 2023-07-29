@@ -35,7 +35,7 @@ info:
   description: |
     Open source and free chatbot powered by LangChain and llama2.
 
-    See: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vemonet/libre-chat)
+    See: [💻 UI](/) | [📡 API](/docs) | [📚 Source code](https://github.com/vemonet/libre-chat)
   examples:
   - What is the capital of the Netherlands?
   - How can I create a logger with timestamp using python logging?

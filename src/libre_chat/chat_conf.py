@@ -21,7 +21,7 @@ class SettingsInfo(BaseSettings):
     version: str = "0.1.0"
     description: str = """Open source and free chatbot powered by LangChain and llama2.
 
-See: [UI](/) | [API documentation](/docs) | [Source code](https://github.com/vemonet/libre-chat)"""
+See: [💻 UI](/) | [📡 API](/docs) | [📚 Source code](https://github.com/vemonet/libre-chat)"""
     public_url: str = "https://your-endpoint-url"
     repository_url: str = "https://github.com/vemonet/libre-chat"
     favicon: str = "https://raw.github.com/vemonet/libre-chat/main/docs/assets/logo.png"
