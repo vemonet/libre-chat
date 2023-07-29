@@ -6,9 +6,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+from libre_chat.chat_conf import ChatConf, default_conf
 from libre_chat.chat_router import ChatRouter
 from libre_chat.ui import gradio_app
-from libre_chat.utils import ChatConf, default_conf
 
 __all__ = [
     "ChatEndpoint",
@@ -93,7 +93,8 @@ class ChatEndpoint(FastAPI):
                     "title": self.conf.info.title,
                     "description": self.conf.info.description,
                     "repository_url": self.conf.info.repository_url,
-                    "examples": self.conf.info.examples
+                    "examples": self.conf.info.examples,
+                    "favicon": self.conf.info.favicon
                     # "description": self.conf.info.description.replace("`", "\`")
                 },
             )

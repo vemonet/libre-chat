@@ -3,7 +3,8 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 from fastapi import APIRouter, Body, Request, Response
 
-from libre_chat.utils import ChatConf, Prompt, default_conf
+from libre_chat.chat_conf import ChatConf, default_conf
+from libre_chat.utils import Prompt
 
 __all__ = [
     "ChatRouter",

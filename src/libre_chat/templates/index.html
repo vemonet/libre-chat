@@ -2,9 +2,11 @@
 <html lang="en" class="bg-gray-100 dark:bg-gray-800">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ title }}</title>
+    <meta name="description" content="{{ title }}" />
+    <link rel="icon" href="{{ favicon }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -19,33 +21,30 @@
         <div id="chat-container" class="flex-grow overflow-y-auto">
             <div class="container mx-auto px-2 max-w-5xl">
 
-                <!-- Title and description -->
-                <div class="p-4 border-b border-slate-300 dark:border-slate-600 flex justify-center items-center">
+                <!-- Title, top nav and description -->
+                <div class="container mx-auto max-w-5xl p-4 border-b border-slate-300 dark:border-slate-600 flex justify-center items-center">
                     <h2 class="text-xl font-semibold">{{ title }}</h2>
+                    <!-- Top nav buttons -->
                     <div class="flex space-x-1 absolute top-2 right-3">
-                        <button id="theme-switch-btn" class="px-4 py-2 rounded-lg hover:bg-gray-300">
+                        <button id="theme-switch-btn" class="px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
                             <i id="sun-icon" class="fas fa-sun"></i>
                             <i id="moon-icon" class="fas fa-moon hidden"></i>
                         </button>
                         <a href="{{ repository_url }}" target="_blank" rel="noopener noreferrer"
-                            class="text-black hover:text-black dark:text-white dark:hover:text-white">
-                            <button class="px-4 py-2 rounded-lg hover:bg-gray-300">
+                            class="text-black hover:text-black dark:text-white">
+                            <button class="px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
                                 <i class="fab fa-github text-2xl"></i>
                             </button>
                         </a>
                     </div>
                 </div>
-
                 <div id="description" class="py-4">
                     {{ description }}
                 </div>
+            </div>
 
-                <!-- Chat messages -->
-                <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md">
-                    <div id="chat-thread" class="px-4 py-6 space-y-4">
-                        <!-- Messages will be appended here -->
-                    </div>
-                </div>
+            <div id="chat-thread" class="w-full">
+                <!-- 💬 Chat messages will be appended here -->
             </div>
         </div>
 
@@ -53,19 +52,19 @@
         <div class="text-center">
             <div id="warning-card" class="bg-orange-300 p-2 text-orange-900 text-sm rounded-lg font-semibold mb-2 hidden inline-block"></div>
         </div>
-        <!-- <div id="warning-message" class="container bg-orange-300 p-2 text-orange-900 text-sm font-semibold mb-2 hidden">
-        </div> -->
 
         <!-- User input -->
-        <form class="p-4 border-t flex" id="chat-form">
-            <div id="user-input" contenteditable="true" style="height: max-content;"
-                class="flex-grow px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-            ></div>
-            <button type="submit" id="submit-btn" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                Send
-            </button>
+        <form class="p-4 flex border-t border-slate-400 dark:border-slate-500" id="chat-form">
+            <div class="container flex mx-auto max-w-5xl">
+                <div id="user-input" contenteditable="true" style="height: max-content;"
+                    class="flex-grow px-4 py-2 border border-slate-400 dark:border-slate-500 rounded-lg focus:outline-none focus:ring focus:border-slate-500"
+                ></div>
+                <button type="submit" id="submit-btn" class="ml-2 px-4 py-2 rounded-lg text-slate-500 bg-slate-200 hover:bg-slate-300 dark:text-slate-400 dark:bg-slate-700 dark:hover:bg-slate-600">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
         </form>
-        <div class="py-2 px-4 text-xs border-t flex space-x-2" id="example-buttons"></div>
+        <div class="py-2 px-4 text-xs border-t border-slate-400 dark:border-slate-500 flex space-x-2" id="example-buttons"></div>
     </div>
 
     <script>
@@ -104,7 +103,7 @@
             exampleStrings.forEach(example => {
                 const button = document.createElement("button");
                 button.textContent = example;
-                button.className = "px-4 py-1 bg-slate-200 text-slate-500 rounded-lg hover:bg-gray-300";
+                button.className = "px-4 py-1 bg-slate-300 text-slate-600 rounded-lg hover:bg-gray-400";
                 button.dataset.example = example;
                 button.addEventListener("click", function() {
                     userInput.textContent = example;
@@ -117,23 +116,25 @@
             function appendMessage(message, sender) {
                 const messageElement = document.createElement("div");
 
-                messageElement.className = `rounded-lg p-3 max-w-md ${sender === "user" ? "bg-blue-500 text-white ml-auto" : "bg-gray-200 dark:bg-gray-800 mr-auto"}`;
-                messageElement.innerHTML = `
-                    <p class="text-sm">${marked(message)}</p>
-                `;
-                // messageElement.className = sender === "user" ? "flex justify-end" : "flex";
-                // messageElement.innerHTML = `
-                //     <div class="${sender === "user" ? "bg-blue-500 text-white" : "bg-gray-100 dark:bg-gray-600"} p-2 rounded-lg max-w-md">
-                //         <p class="text-sm">${marked(message)}</p>
-                //     </div>
-                // `;
+                const iconHtml = sender === "user" ?
+                    '<i class="fas fa-user-astronaut text-xl mr-4"></i>' : // fa-comment fa-user-secret fa-user-astronaut
+                    '<i class="fas fa-robot text-xl mr-4"></i>';
+                messageElement.className = `border-t border-slate-400 ${sender === "user" ? "bg-gray-300 dark:bg-gray-700" : "bg-gray-200 dark:bg-gray-600"}`;
+                messageElement.innerHTML = `<div>
+                    <div class="container flex items-center mx-auto px-2 py-8 max-w-5xl">
+                        ${iconHtml}
+                        <p class="text-sm">
+                            ${marked(message)}
+                        </p>
+                    </div>
+                </div>`;
                 chatThread.appendChild(messageElement);
                 chatContainer.scrollTop = chatContainer.scrollHeight;
             }
             const welcomeMsg = "Hello! How can I help you today?";
             appendMessage(welcomeMsg, "bot")
 
-            // Submit user input to the bot
+            // Send user input to the chat API
             function submitInput(userInput) {
                 if (fetchInProgress) return;
                 const prompt = userInput.textContent;
@@ -179,7 +180,7 @@
                 submitInput(userInput)
             });
 
-            // Light/dark theme setup
+            // Light/dark theme setup, default to dark if nothing found
             const sunIcon = document.getElementById("sun-icon");
             const moonIcon = document.getElementById("moon-icon");
             function toggleIcons() {
@@ -192,7 +193,8 @@
                     moonIcon.classList.remove("hidden");
                 }
             }
-            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            let prefersDark = true
+            if (window.matchMedia) prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             document.documentElement.classList.toggle('dark', prefersDark);
             toggleIcons();
             const themeSwitchBtn = document.getElementById("theme-switch-btn");

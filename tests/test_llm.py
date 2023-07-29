@@ -3,8 +3,8 @@ import shutil
 
 import pytest
 
+from libre_chat.chat_conf import parse_config
 from libre_chat.llm import Llm
-from libre_chat.utils import parse_config
 
 llm = Llm(conf=parse_config("tests/llm-with-vectorstore.yml"))
 

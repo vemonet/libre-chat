@@ -12,7 +12,8 @@ from langchain.memory import ConversationBufferMemory
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 
-from libre_chat.utils import BOLD, CYAN, END, ChatConf, default_conf, log, parallel_download
+from libre_chat.chat_conf import ChatConf, default_conf
+from libre_chat.utils import BOLD, CYAN, END, log, parallel_download
 
 __all__ = [
     "Llm",

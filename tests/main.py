@@ -1,6 +1,6 @@
+from libre_chat.chat_conf import parse_config
 from libre_chat.chat_endpoint import ChatEndpoint
 from libre_chat.llm import Llm
-from libre_chat.utils import parse_config
 
 # Run default model, used in docker container
 # Config is retrieved from env variables

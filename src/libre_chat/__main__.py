@@ -6,9 +6,10 @@ import typer
 import uvicorn
 
 from libre_chat import __version__
+from libre_chat.chat_conf import default_conf, parse_config
 from libre_chat.chat_endpoint import ChatEndpoint
 from libre_chat.llm import Llm
-from libre_chat.utils import BOLD, END, default_conf, parse_config
+from libre_chat.utils import BOLD, END
 
 cli = typer.Typer(help="Deploy API and web UI for LLMs, such as llama2, using langchain.")
 

@@ -13,6 +13,8 @@
 
 > ⚠️ Development on this project has just started, use it with caution
 
+<a href="https://www.flaticon.com/free-icons/llama" title="llama icons">Llama icons created by Freepik - Flaticon</a>
+
 Easily configure and deploy a self-hosted chat web service based on open source Large Language Models (LLMs).
 
 - 🌐 Free and Open Source chatbot web service with UI and API
@@ -25,7 +27,7 @@ Easily configure and deploy a self-hosted chat web service based on open source 
 - 📚 Automatically build similarity vectors from PDF documents, and use them to have the chatbot search documents for you.
 
 
-![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/screenshot.png)
+![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/assets/screenshot.png)
 
 ## 🐳 Deploy with docker
 

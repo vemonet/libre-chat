@@ -9,8 +9,8 @@ copyright: Copyright &copy; 2023 Vincent Emonet
 
 theme:
   name: "material"
-  favicon: assets/logo.svg
-  logo: assets/logo.svg
+  favicon: assets/logo.png
+  logo: assets/logo.png
   # icon:
   #   logo: material/microscope
   language: en
