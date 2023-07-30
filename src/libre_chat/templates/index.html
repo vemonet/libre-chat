@@ -23,7 +23,10 @@
             <!-- Title, top nav, and description -->
             <div class="container mx-auto px-2 max-w-5xl">
                 <div class="container mx-auto max-w-5xl p-4 border-b border-slate-300 dark:border-slate-600 flex justify-center items-center">
-                    <h2 class="text-xl font-semibold">{{ title }}</h2>
+                    <h2 class="text-xl font-semibold flex">
+                        <span><img class="h-8 mr-3" src="{{ favicon }}"></span>
+                        {{ title }}
+                    </h2>
                     <!-- Top nav buttons -->
                     <div class="flex space-x-1 absolute top-2 right-3">
                         <button id="theme-switch-btn" class="px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
@@ -53,8 +56,8 @@
             <div id="warning-card" class="bg-orange-300 p-2 text-orange-900 text-sm rounded-lg font-semibold mb-2 hidden inline-block"></div>
         </div>
 
-        <!-- User input -->
-        <form class="p-4 flex border-t border-slate-400 dark:border-slate-500" id="chat-form">
+        <!-- User input border-t border-slate-400 dark:border-slate-500 -->
+        <form class="p-2 flex" id="chat-form">
             <div class="container flex mx-auto max-w-5xl">
                 <div id="user-input" contenteditable="true" style="height: max-content;"
                     class="flex-grow px-4 py-2 border border-slate-400 dark:border-slate-500 rounded-lg focus:outline-none focus:ring focus:ring-blue-200 dark:focus:ring-blue-400"
@@ -66,7 +69,7 @@
                 </button>
             </div>
         </form>
-        <div class="py-2 px-4 text-xs border-t border-slate-400 dark:border-slate-500 flex space-x-2" id="example-buttons"></div>
+        <div class="py-2 px-4 justify-center items-center text-xs flex space-x-2" id="example-buttons"></div>
     </div>
 
     <script>

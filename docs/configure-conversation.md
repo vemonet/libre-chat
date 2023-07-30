@@ -36,7 +36,7 @@ vector:
   chunk_overlap: 50
 
 info:
-  title: "🦙 Libre Chat"
+  title: "Libre Chat"
   version: "0.1.0"
   description: |
     Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama).
