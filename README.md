@@ -13,18 +13,17 @@
 
 > ⚠️ Development on this project has just started, use it with caution
 
-<a href="https://www.flaticon.com/free-icons/llama" title="llama icons">Llama icons created by Freepik - Flaticon</a>
-
 Easily configure and deploy a self-hosted chat web service based on open source Large Language Models (LLMs).
 
 - 🌐 Free and Open Source chatbot web service with UI and API
 - 🏡 Fully self-hosted, not tied to any service, and offline capable. Models and embeddings are pre-downloaded, you are insured your prompts are not send to anyone, and it can run off-line if necessary. Forget about API keys!
 - 🧞 Easy to setup, no need to program, just configure the service with a YAML file, and start it in 1 command
 - ⚡ No need for GPU, this will work even on your laptop CPU (but takes about 1min to answer on recent laptops)
+- 🪶 Modern and lightweight chat web interface, working as well on desktop as on mobile, with support for light/dark theme
 - 🦜 Use [`LangChain`](https://python.langchain.com) to support performant open source models inference:
   - all [Llama-2-GGML](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)/[13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf)/[70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf))
   - all [Llama-2-GPTQ](https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ)
-- 📚 Automatically build similarity vectors from PDF documents, and use them to have the chatbot search documents for you.
+- 📚 Possibility to automatically build similarity vectors from PDF documents, and use them to have the chatbot search documents for you.
 
 
 ![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/assets/screenshot.png)
@@ -125,7 +124,7 @@ libre-chat start
 Provide a specific config file:
 
 ```bash
-libre-chat start tests/llm-with-vectorstore.yml
+libre-chat start config/chat-vectorstore-qa.yml
 ```
 
 Get a full rundown of the available options with:
@@ -247,6 +246,8 @@ Inspired by:
 
 - https://github.com/kennethleungty/Llama-2-Open-Source-LLM-CPU-Inference
 - https://github.com/liltom-eth/llama2-webui
+
+<a href="https://www.flaticon.com/free-icons/llama" title="llama icons">Llama icons created by Freepik - Flaticon</a>
 
 ## 📋 To do
 

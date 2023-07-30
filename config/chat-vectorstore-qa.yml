@@ -1,3 +1,5 @@
+# Config for a Question Answering (qa) agent
+# Will answer based on provided documents, and return which docs was used to answer the question
 llm:
   model_type: llama
   model_path: ./models/llama-2-7b-chat.ggmlv3.q3_K_L.bin
@@ -5,8 +7,8 @@ llm:
   model_download: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.ggmlv3.q3_K_L.bin
   temperature: 0.01
   max_new_tokens: 256
+
 template:
-  # Always use variables that where previously used when creating the vectors
   variables: ["question", "context"]
   prompt: |
     Use the following pieces of information to answer the user's question.
@@ -17,6 +19,7 @@ template:
 
     Only return the helpful answer below and nothing else.
     Helpful answer:
+
 vector:
   vector_path: ./vectorstore/db_faiss # Path to the vectorstore to do QA retrieval
   vector_download: null
@@ -29,6 +32,7 @@ vector:
   vector_count: 2
   chunk_size: 500
   chunk_overlap: 50
+
 info:
   title: "🦙 Libre Chat"
   version: "0.1.0"
@@ -39,10 +43,10 @@ info:
   examples:
   - What is the capital of the Netherlands?
   - How can I create a logger with timestamp using python logging?
-  - Which drug can be repurposed for Alzheimer?
   contact:
     name: "Vincent Emonet"
     email: "vincent.emonet@gmail.com"
   license_info:
     name: "MIT license"
     url: "https://raw.github.com/vemonet/libre-chat/main/LICENSE.txt"
+  max_workers: 4

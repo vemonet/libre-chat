@@ -6,7 +6,7 @@ import pytest
 from libre_chat.chat_conf import parse_config
 from libre_chat.llm import Llm
 
-llm = Llm(conf=parse_config("tests/llm-with-vectorstore.yml"))
+llm = Llm(conf=parse_config("config/chat-vectorstore-qa.yml"))
 
 
 def test_query_vectorstore():

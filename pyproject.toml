@@ -89,7 +89,7 @@ post-install-commands = [
 [tool.hatch.envs.default.scripts]
 # dev = "python tests/dev.py {args}"
 dev = "uvicorn tests.main:app --reload {args}"
-vector = "libre-chat start tests/llm-with-vectorstore.yml"
+vector = "libre-chat start config/chat-vectorstore-qa.yml"
 fmt = [
     "pre-commit run --all --all-files",
     # "myp  y",

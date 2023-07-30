@@ -84,7 +84,7 @@ class ChatEndpoint(FastAPI):
         # self.mount("/static", StaticFiles(directory="src/libre_chat/static"), name="static")
         templates = Jinja2Templates(directory="src/libre_chat/templates")
 
-        @self.get("/", response_class=HTMLResponse)
+        @self.get("/", response_class=HTMLResponse, include_in_schema=False)
         def chat_ui(request: Request):
             return templates.TemplateResponse(
                 "index.html",
@@ -92,9 +92,9 @@ class ChatEndpoint(FastAPI):
                     "request": request,
                     "title": self.conf.info.title,
                     "description": self.conf.info.description,
+                    "short_description": self.conf.info.description.split("\n")[0].replace('"', ""),
                     "repository_url": self.conf.info.repository_url,
                     "examples": self.conf.info.examples,
-                    "favicon": self.conf.info.favicon
-                    # "description": self.conf.info.description.replace("`", "\`")
+                    "favicon": self.conf.info.favicon,
                 },
             )

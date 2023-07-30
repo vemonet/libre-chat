@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ title }}</title>
-    <meta name="description" content="{{ title }}" />
+    <meta name="description" content="{{ short_description }}" />
     <link rel="icon" href="{{ favicon }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
@@ -19,9 +19,9 @@
 
         <!-- Main chat container -->
         <div id="chat-container" class="flex-grow overflow-y-auto">
-            <div class="container mx-auto px-2 max-w-5xl">
 
-                <!-- Title, top nav and description -->
+            <!-- Title, top nav, and description -->
+            <div class="container mx-auto px-2 max-w-5xl">
                 <div class="container mx-auto max-w-5xl p-4 border-b border-slate-300 dark:border-slate-600 flex justify-center items-center">
                     <h2 class="text-xl font-semibold">{{ title }}</h2>
                     <!-- Top nav buttons -->
@@ -44,7 +44,7 @@
             </div>
 
             <div id="chat-thread" class="w-full">
-                <!-- 💬 Chat messages will be appended here -->
+                <!-- Chat messages will be appended here -->
             </div>
         </div>
 

@@ -33,6 +33,7 @@ See: [💻 UI](/) | [📡 API](/docs) | [📚 Source code](https://github.com/ve
         "name": "Vincent Emonet",
         "email": "vincent.emonet@gmail.com",
     }
+    max_workers: int = 4
 
     class Config:
         env_prefix = "librechat_"

@@ -77,6 +77,8 @@ class Llm:
         if not os.path.exists(self.documents_path):
             os.makedirs(self.documents_path)
 
+        os.environ["NUMEXPR_MAX_THREADS"] = str(self.conf.info.max_workers)
+
         if not self.template_prompt:
             if self.vector_path:
                 self.template_prompt = DEFAULT_QA_TEMPLATE
@@ -96,14 +98,10 @@ class Llm:
     def download_data(self):
         """Download data"""
         ddl_list = []
-        # if not os.path.exists(self.model_path) and self.model_download:
         ddl_list.append({"url": self.model_download, "path": self.model_path})
         ddl_list.append({"url": self.embeddings_download, "path": self.embeddings_path})
         ddl_list.append({"url": self.vector_download, "path": self.vector_path})
-        parallel_download(ddl_list)
-        # asyncio.run(parallel_download(ddl_list))
-        # if not os.path.exists(self.model_path):
-        #     raise ValueError(f"Could not find a model at the path provided: {self.model_path}")
+        parallel_download(ddl_list, self.conf.info.max_workers)
 
     def setup_dbqa(self):
         """Setup the model and vector db for QA"""
@@ -116,7 +114,7 @@ class Llm:
         )
         if self.vector_path:
             log.info(
-                f"🗄️ Loading vector database at {BOLD}{self.vector_path}{END}, with embeddings from {BOLD}{self.embeddings_path}{END}"
+                f"💫 Loading vector database at {BOLD}{self.vector_path}{END}, with embeddings from {BOLD}{self.embeddings_path}{END}"
             )
             embeddings = HuggingFaceEmbeddings(model_name=self.embeddings_path, model_kwargs={"device": self.device})
             vectordb = FAISS.load_local(self.vector_path, embeddings)
@@ -137,14 +135,16 @@ class Llm:
     def build_vectorstore(self, documents_path: Optional[str] = None):
         """Build vectorstore from PDF documents with FAISS."""
         if self.vector_path and os.path.exists(self.vector_path):
-            log.info(f"♻️ Reusing existing vectorstore at {BOLD}{self.vector_path}{END}, skip building the vectorstore")
+            log.info(
+                f"♻️  Reusing existing vectorstore at {BOLD}{self.vector_path}{END}, skip building the vectorstore"
+            )
             return self.vector_path
         if not documents_path:
             documents_path = self.documents_path
         docs_count = len(os.listdir(documents_path))
         if docs_count > 0:
             log.info(
-                f"🏗️ No vectorstore found at {self.vector_path}. Building the vectorstore from the {BOLD}{CYAN}{docs_count}{END} documents found in {BOLD}{documents_path}{END}"
+                f"🏗️  No vectorstore found at {self.vector_path}. Building the vectorstore from the {BOLD}{CYAN}{docs_count}{END} documents found in {BOLD}{documents_path}{END}"
             )
             loader = DirectoryLoader(documents_path, glob="*.pdf", loader_cls=PyPDFLoader)
             documents = loader.load()

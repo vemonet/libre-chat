@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
 import requests
+from uvicorn.logging import ColourizedFormatter
 
 
 @dataclass
@@ -20,28 +21,14 @@ class Prompt:
     top_k: Optional[int] = None
 
 
-class ColoredFormatter(logging.Formatter):
-    COLORS: Dict[str, str] = {
-        "DEBUG": "\033[92m",  # Grey
-        "INFO": "\033[32m",  # Green
-        "WARNING": "\033[93m",  # Yellow
-        "ERROR": "\033[91m",  # Red
-        "CRITICAL": "\033[91m",  # Red
-    }
+# log_format = "%(levelprefix)s [%(asctime)s] [%(module)s:%(funcName)s] %(message)s"
+log_format = "%(levelprefix)s [%(asctime)s] %(message)s [%(module)s:%(funcName)s]"
+log = logging.getLogger(__name__)
+log.propagate = False
+handler = logging.StreamHandler()
+handler.setFormatter(ColourizedFormatter(log_format))
+log.addHandler(handler)
 
-    def format(self, record):  # noqa: A003
-        log_level = record.levelname
-        color_prefix = self.COLORS.get(log_level, END)
-        log_msg = super().format(record)
-        colored_log_level = f"{color_prefix}{log_level}{END}"
-        return log_msg.replace(log_level, colored_log_level, 1)
-
-
-log = logging.getLogger("uvicorn.access")
-if len(log.handlers) > 0:
-    log.handlers[0].setFormatter(
-        ColoredFormatter("%(levelname)s:     [%(asctime)s] [%(module)s:%(funcName)s] %(message)s")
-    )
 BOLD = "\033[1m"
 END = "\033[0m"
 RED = "\033[91m"
@@ -67,8 +54,8 @@ def download_file(url, path):
     log.info(f"✅ Downloaded: {url} in {path}")
 
 
-def parallel_download(files_list: List[Dict[str, str]]):
-    with ThreadPoolExecutor(max_workers=5) as executor:  # Adjust the number of workers as needed
+def parallel_download(files_list: List[Dict[str, str]], max_workers: int = 4):
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:  # Adjust the number of workers as needed
         futures = []
         for f in files_list:
             if not f["path"]:
