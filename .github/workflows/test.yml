@@ -7,10 +7,11 @@ jobs:
     name: 🔎 CodeQL analysis
     runs-on: ubuntu-latest
     permissions:
-      security-events: write # required for all workflows
-      # only required for workflows in private repositories:
+      security-events: write
       actions: read
       contents: read
+      packages: write
+      id-token: write
 
     steps:
       - name: Checkout repository

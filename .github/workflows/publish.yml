@@ -9,6 +9,11 @@ jobs:
   tests:
     uses: vemonet/libre-chat/.github/workflows/test.yml@main
     secrets: inherit
+    permissions:
+      security-events: write # required for all workflows
+      # only required for workflows in private repositories:
+      actions: read
+      contents: read
 
   publish:
     needs: tests
