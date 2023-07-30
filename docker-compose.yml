@@ -8,12 +8,15 @@ services:
       - ./:/app # Share the whole directory with chat.yml, models, vectorstore
     ports:
       - 8000:8000
+    shm_size: '16g'
     environment:
       - LIBRECHAT_WORKERS=8
+      # To deploy with nginx-proxy
+      - VIRTUAL_HOST=chat.semanticscience.org
+      - LETSENCRYPT_HOST=chat.semanticscience.org
+      - VIRTUAL_PORT=8000
+      # - CUDA_VISIBLE_DEVICES=0 # Limit which GPU is made available
     # entrypoint: uvicorn tests.main:app --reload
-    # networks:
-    #   - no-internet
-    # shm_size: '16g'
     # deploy:  # Enable 1 GPU in this container
     #   resources:
     #     reservations:
@@ -21,6 +24,8 @@ services:
     #         - driver: nvidia
     #           count: 1
     #           capabilities: [gpu]
+    # networks:
+    #   - no-internet
 
 # networks:
 #   no-internet:
