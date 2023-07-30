@@ -28,6 +28,8 @@ Easily configure and deploy a self-hosted chat web service based on open source 
 
 ![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/assets/screenshot.png)
 
+![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/assets/screenshot-light.png)
+
 ## 🐳 Deploy with docker
 
 If you just want to quickly deploy it using the pre-trained model `Llama-2-7B-Chat-GGML`, you can use docker:
@@ -107,7 +109,7 @@ docker compose up
 
 ## 📦️ Usage with pip
 
-This package requires Python >=3.7, simply install it with `pipx` or `pip`:
+This package requires Python >=3.8, simply install it with `pipx` or `pip`:
 
 ```bash
 pip install libre-chat
@@ -252,6 +254,5 @@ Inspired by:
 ## 📋 To do
 
 - [ ] Try with 70B model
-- [ ] Try building a vectorstore from new data
-- [ ] Speed up inference
-- [ ] Create better UI with Svelte, served by FastAPI
+- [ ] Speed up inference, better use of GPUs
+- [ ] Add support for returning sources in UI when using documents-based QA

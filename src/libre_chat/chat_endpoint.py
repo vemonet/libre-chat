@@ -81,7 +81,6 @@ class ChatEndpoint(FastAPI):
             gradio_app(self.llm),
         )
 
-        # self.mount("/static", StaticFiles(directory="src/libre_chat/static"), name="static")
         templates = Jinja2Templates(directory="src/libre_chat/templates")
 
         @self.get("/", response_class=HTMLResponse, include_in_schema=False)

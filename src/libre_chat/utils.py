@@ -21,7 +21,6 @@ class Prompt:
     top_k: Optional[int] = None
 
 
-# log_format = "%(levelprefix)s [%(asctime)s] [%(module)s:%(funcName)s] %(message)s"
 log_format = "%(levelprefix)s [%(asctime)s] %(message)s [%(module)s:%(funcName)s]"
 log = logging.getLogger(__name__)
 log.propagate = False
