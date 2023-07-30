@@ -1,9 +1,9 @@
 [![Version](https://img.shields.io/pypi/v/libre-chat)](https://pypi.org/project/libre-chat) [![Python versions](https://img.shields.io/pypi/pyversions/libre-chat)](https://pypi.org/project/libre-chat) [![MIT license](https://img.shields.io/pypi/l/libre-chat)](https://github.com/vemonet/libre-chat/blob/main/LICENSE)
 
 !!! warning "Early stage"
-	⚠️ Development on this project has just started, use it with caution
+	Development on this project has just started, use it with caution
 
-Easily configure and deploy a **fully self-hosted chat web service** based on open source Large Language Models (LLMs), such as llama2.
+Easily configure and deploy a **fully self-hosted chat web service** based on open source Large Language Models (LLMs), such as [Llama 2](https://ai.meta.com/llama/).
 
 Available as a `pip` package 🐍, or `docker` image 🐳
 

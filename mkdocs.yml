@@ -53,7 +53,7 @@ nav:
     - Configure:
       - 💬 Conversational agent: configure-conversation.md
       - 📚️ Documents-based QA: configure-documents-qa.md
-    - Usage:
+    - Deploy:
       - 🐳 With Docker: use-docker.md
       - 🐍 With pip: use-pip.md
     - 🛠️ Development: development.md

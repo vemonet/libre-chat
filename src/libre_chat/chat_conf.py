@@ -19,7 +19,7 @@ class SettingsInfo(BaseSettings):
     examples: List[str] = ["What is the capital of the Netherlands?"]
     title: str = "🦙 Libre Chat"
     version: str = "0.1.0"
-    description: str = """Open source and free chatbot powered by LangChain and llama2.
+    description: str = """Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama).
 
 See: [💻 UI](/) | [📡 API](/docs) | [📚 Source code](https://github.com/vemonet/libre-chat)"""
     public_url: str = "https://your-endpoint-url"

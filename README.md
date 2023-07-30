@@ -13,7 +13,7 @@
 
 > ⚠️ Development on this project has just started, use it with caution
 
-Easily configure and deploy a **fully self-hosted chat web service** based on open source Large Language Models (LLMs), such as llama2.
+Easily configure and deploy a **fully self-hosted chat web service** based on open source Large Language Models (LLMs), such as Llama 2.
 
 - 🌐 Free and Open Source chatbot web service with UI and API
 - 🏡 Fully self-hosted, not tied to any service, and offline capable. Forget about API keys! Models and embeddings can be pre-downloaded, and the training and inference processes can run off-line if necessary.
@@ -91,7 +91,7 @@ info:
   title: "🦙 Libre Chat"
   version: "0.1.0"
   description: |
-    Open source and free chatbot powered by LangChain and llama2.
+    Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama).
 
     See: [💻 UI](/) | [📡 API](/docs) | [📚 Source code](https://github.com/vemonet/libre-chat)
   examples:

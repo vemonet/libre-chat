@@ -11,7 +11,7 @@ from libre_chat.chat_endpoint import ChatEndpoint
 from libre_chat.llm import Llm
 from libre_chat.utils import BOLD, END, log, log_format
 
-cli = typer.Typer(help="Deploy API and web UI for LLMs, such as llama2, using langchain.")
+cli = typer.Typer(help="Deploy API and web UI for LLMs, such as Llama 2, using langchain.")
 
 
 @cli.command("start")
