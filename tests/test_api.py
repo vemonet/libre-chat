@@ -7,7 +7,7 @@ from tests.main import app
 client = TestClient(app)
 
 
-def test_post_prompt_conversational() -> None:
+def test_post_prompt_conversation() -> None:
     """Test POST prompt using model with a generic LLM"""
     prompt = {"prompt": "What is the capital of the Netherlands?"}
     response = client.post(
@@ -20,7 +20,7 @@ def test_post_prompt_conversational() -> None:
     assert "amsterdam" in resp["result"].lower()
 
 
-def test_get_prompt_conversational() -> None:
+def test_get_prompt_conversation() -> None:
     """Test GET prompt using model with a generic LLM"""
     prompt = {"prompt": "What is the capital of the Netherlands?"}
     response = client.get("/prompt", params={"prompt": prompt})

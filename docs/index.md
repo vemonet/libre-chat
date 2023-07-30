@@ -1,8 +1,5 @@
 [![Version](https://img.shields.io/pypi/v/libre-chat)](https://pypi.org/project/libre-chat) [![Python versions](https://img.shields.io/pypi/pyversions/libre-chat)](https://pypi.org/project/libre-chat) [![Image size](https://ghcr-badge.egpl.dev/vemonet/libre-chat/size)](https://github.com/vemonet/libre-chat/pkgs/container/libre-chat){:target="_blank"} [![MIT license](https://img.shields.io/pypi/l/libre-chat)](https://github.com/vemonet/libre-chat/blob/main/LICENSE.txt)
 
-!!! warning "Early stage"
-	Development on this project has just started, use it with caution
-
 Easily configure and deploy a **fully self-hosted chatbot web service** based on open source Large Language Models (LLMs), such as [Llama 2](https://ai.meta.com/llama/), without the need for knowledge in machine learning or programmation.
 
 - 🌐 Free and Open Source chatbot web service with UI and API
@@ -10,8 +7,8 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 - 🚀 Easy to setup, no need to program, just configure the service with a [YAML](https://yaml.org/) file, and start the chat web service with 1 command
 - 📦 Available as a `pip` package 🐍, or `docker` image 🐳
 - ⚡ No need for GPU, this will work even on your laptop CPU (but can take up to 1min to answer on recent laptops, works better on a server)
-- 🦜 Use [`LangChain`](https://python.langchain.com) to support performant open source models inference: all [Llama-2-GGML](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)/[13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf)/[70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf)), all [Llama-2-GPTQ](https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ)
-- 🤖 Various type of agents can be deployed:
+- 🦜 Use [`LangChain`](https://python.langchain.com) to support performant open source models inference: all **Llama 2 GGML** ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) | [13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf) | [70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf)), all **Llama 2 GPTQ** ([7B](https://huggingface.co/TheBloke/Llama-2-7B-chat-GPTQ) | [13B](https://huggingface.co/TheBloke/Llama-2-13B-chat-GPTQ) | [70B](https://huggingface.co/TheBloke/Llama-2-70B-chat-GPTQ))
+- 🤖 Various types of agents can be deployed:
     - **💬 Generic conversation**: do not need any additional training, just configure settings such as the template prompt
     - **📚 Documents-based question answering**: automatically build similarity vectors from locally provided PDF documents, the chatbot will use them to answer your question, and return which documents were used to generate the answer.
 
@@ -21,6 +18,9 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 ![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/assets/screenshot.png)
 
 ![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/assets/screenshot-light.png)
+
+!!! warning "Early stage"
+	Development on this project has just started, use it with caution
 
 ## ℹ️ How it works
 
@@ -37,6 +37,16 @@ Seasoned developers can also manipulate LLM models, and deploy the API in python
 !!! help "Report issues"
 
     Feel free to create [issues on GitHub](https://github.com/vemonet/libre-chat/issues){:target="_blank"}, if you are facing problems, have a question, or would like to see a feature implemented. Pull requests are welcome!
+
+## 📥 Download supported models
+
+* Llama 2 GGML: [7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) | [13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf) | [70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf)
+
+* Llama 2 GPTQ: [7B](https://huggingface.co/TheBloke/Llama-2-7B-chat-GPTQ) | [13B](https://huggingface.co/TheBloke/Llama-2-13B-chat-GPTQ) | [70B](https://huggingface.co/TheBloke/Llama-2-70B-chat-GPTQ)
+
+!!! Question "Supporting other models"
+
+    Let us know if you managed to run other models with Libre Chat, or if you would like to see a specific model supported.
 
 <!--
 

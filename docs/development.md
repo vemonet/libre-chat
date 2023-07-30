@@ -20,13 +20,7 @@ For development we use [Hatch](https://hatch.pypa.io), this will automatically h
 pipx install hatch
 ```
 
-Download pre-trained model and embeddings for local development:
-
-```bash
-tests/download.sh
-```
-
-??? note "Optionally you can improve `hatch` terminal completion"
+??? info "Optionally you can enable `hatch` terminal completion"
 
     See the [official documentation](https://hatch.pypa.io/latest/cli/about/#tab-completion) for more details. For ZSH you can run these commands:
 
@@ -38,13 +32,13 @@ tests/download.sh
 
 ## 🧑‍💻 Development workflow
 
-Start a conversational chat web service in development, without vectorstore:
+Start a conversational chat web service, without vectorstore:
 
 ```bash
 hatch run dev
 ```
 
-Start a documents-based question answering agent in development, using a vectorstore:
+Start a documents-based question answering agent, using a vectorstore:
 
 ```bash
 hatch run vector
@@ -52,7 +46,7 @@ hatch run vector
 
 ## ✅ Run the tests
 
-Make sure the existing tests still work by running the test suite and linting checks. Note that any pull requests to the repository on github will automatically trigger running of the test suite.
+Make sure the existing tests still work by running the test suite, types, and linting checks. Note that any pull requests to the repository on github will automatically trigger running of the test suite.
 
 Run the tests locally:
 
@@ -60,35 +54,31 @@ Run the tests locally:
 hatch run test
 ```
 
-To display all logs when debugging:
+Run only a specific test, and display all logs:
 
 ```bash
-hatch run test -s
+hatch run test tests/test_api.py::test_post_prompt_conversation -s
 ```
 
-Run the tests on multiple python versions:
+??? example "Run the tests on the different versions of python available on your machine"
 
-```bash
-hatch run all:test
-```
+    Not required as it is done by the GitHub Actions workflow, but can be useful for debugging:
 
-Run only a specific test:
-
-```bash
-hatch run test tests/test_api.py::test_post_prompt_conversational
-```
+    ```bash
+    hatch run all:test
+    ```
 
 ## 📖 Generate docs
 
 The documentation (this website) is automatically generated from the markdown files in the `docs` folder and python docstring comments, and published by a GitHub Actions workflow.
 
-Serve the docs on [http://localhost:8001](http://localhost:8001){:target="_blank"}
+To check it locally, serve the docs on [http://localhost:8001](http://localhost:8001){:target="_blank"} with:
 
 ```bash
 hatch run docs
 ```
 
-### ♻️ Reset the environment
+## ♻️ Reset the environment
 
 In case you are facing issues with dependencies not updating properly you can easily reset the virtual environment with:
 
@@ -104,8 +94,41 @@ hatch -v env create
 
 ## 🏷️ Publish a new release
 
+The deployment of new releases is done automatically by a GitHub Actions workflow when a new release is created on GitHub. To release a new version:
+
 1. Make sure the `PYPI_TOKEN` secret has been defined in the GitHub repository (in Settings > Secrets > Actions). You can get an API token from PyPI at [pypi.org/manage/account](https://pypi.org/manage/account).
-2. Increment the `__version__` in `libre_chat/__init__.py`
-3. Push to GitHub
-4. Create a new release on GitHub
-5. A GitHub Action workflow will automatically publish the new version to PyPI
+
+2. Increment the `version` number in the `src/libre_chat/__init__.py` file:
+
+    ```bash
+    hatch version 0.1.0
+    # Or bump using semver: patch, minor, major
+    hatch version patch
+    ```
+
+3. Commit, push, and create a new release on GitHub, which will automatically trigger a workflow to publish the new release to PyPI.
+
+??? bug "Or perform the release locally"
+
+    1. Update the version:
+
+        ```bash
+        hatch version 0.1.0
+        # Or bump using semver: patch, minor, major
+        hatch version patch
+        ```
+
+    2. Build and publish:
+
+        ```bash
+        hatch build
+        hatch publish
+        ```
+
+    3. Create the release on GitHub, [manually](https://github.com/vemonet/libre-chat/releases/new) or with the [`gh` CLI](https://cli.github.com/):
+
+        ```bash
+        gh release create
+        ```
+
+<!-- Admonition blocks: https://squidfunk.github.io/mkdocs-material/reference/admonitions/#supported-types -->

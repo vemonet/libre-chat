@@ -17,8 +17,8 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 - 🚀 Easy to setup, no need to program, just configure the service with a [YAML](https://yaml.org/) file, and start it with 1 command
 - 📦 Available as a `pip` package 🐍, or `docker` image 🐳
 - ⚡ No need for GPU, this will work even on your laptop CPU (but can take up to 1min to answer on recent laptops, works better on a server)
-- 🦜 Use [`LangChain`](https://python.langchain.com) to support performant open source models inference: all [Llama-2-GGML](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)/[13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf)/[70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf)), all [Llama-2-GPTQ](https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ)
-- 🤖 Various type of agents can be deployed:
+- 🦜 Use [`LangChain`](https://python.langchain.com) to support performant open source models inference: all **Llama 2 GGML** ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) | [13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf) | [70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf)), all [Llama 2 GPTQ](https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ)
+- 🤖 Various types of agents can be deployed:
   - **💬 Generic conversation**: do not need any additional training, just configure settings such as the template prompt
   - **📚 Documents-based question answering**: automatically build similarity vectors from locally provided PDF documents, the chatbot will use them to answer your question, and return which documents were used to generate the answer.
 - 🪶 Modern and lightweight chat web interface, working as well on desktop as on mobile, with support for light/dark theme
@@ -91,9 +91,9 @@ info:
   title: "Libre Chat"
   version: "0.1.0"
   description: |
-    Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama).
+    Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama)
 
-    See: [💻 UI](/) | [📡 API](/docs) | [📚 Source code](https://github.com/vemonet/libre-chat)
+    [💻 UI](/) | [📡 API](/docs)
   examples:
   - "What is the capital of the Netherlands?"
   - "How can I create a logger with timestamp using python logging?"
@@ -245,16 +245,6 @@ Manually trigger installing the dependencies in a local virtual environment:
 ```bash
 hatch -v env create
 ```
-
-### 🏷️ New release process
-
-The deployment of new releases is done automatically by a GitHub Action workflow when a new release is created on GitHub. To release a new version:
-
-1. Make sure the `PYPI_TOKEN` secret has been defined in the GitHub repository (in Settings > Secrets > Actions). You can get an API token from PyPI at [pypi.org/manage/account](https://pypi.org/manage/account).
-2. Increment the `version` number in the `src/libre_chat/__init__.py` file.
-3. Create a new release on GitHub, which will automatically trigger the publish workflow, and publish the new release to PyPI.
-
-You can also manually trigger the workflow from the Actions tab in your GitHub repository webpage.
 
 ## 🤝 Credits
 

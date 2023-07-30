@@ -2,9 +2,13 @@ The whole deployment can be configured from a YAML file: paths to the model and 
 
 Libre Chat can be used to train and deploy a **documents-based question answering agent**
 
-When starting the service Libre Chat will automatically check if the `vectorstore` is already available, if not, it will build it from the provided `documents`. It currently only supports PDF, but more options could be easily added, let us know if you need something in the issues.
+When starting the service Libre Chat will automatically check if the `vectorstore` is already available, if not, it will build it from the provided `documents`.
 
-Below is an example of configuration using the Llama 2 7B GGML model, with a FAISS vectorstore, to deploy a question answering agent that will source its answers from the documents provided in the `./documents` folder:
+!!! Question "Document types to support"
+
+    We currently only support PDF, but more options could be easily added, let us know if you need something in the [issues](https://github.com/vemonet/libre-chat/issues).
+
+Below is an example of configuration using the Llama 2 7B GGML model, with a Faiss vectorstore, to deploy a question answering agent that will source its answers from the documents provided in the `./documents` folder:
 
 ```yaml title="chat.yml"
 llm:
@@ -44,9 +48,9 @@ info:
   title: "Libre Chat"
   version: "0.1.0"
   description: |
-    Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama).
+    Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama)
 
-    See: [💻 UI](/) | [📡 API](/docs) | [📚 Source code](https://github.com/vemonet/libre-chat)
+    [💻 UI](/) | [📡 API](/docs)
   examples:
   - What is the capital of the Netherlands?
   - How can I create a logger with timestamp using python logging?

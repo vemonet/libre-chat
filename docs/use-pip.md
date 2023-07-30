@@ -2,6 +2,10 @@
 
 `libre-chat` is tested on Linux and Windows. Tests fails on MacOS, please let us know if you had any chances running it on your Mac.
 
+!!! Tip "Production deployment"
+
+    When deploying in production it is recommended to use [docker](https://www.docker.com), or directly [gunicorn](https://gunicorn.org), to handle many requests. The CLI is mainly used for local testing and building vectorstores.
+
 ## 📦 Install
 
 Install from [PyPI](https://pypi.org/project/libre-chat/){:target="_blank"} with `pipx` or `pip`:

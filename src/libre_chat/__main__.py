@@ -28,7 +28,6 @@ def start(
     log_config = uvicorn.config.LOGGING_CONFIG
     log_config["formatters"]["access"]["fmt"] = log_format
     log_config["formatters"]["default"]["fmt"] = log_format
-
     conf = parse_config(config)
     llm = Llm(conf=conf)
     app = ChatEndpoint(llm=llm, conf=conf)
@@ -39,7 +38,6 @@ def start(
         reload=False,
         log_level=log_level,
         workers=workers,
-        # log_config=log_config,
     )
 
 

@@ -11,8 +11,9 @@ theme:
   name: "material"
   favicon: assets/logo.png
   logo: assets/logo.png
-  # icon:
-  #   logo: material/microscope
+  icon:
+    admonition:
+      server: material/server
   language: en
   # https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/#primary-color
   palette:
@@ -29,7 +30,9 @@ theme:
         icon: material/weather-sunny
         name: Switch to light mode
   features:
+    - content.code.copy
     - content.code.annotate
+    # - content.code.select # Still experimental
     # - content.tabs.link
     # - header.autohide
     # - navigation.expand
@@ -91,7 +94,12 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.details
+  - abbr # TODO: Not working
+  - pymdownx.snippets:
+      auto_append:
+        - docs/includes/abbreviations.md
   - attr_list
+  - md_in_html
   - smarty
 
 

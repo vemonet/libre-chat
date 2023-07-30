@@ -1,5 +1,7 @@
 [![Image size](https://ghcr-badge.egpl.dev/vemonet/libre-chat/size)](https://github.com/vemonet/libre-chat/pkgs/container/libre-chat){:target="_blank"}
 
+Libre Chat is available as a [docker image](https://github.com/vemonet/libre-chat/pkgs/container/libre-chat), it is recommended to use docker for deploying in production as it uses gunicorn to run multiple workers.
+
 ## ⚡ Quickstart
 
 If you just want to quickly deploy it using the pre-trained model `Llama-2-7B-Chat-GGML`, you can use docker:
@@ -22,6 +24,8 @@ docker run -it -p 8000:8000 ghcr.io/vemonet/libre-chat:main
           - ./:/app # Share the whole directory with chat.yml, models, vectorstore
         ports:
           - 8000:8000
+        environment:
+          - LIBRECHAT_WORKERS=8
     ```
 
 3. Start your chat web service with:

@@ -1,6 +1,6 @@
 Create a `chat.yml` file with your configuration before starting the web service.
 
-Below is an example of configuration using the llama-2 7B GGML model, without vectorstore, to deploy a **generic conversational agent**
+Below is an example of configuration using the Llama 2 7B GGML model, without vectorstore, to deploy a **generic conversational agent**
 
 ```yaml title="chat.yml"
 llm:
@@ -39,9 +39,9 @@ info:
   title: "Libre Chat"
   version: "0.1.0"
   description: |
-    Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama).
+    Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama)
 
-    See: [💻 UI](/) | [📡 API](/docs) | [📚 Source code](https://github.com/vemonet/libre-chat)
+    [💻 UI](/) | [📡 API](/docs)
   examples:
   - "What is the capital of the Netherlands?"
   - "How can I create a logger with timestamp using python logging?"
