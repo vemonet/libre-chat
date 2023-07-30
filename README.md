@@ -6,7 +6,7 @@
 
 [![PyPI - Version](https://img.shields.io/pypi/v/libre-chat.svg?logo=pypi&label=PyPI&logoColor=silver)](https://pypi.org/project/libre-chat/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/libre-chat.svg?logo=python&label=Python&logoColor=silver)](https://pypi.org/project/libre-chat/)
-[![license](https://img.shields.io/pypi/l/libre-chat.svg?color=%2334D058)](https://github.com/vemonet/libre-chat/blob/main/LICENSE.txt)
+[![License](https://img.shields.io/pypi/l/libre-chat)](https://github.com/vemonet/libre-chat/blob/main/LICENSE.txt)
 [![code style - black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 </div>
@@ -18,6 +18,7 @@ Easily configure and deploy a **fully self-hosted chat web service** based on op
 - 🌐 Free and Open Source chatbot web service with UI and API
 - 🏡 Fully self-hosted, not tied to any service, and offline capable. Forget about API keys! Models and embeddings can be pre-downloaded, and the training and inference processes can run off-line if necessary.
 - 🧞 Easy to setup, no need to program, just configure the service with a [YAML](https://yaml.org/) file, and start it in 1 command
+- 📦 Available as a `pip` package 🐍, or `docker` image 🐳
 - ⚡ No need for GPU, this will work even on your laptop CPU (but takes about 1min to answer on recent laptops)
 - 🦜 Use [`LangChain`](https://python.langchain.com) to support performant open source models inference:
   - all [Llama-2-GGML](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)/[13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf)/[70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf))
@@ -192,7 +193,7 @@ pipx install hatch
 Download pre-trained model and embeddings for local development:
 
 ```bash
-./download.sh
+tests/download.sh
 ```
 
 ### 🛩️ Run dev API

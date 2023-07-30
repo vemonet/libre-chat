@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 name = "libre-chat"
-description = "Free and Open Source Large Language Model (LLM) chatbot web UI and API. Self-hosted, offline capable and easy to setup. Powered by LangChain and llama2."
+description = "Free and Open Source Large Language Model (LLM) chatbot web UI and API. Self-hosted, offline capable and easy to setup. Powered by LangChain and Llama 2."
 readme = "README.md"
 license = { file = "LICENSE.txt" }
 authors = [
@@ -87,12 +87,11 @@ post-install-commands = [
 ]
 
 [tool.hatch.envs.default.scripts]
-# dev = "python tests/dev.py {args}"
 dev = "uvicorn tests.main:app --reload {args}"
 vector = "libre-chat start config/chat-vectorstore-qa.yml"
 fmt = [
     "pre-commit run --all --all-files",
-    # "myp  y",
+    # "mypy",
 ]
 test = [
     "fmt",
@@ -113,15 +112,8 @@ python = ["3.8", "3.9", "3.10", "3.11"]
 
 
 ## TOOLS
-# [tool.hatch.build]
-# sources = ["src/libre_chat"]
-
 [tool.hatch.version]
 path = "src/libre_chat/__init__.py"
-
-# If you need to import packages from git URLs
-# [tool.hatch.metadata]
-# allow-direct-references = true
 
 [tool.coverage.run]
 source = ["src"]
@@ -214,3 +206,9 @@ ignore = [
 
 [tool.ruff.mccabe]
 max-complexity = 10
+
+# If you need to import packages from git URLs
+# [tool.hatch.metadata]
+# allow-direct-references = true
+# [tool.hatch.build]
+# sources = ["src/libre_chat"]

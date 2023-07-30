@@ -47,7 +47,7 @@ jobs:
     - name: Install dependencies
       run: |
         pipx install hatch
-        ./download.sh
+        tests/download.sh
 
     - name: Test with coverage
       run: |
@@ -88,7 +88,7 @@ jobs:
 
 
   update-docs:
-    name: 📖 Update docs website
+    name: 📚 Update docs website
     if: ${{ github.event_name == 'push' }}
     needs: [ tests, tests-download, codeql ]
     runs-on: ubuntu-latest

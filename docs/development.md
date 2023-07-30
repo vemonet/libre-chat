@@ -20,7 +20,7 @@ pipx install hatch
 Download pre-trained model and embeddings for local development:
 
 ```bash
-./download.sh
+tests/download.sh
 ```
 
 ??? note "Optionally you can improve `hatch` terminal completion"

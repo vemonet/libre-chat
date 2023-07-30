@@ -56,7 +56,7 @@ info:
   license_info:
     name: "MIT license"
     url: "https://raw.github.com/vemonet/libre-chat/main/LICENSE.txt"
-  max_workers: 4
+  workers: 4
 ```
 
 If no files are found at the path provided, e.g. `model_path`, and a download URL has been defined, e.g. `model_download`, Libre Chat will automatically download the file from the provided URL, and unzip it if it is a `.zip` file.

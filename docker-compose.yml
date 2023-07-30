@@ -5,11 +5,11 @@ services:
     # build: .
     image: ghcr.io/vemonet/libre-chat:main
     volumes:
-    - ./chat.yml:/app/chat.yml
-    # - ./models:/app/models
-    # - ./:/app
+      - ./:/app # Share the whole directory with chat.yml, models, vectorstore
     ports:
       - 8000:8000
+    environment:
+      - LIBRECHAT_WORKERS=8
     # entrypoint: uvicorn tests.main:app --reload
     # networks:
     #   - no-internet

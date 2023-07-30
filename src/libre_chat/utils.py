@@ -53,8 +53,8 @@ def download_file(url, path):
     log.info(f"✅ Downloaded: {url} in {path}")
 
 
-def parallel_download(files_list: List[Dict[str, str]], max_workers: int = 4):
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:  # Adjust the number of workers as needed
+def parallel_download(files_list: List[Dict[str, str]], workers: int = 4):
+    with ThreadPoolExecutor(max_workers=workers) as executor:  # Adjust the number of workers as needed
         futures = []
         for f in files_list:
             if not f["path"]:

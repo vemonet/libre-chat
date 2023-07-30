@@ -77,7 +77,7 @@ class Llm:
         if not os.path.exists(self.documents_path):
             os.makedirs(self.documents_path)
 
-        os.environ["NUMEXPR_MAX_THREADS"] = str(self.conf.info.max_workers)
+        os.environ["NUMEXPR_MAX_THREADS"] = str(self.conf.info.workers)
 
         if not self.template_prompt:
             if self.vector_path:
@@ -101,7 +101,7 @@ class Llm:
         ddl_list.append({"url": self.model_download, "path": self.model_path})
         ddl_list.append({"url": self.embeddings_download, "path": self.embeddings_path})
         ddl_list.append({"url": self.vector_download, "path": self.vector_path})
-        parallel_download(ddl_list, self.conf.info.max_workers)
+        parallel_download(ddl_list, self.conf.info.workers)
 
     def setup_dbqa(self):
         """Setup the model and vector db for QA"""

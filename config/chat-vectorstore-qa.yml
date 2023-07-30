@@ -49,4 +49,4 @@ info:
   license_info:
     name: "MIT license"
     url: "https://raw.github.com/vemonet/libre-chat/main/LICENSE.txt"
-  max_workers: 4
+  workers: 4
