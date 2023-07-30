@@ -1,3 +1,5 @@
+[![Image size](https://ghcr-badge.egpl.dev/vemonet/libre-chat/size)](https://github.com/vemonet/libre-chat/pkgs/container/libre-chat){:target="_blank"}
+
 ## ⚡ Quickstart
 
 If you just want to quickly deploy it using the pre-trained model `Llama-2-7B-Chat-GGML`, you can use docker:

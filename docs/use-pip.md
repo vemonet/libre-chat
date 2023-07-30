@@ -1,6 +1,8 @@
+[![Version](https://img.shields.io/pypi/v/libre-chat)](https://pypi.org/project/libre-chat) [![Python versions](https://img.shields.io/pypi/pyversions/libre-chat)](https://pypi.org/project/libre-chat)
+
 ## 📦 Install
 
-This package requires Python >=3.8, simply install it from [PyPI](https://pypi.org/project/libre-chat/){:target="_blank"} with `pipx` or `pip`:
+Install from [PyPI](https://pypi.org/project/libre-chat/){:target="_blank"} with `pipx` or `pip`:
 
 ```bash
 pip install libre-chat

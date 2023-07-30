@@ -12,8 +12,6 @@ Easily configure and deploy a **fully self-hosted chat web service** based on op
 
 </div>
 
-> ⚠️ Development on this project has just started, use it with caution
-
 - 🌐 Free and Open Source chatbot web service with UI and API
 - 🏡 Fully self-hosted, not tied to any service, and offline capable. Forget about API keys! Models and embeddings can be pre-downloaded, and the training and inference processes can run off-line if necessary.
 - 🧞 Easy to setup, no need to program, just configure the service with a [YAML](https://yaml.org/) file, and start it in 1 command
@@ -29,6 +27,8 @@ Easily configure and deploy a **fully self-hosted chat web service** based on op
 ![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/assets/screenshot.png)
 
 ![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/assets/screenshot-light.png)
+
+> ⚠️ Development on this project has just started, use it with caution
 
 ## 📖 Documentation
 
