@@ -3,7 +3,7 @@
 !!! warning "Early stage"
 	Development on this project has just started, use it with caution
 
-Easily configure and deploy a **fully self-hosted chat web service** based on open source Large Language Models (LLMs), such as [Llama 2](https://ai.meta.com/llama/).
+Easily configure and deploy a **fully self-hosted chat web service** based on open source Large Language Models (LLMs), such as [Llama 2](https://ai.meta.com/llama/), without the need for knowledge in machine learning or programmation.
 
 - 🌐 Free and Open Source chatbot web service with UI and API
 - 🏡 Fully self-hosted, not tied to any service, and offline capable. Forget about API keys! Models and embeddings can be pre-downloaded, and the training and inference processes can run off-line if necessary.
@@ -14,8 +14,8 @@ Easily configure and deploy a **fully self-hosted chat web service** based on op
     - all [Llama-2-GGML](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)/[13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf)/[70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf))
     - all [Llama-2-GPTQ](https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ)
 - 🤖 Various type of agents can be deployed:
-    - **💬 Generic conversational agent**: without any specific additional training, just configure the template prompt and other settings
-    - **📚 Documents-based question answering agent**: automatically build similarity vectors from PDF documents, the chatbot will use them to answer your question, and return the documents used to find the answer.
+    - **💬 Generic conversation**: do not need any additional training, just configure settings such as the template prompt
+    - **📚 Documents-based question answering**: automatically build similarity vectors from locally provided PDF documents, the chatbot will use them to answer your question, and return which documents were used to generate the answer.
 
 - 🪶 Modern and lightweight chat web interface, working as well on desktop as on mobile, with support for light/dark theme
 
