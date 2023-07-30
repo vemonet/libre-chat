@@ -14,13 +14,15 @@ Easily configure and deploy a **fully self-hosted chat web service** based on op
 
 - 🌐 Free and Open Source chatbot web service with UI and API
 - 🏡 Fully self-hosted, not tied to any service, and offline capable. Forget about API keys! Models and embeddings can be pre-downloaded, and the training and inference processes can run off-line if necessary.
-- 🧞 Easy to setup, no need to program, just configure the service with a [YAML](https://yaml.org/) file, and start it in 1 command
+- 🧞 Easy to setup, no need to program, just configure the service with a [YAML](https://yaml.org/) file, and start it with 1 command
 - 📦 Available as a `pip` package 🐍, or `docker` image 🐳
-- ⚡ No need for GPU, this will work even on your laptop CPU (but takes about 1min to answer on recent laptops)
+- ⚡ No need for GPU, this will work even on your laptop CPU (but can take up to 1min to answer on recent laptops, works better on a server)
 - 🦜 Use [`LangChain`](https://python.langchain.com) to support performant open source models inference:
   - all [Llama-2-GGML](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)/[13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf)/[70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf))
   - all [Llama-2-GPTQ](https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ)
-- 📚 Possibility to automatically build similarity vectors from PDF documents, and use them to have the chatbot search documents for you.
+- 🤖 Various type of agents can be deployed:
+  - **💬 Generic conversational agent**: without any specific additional training, just configure the template prompt and other settings
+  - **📚 Documents-based question answering agent**: automatically build similarity vectors from PDF documents, the chatbot will use them to answer your question, and return the documents used to find the answer.
 - 🪶 Modern and lightweight chat web interface, working as well on desktop as on mobile, with support for light/dark theme
 
 

@@ -10,6 +10,7 @@ llm:
   model_download: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.ggmlv3.q3_K_L.bin
   temperature: 0.01
   max_new_tokens: 256
+
 template:
   # Always use input for the human input variable with a generic agent
   variables: [input, history]
@@ -19,6 +20,7 @@ template:
     {history}
     Human: {input}
     Assistant:
+
 vector:
   vector_path: null # Path to the vectorstore to do QA retrieval, e.g. ./vectorstore/db_faiss
   # Set to null to deploy a generic conversational agent
@@ -32,6 +34,7 @@ vector:
   vector_count: 2
   chunk_size: 500
   chunk_overlap: 50
+
 info:
   title: "🦙 Libre Chat"
   version: "0.1.0"
