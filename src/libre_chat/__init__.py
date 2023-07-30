@@ -5,4 +5,4 @@ from .llm import Llm
 from .chat_router import ChatRouter
 from .chat_endpoint import ChatEndpoint
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
