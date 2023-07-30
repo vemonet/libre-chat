@@ -117,8 +117,8 @@ python = ["3.8", "3.9", "3.10", "3.11"]
 path = "src/libre_chat/__init__.py"
 
 [tool.coverage.run]
-source = ["src"]
 branch = true
+# source = ["src"]
 
 [tool.coverage.report]
 omit = ["tests/*"]
