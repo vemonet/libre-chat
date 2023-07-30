@@ -1,5 +1,7 @@
 [![Version](https://img.shields.io/pypi/v/libre-chat)](https://pypi.org/project/libre-chat) [![Python versions](https://img.shields.io/pypi/pyversions/libre-chat)](https://pypi.org/project/libre-chat)
 
+`libre-chat` is tested on Linux and Windows. Tests fails on MacOS, please let us know if you had any chances running it on your Mac.
+
 ## 📦 Install
 
 Install from [PyPI](https://pypi.org/project/libre-chat/){:target="_blank"} with `pipx` or `pip`:

@@ -57,10 +57,12 @@
         <form class="p-4 flex border-t border-slate-400 dark:border-slate-500" id="chat-form">
             <div class="container flex mx-auto max-w-5xl">
                 <div id="user-input" contenteditable="true" style="height: max-content;"
-                    class="flex-grow px-4 py-2 border border-slate-400 dark:border-slate-500 rounded-lg focus:outline-none focus:ring focus:border-slate-500"
+                    class="flex-grow px-4 py-2 border border-slate-400 dark:border-slate-500 rounded-lg focus:outline-none focus:ring focus:ring-blue-200 dark:focus:ring-blue-400"
+                    placeholder="Send a message..."
                 ></div>
                 <button type="submit" id="submit-btn" class="ml-2 px-4 py-2 rounded-lg text-slate-500 bg-slate-200 hover:bg-slate-300 dark:text-slate-400 dark:bg-slate-700 dark:hover:bg-slate-600">
-                    <i class="fas fa-paper-plane"></i>
+                    <i id="send-icon" class="fas fa-paper-plane"></i>
+                    <i id="loading-spinner" class="hidden fas fa-spinner fa-spin"></i>
                 </button>
             </div>
         </form>
@@ -81,6 +83,8 @@
             const chatForm = document.getElementById("chat-form");
             const userInput = document.getElementById("user-input");
             const submitBtn = document.getElementById("submit-btn");
+            const sendIcon = document.getElementById("send-icon");
+            const loadingSpinner = document.getElementById("loading-spinner");
             const exampleButtons = document.getElementById("example-buttons");
             const exampleStrings = [
                 {% for example in examples %}
@@ -142,7 +146,10 @@
                     appendMessage(prompt, "user");
                     userInput.textContent = "";
                     fetchInProgress = true;
-                    showWarning("⏳ Thinking...");
+                    // showWarning("⏳ Thinking...");
+                    loadingSpinner.classList.remove("hidden");
+                    sendIcon.classList.add("hidden");
+                    submitBtn.disabled = true;
                     const params = {
                         prompt: prompt,
                     };
@@ -163,6 +170,9 @@
                         }).finally(() => {
                             chatContainer.scrollTop = chatContainer.scrollHeight
                             fetchInProgress = false; // Reset fetch in progress
+                            loadingSpinner.classList.add("hidden");
+                            sendIcon.classList.remove("hidden");
+                            submitBtn.disabled = false;
                             hideWarning();
                         });
                 }
@@ -179,6 +189,12 @@
                 event.preventDefault();
                 submitInput(userInput)
             });
+            // Add a placeholder when empty
+            function togglePlaceholder() {
+                if (userInput.textContent.trim() === "") userInput.innerHTML = "";
+            }
+            userInput.addEventListener("input", togglePlaceholder);
+            togglePlaceholder();
 
             // Light/dark theme setup, default to dark if nothing found
             const sunIcon = document.getElementById("sun-icon");
@@ -213,6 +229,11 @@
         }
         a:hover {
             color: #0056b3;
+        }
+        #user-input[placeholder]:empty:before {
+            content: attr(placeholder);
+            opacity: 0.6;
+            pointer-events: none;
         }
     </style>
 

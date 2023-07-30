@@ -8,18 +8,16 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/libre-chat.svg?logo=python&label=Python&logoColor=silver)](https://pypi.org/project/libre-chat/)
 [![License](https://img.shields.io/pypi/l/libre-chat)](https://github.com/vemonet/libre-chat/blob/main/LICENSE.txt)
 
-Easily configure and deploy a **fully self-hosted chat web service** based on open source Large Language Models (LLMs), such as [Llama 2](https://ai.meta.com/llama/), without the need for knowledge in machine learning or programmation.
+Easily configure and deploy a **fully self-hosted chatbot web service** based on open source Large Language Models (LLMs), such as [Llama 2](https://ai.meta.com/llama/), without the need for knowledge in machine learning or programmation.
 
 </div>
 
 - 🌐 Free and Open Source chatbot web service with UI and API
 - 🏡 Fully self-hosted, not tied to any service, and offline capable. Forget about API keys! Models and embeddings can be pre-downloaded, and the training and inference processes can run off-line if necessary.
-- 🧞 Easy to setup, no need to program, just configure the service with a [YAML](https://yaml.org/) file, and start it with 1 command
+- 🚀 Easy to setup, no need to program, just configure the service with a [YAML](https://yaml.org/) file, and start it with 1 command
 - 📦 Available as a `pip` package 🐍, or `docker` image 🐳
 - ⚡ No need for GPU, this will work even on your laptop CPU (but can take up to 1min to answer on recent laptops, works better on a server)
-- 🦜 Use [`LangChain`](https://python.langchain.com) to support performant open source models inference:
-  - all [Llama-2-GGML](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)/[13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf)/[70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf))
-  - all [Llama-2-GPTQ](https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ)
+- 🦜 Use [`LangChain`](https://python.langchain.com) to support performant open source models inference: all [Llama-2-GGML](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)/[13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf)/[70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf)), all [Llama-2-GPTQ](https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ)
 - 🤖 Various type of agents can be deployed:
   - **💬 Generic conversation**: do not need any additional training, just configure settings such as the template prompt
   - **📚 Documents-based question answering**: automatically build similarity vectors from locally provided PDF documents, the chatbot will use them to answer your question, and return which documents were used to generate the answer.
