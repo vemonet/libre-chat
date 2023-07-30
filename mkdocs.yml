@@ -18,13 +18,13 @@ theme:
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: light blue
+      primary: cyan
       toggle:
         icon: material/weather-night
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: light blue
+      primary: cyan
       toggle:
         icon: material/weather-sunny
         name: Switch to light mode
@@ -50,8 +50,13 @@ theme:
 nav:
   - About:
     - About: index.md
-    - Usage: usage.md
-    - Development: development.md
+    - Configure:
+      - 💬 Conversational agent: configure-conversation.md
+      - 📚️ Documents-based QA: configure-documents-qa.md
+    - Usage:
+      - 🐳 With Docker: use-docker.md
+      - 🐍 With pip: use-pip.md
+    - 🛠️ Development: development.md
   - Code reference:
       - LLM: Llm.md
       - LLM Endpoint: ChatEndpoint.md
@@ -83,6 +88,8 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.details
   - attr_list
   - smarty

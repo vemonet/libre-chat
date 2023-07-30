@@ -13,22 +13,26 @@
 
 > ⚠️ Development on this project has just started, use it with caution
 
-Easily configure and deploy a self-hosted chat web service based on open source Large Language Models (LLMs).
+Easily configure and deploy a **fully self-hosted chat web service** based on open source Large Language Models (LLMs), such as llama2.
 
 - 🌐 Free and Open Source chatbot web service with UI and API
-- 🏡 Fully self-hosted, not tied to any service, and offline capable. Models and embeddings are pre-downloaded, you are insured your prompts are not send to anyone, and it can run off-line if necessary. Forget about API keys!
-- 🧞 Easy to setup, no need to program, just configure the service with a YAML file, and start it in 1 command
+- 🏡 Fully self-hosted, not tied to any service, and offline capable. Forget about API keys! Models and embeddings can be pre-downloaded, and the training and inference processes can run off-line if necessary.
+- 🧞 Easy to setup, no need to program, just configure the service with a [YAML](https://yaml.org/) file, and start it in 1 command
 - ⚡ No need for GPU, this will work even on your laptop CPU (but takes about 1min to answer on recent laptops)
-- 🪶 Modern and lightweight chat web interface, working as well on desktop as on mobile, with support for light/dark theme
 - 🦜 Use [`LangChain`](https://python.langchain.com) to support performant open source models inference:
   - all [Llama-2-GGML](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)/[13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf)/[70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf))
   - all [Llama-2-GPTQ](https://huggingface.co/TheBloke/Llama-2-7b-Chat-GPTQ)
 - 📚 Possibility to automatically build similarity vectors from PDF documents, and use them to have the chatbot search documents for you.
+- 🪶 Modern and lightweight chat web interface, working as well on desktop as on mobile, with support for light/dark theme
 
 
 ![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/assets/screenshot.png)
 
 ![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/assets/screenshot-light.png)
+
+## 📖 Documentation
+
+For more details on how to use Libre Chat check the documentation at **[vemonet.github.io/libre-chat](http://vemonet.github.io/libre-chat)**
 
 ## 🐳 Deploy with docker
 
@@ -129,6 +133,12 @@ Provide a specific config file:
 libre-chat start config/chat-vectorstore-qa.yml
 ```
 
+For re-build of the vectorstore:
+
+```bash
+libre-chat build --vector vectorstore/db_faiss --documents documents
+```
+
 Get a full rundown of the available options with:
 
 ```bash
@@ -140,17 +150,21 @@ libre-chat --help
 Or you can use this package in python scripts:
 
  ```python
-from libre_chat.llm import Llm
-from libre_chat.chat_endpoint import ChatEndpoint
+import logging
 
-llm = Llm(
-    model_path="models/llama-2-7b-chat.ggmlv3.q3_K_L.bin",
+import uvicorn
+from libre_chat import ChatConf, ChatEndpoint, Llm
+
+logging.basicConfig(level=logging.getLevelName("INFO"))
+conf = ChatConf(
+	model_path="models/llama-2-7b-chat.ggmlv3.q3_K_L.bin",
     vector_path=None
 )
+llm = Llm(conf=conf)
 print(llm.query("What is the capital of the Netherlands?"))
 
 # Create and deploy a FastAPI app based on your LLM
-app = ChatEndpoint(llm=llm)
+app = ChatEndpoint(llm=llm, conf=conf)
 uvicorn.run(app)
  ```
 
@@ -189,7 +203,7 @@ hatch run dev
 
 ### ☑️ Run tests
 
-Make sure the existing tests still work by running the test suite and linting checks. Note that any pull requests to the fairworkflows repository on github will automatically trigger running of the test suite;
+Make sure the existing tests still work by running the test suite and linting checks. Note that any pull requests to the repository on github will automatically trigger running of the test suite;
 
 ```bash
 hatch run test
@@ -237,7 +251,7 @@ hatch -v env create
 The deployment of new releases is done automatically by a GitHub Action workflow when a new release is created on GitHub. To release a new version:
 
 1. Make sure the `PYPI_TOKEN` secret has been defined in the GitHub repository (in Settings > Secrets > Actions). You can get an API token from PyPI at [pypi.org/manage/account](https://pypi.org/manage/account).
-2. Increment the `version` number in the `pyproject.toml` file in the root folder of the repository.
+2. Increment the `version` number in the `src/libre_chat/__init__.py` file.
 3. Create a new release on GitHub, which will automatically trigger the publish workflow, and publish the new release to PyPI.
 
 You can also manually trigger the workflow from the Actions tab in your GitHub repository webpage.

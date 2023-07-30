@@ -1,0 +1,22 @@
+name: 💡 Feature request
+title: '💡 '
+description: Suggest an idea.
+labels: ['type: enhancement']
+
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the feature
+      description: What do you want to improve? Why?
+      placeholder: Feature description
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: An idea of implementation
+      description: Describe how you would implement it, if you have some ideas
+      placeholder: |
+        Your ideas, link to relevant packages...
