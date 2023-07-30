@@ -61,7 +61,8 @@ def build(
     if documents:
         conf.vector.documents_path = documents
     log.info(f"Vectorizing documents from {BOLD}{documents}{END} as vectorstore in {conf.vector.vector_path}")
-    shutil.rmtree(conf.vector.vector_path)
+    if conf.vector.vector_path:
+        shutil.rmtree(conf.vector.vector_path)
     llm = Llm(conf=conf)
     llm.build_vectorstore()
     log.info(f"Documents successfully vectorized in {BOLD}{conf.vector.vector_path}{END}")

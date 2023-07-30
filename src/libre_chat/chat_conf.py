@@ -8,8 +8,12 @@ from libre_chat.utils import BOLD, END, YELLOW, log
 
 
 class SettingsTemplate(BaseSettings):
-    prompt: Optional[str] = None
-    variables: Optional[List[str]] = None
+    variables: List[str] = ["input", "history"]
+    prompt: str = """Your are an assistant, please help me
+
+{history}
+Human: {input}
+Assistant:"""
 
     class Config:
         env_prefix = "librechat_"
@@ -80,7 +84,7 @@ class ChatConf(BaseSettings):
 default_conf = ChatConf()
 
 
-def parse_config(path: str = default_conf.config_path):
+def parse_config(path: str = default_conf.config_path) -> ChatConf:
     if os.path.exists(path):
         with open(path) as file:
             cfg = parse_yaml_raw_as(ChatConf, file.read())

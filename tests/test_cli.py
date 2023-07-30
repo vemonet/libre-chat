@@ -5,19 +5,19 @@ from libre_chat.__main__ import cli
 runner = CliRunner()
 
 
-def test_help():
+def test_help() -> None:
     result = runner.invoke(cli, ["--help"])
     assert result.exit_code == 0
 
 
-def test_version():
+def test_version() -> None:
     result = runner.invoke(cli, ["version"])
     assert result.exit_code == 0
 
 
-def test_build():
+def test_build() -> None:
     result = runner.invoke(cli, ["build"])
-    assert result.exit_code == 1
+    assert result.exit_code == 0
 
 
 # def test_start():

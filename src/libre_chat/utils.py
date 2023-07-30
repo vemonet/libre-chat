@@ -35,7 +35,7 @@ YELLOW = "\033[33m"
 CYAN = "\033[36m"
 
 
-def download_file(url, path):
+def download_file(url: str, path: str) -> None:
     ddl_path = f"{path}-ddl" if not url.endswith(".zip") else f"{path}.zip"
     log.info(f"📥 Downloading {url} to {ddl_path}")
     with requests.get(url, stream=True, timeout=10800) as response:  # 3h timeout
@@ -53,7 +53,7 @@ def download_file(url, path):
     log.info(f"✅ Downloaded: {url} in {path}")
 
 
-def parallel_download(files_list: List[Dict[str, str]], workers: int = 4):
+def parallel_download(files_list: List[Dict[str, Optional[str]]], workers: int = 4) -> None:
     with ThreadPoolExecutor(max_workers=workers) as executor:  # Adjust the number of workers as needed
         futures = []
         for f in files_list:

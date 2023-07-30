@@ -39,7 +39,7 @@ class ChatEndpoint(FastAPI):
         self.conf = conf if conf else default_conf
         self.examples = examples
         if not self.examples:
-            self.examples = conf.info.examples
+            self.examples = self.conf.info.examples
 
         # Instantiate FastAPI
         super().__init__(
@@ -84,7 +84,7 @@ class ChatEndpoint(FastAPI):
         templates = Jinja2Templates(directory="src/libre_chat/templates")
 
         @self.get("/", response_class=HTMLResponse, include_in_schema=False)
-        def chat_ui(request: Request):
+        def chat_ui(request: Request) -> Any:
             return templates.TemplateResponse(
                 "index.html",
                 {

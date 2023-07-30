@@ -1,7 +1,8 @@
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Union
 
-from fastapi import APIRouter, Body, Request, Response
+from fastapi import APIRouter, Body, Request
+from fastapi.responses import JSONResponse
 
 from libre_chat.chat_conf import ChatConf, default_conf
 from libre_chat.utils import Prompt
@@ -47,7 +48,7 @@ api_responses: Optional[Dict[Union[int, str], Dict[str, Any]]] = {
 @dataclass
 class PromptResponse:
     result: str
-    source_documents: Optional[List[Dict]] = None
+    source_documents: Optional[List[Dict[str, str]]] = None
 
 
 class ChatRouter(APIRouter):
@@ -60,7 +61,7 @@ class ChatRouter(APIRouter):
         *args: Any,
         llm: Any,
         path: str = "/prompt",
-        conf: ChatConf = None,
+        conf: Optional[ChatConf] = None,
         examples: Optional[List[str]] = None,
         **kwargs: Any,
     ) -> None:
@@ -89,13 +90,13 @@ class ChatRouter(APIRouter):
             description=self.description,
             response_model=PromptResponse,
         )
-        def get_prompt(request: Request, prompt: str = self.examples[0]) -> Response:
+        def get_prompt(request: Request, prompt: str = self.examples[0]) -> JSONResponse:
             """Send a prompt to the chatbot through HTTP GET operation.
 
             :param request: The HTTP GET request with a .body()
             :param prompt: Prompt to send to the LLM
             """
-            return self.llm.query(prompt)
+            return JSONResponse(self.llm.query(prompt))
 
         @self.post(
             self.path,
@@ -107,7 +108,7 @@ class ChatRouter(APIRouter):
         def post_prompt(
             request: Request,
             prompt: Prompt = Body(..., example=example_post),
-        ) -> List[Tuple[str, str]]:
+        ) -> JSONResponse:
             """Send a prompt to the chatbot through HTTP POST operation.
 
             :param request: The HTTP POST request with a .body()

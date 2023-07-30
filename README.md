@@ -7,13 +7,12 @@
 [![PyPI - Version](https://img.shields.io/pypi/v/libre-chat.svg?logo=pypi&label=PyPI&logoColor=silver)](https://pypi.org/project/libre-chat/)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/libre-chat.svg?logo=python&label=Python&logoColor=silver)](https://pypi.org/project/libre-chat/)
 [![License](https://img.shields.io/pypi/l/libre-chat)](https://github.com/vemonet/libre-chat/blob/main/LICENSE.txt)
-[![code style - black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+Easily configure and deploy a **fully self-hosted chat web service** based on open source Large Language Models (LLMs), such as Llama 2.
 
 </div>
 
 > ⚠️ Development on this project has just started, use it with caution
-
-Easily configure and deploy a **fully self-hosted chat web service** based on open source Large Language Models (LLMs), such as Llama 2.
 
 - 🌐 Free and Open Source chatbot web service with UI and API
 - 🏡 Fully self-hosted, not tied to any service, and offline capable. Forget about API keys! Models and embeddings can be pre-downloaded, and the training and inference processes can run off-line if necessary.

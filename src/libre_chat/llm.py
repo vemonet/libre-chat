@@ -1,6 +1,6 @@
 """Module: Open-source LLM setup"""
 import os
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import torch
 from langchain import PromptTemplate
@@ -65,7 +65,7 @@ class Llm:
         self.chunk_overlap = chunk_overlap if chunk_overlap else self.conf.vector.chunk_overlap
         self.max_new_tokens = max_new_tokens if max_new_tokens else self.conf.llm.max_new_tokens
         self.temperature = temperature if temperature else self.conf.llm.temperature
-        self.template_variables = template_variables if template_variables else self.conf.template.variables
+        self.template_variables: List[str] = template_variables if template_variables else self.conf.template.variables
         self.template_prompt = template_prompt if template_prompt else self.conf.template.prompt
 
         if torch.cuda.is_available():
@@ -95,7 +95,7 @@ class Llm:
             self.build_vectorstore()
         self.setup_dbqa()
 
-    def download_data(self):
+    def download_data(self) -> None:
         """Download data"""
         ddl_list = []
         ddl_list.append({"url": self.model_download, "path": self.model_path})
@@ -103,12 +103,13 @@ class Llm:
         ddl_list.append({"url": self.vector_download, "path": self.vector_path})
         parallel_download(ddl_list, self.conf.info.workers)
 
-    def setup_dbqa(self):
+    def setup_dbqa(self) -> None:
         """Setup the model and vector db for QA"""
         log.info(f"🤖 Loading CTransformers model from {BOLD}{self.model_path}{END}")
         # Instantiate local CTransformers model
-        llm = CTransformers(
+        llm = CTransformers(  # type: ignore
             model=self.model_path,
+            # model_file=self.model_path,
             model_type=self.model_type,
             config={"max_new_tokens": self.max_new_tokens, "temperature": self.temperature},
         )
@@ -132,7 +133,7 @@ class Llm:
                 llm=llm, prompt=self.template, verbose=True, memory=ConversationBufferMemory()
             )
 
-    def build_vectorstore(self, documents_path: Optional[str] = None):
+    def build_vectorstore(self, documents_path: Optional[str] = None) -> Optional[str]:
         """Build vectorstore from PDF documents with FAISS."""
         if self.vector_path and os.path.exists(self.vector_path):
             log.info(
@@ -146,18 +147,19 @@ class Llm:
             log.info(
                 f"🏗️  No vectorstore found at {self.vector_path}. Building the vectorstore from the {BOLD}{CYAN}{docs_count}{END} documents found in {BOLD}{documents_path}{END}"
             )
-            loader = DirectoryLoader(documents_path, glob="*.pdf", loader_cls=PyPDFLoader)
+            loader = DirectoryLoader(documents_path, glob="*.pdf", loader_cls=PyPDFLoader)  # type: ignore
             documents = loader.load()
             text_splitter = RecursiveCharacterTextSplitter(chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap)
             texts = text_splitter.split_documents(documents)
             embeddings = HuggingFaceEmbeddings(model_name=self.embeddings_path, model_kwargs={"device": self.device})
             vectorstore = FAISS.from_documents(texts, embeddings)
-            vectorstore.save_local(self.vector_path)
+            if self.vector_path:
+                vectorstore.save_local(self.vector_path)
         else:
             log.warn(f"⚠️ No documents found in {documents_path}, could not build the vectorstore")
         return self.vector_path
 
-    def query(self, prompt: str, history: Optional[List[Tuple[str, str]]] = None):
+    def query(self, prompt: str, history: Optional[List[Tuple[str, str]]] = None) -> Dict[str, str]:
         """Query the built LLM"""
         log.info(f"💬 Querying the LLM with prompt: {prompt}")
         if len(prompt) < 1:

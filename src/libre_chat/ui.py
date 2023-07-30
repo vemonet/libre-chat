@@ -1,8 +1,9 @@
 """Module: web UI for LLM"""
-from typing import List, Tuple
+from typing import Any, List, Tuple
 
 import gradio as gr
 
+from libre_chat.llm import Llm
 from libre_chat.utils import log
 
 # https://github.com/mainadennis/An-AI-Chatbot-in-Python-and-Flask/tree/main
@@ -10,8 +11,8 @@ from libre_chat.utils import log
 # https://www.codewithfaraz.com/content/133/create-your-own-chatbot-with-html-css-and-javascript
 
 
-def gradio_app(llm):
-    def get_chatbot_resp(message: str, history: List[Tuple[str, str]]) -> str:
+def gradio_app(llm: Llm) -> Any:
+    def get_chatbot_resp(message: str, history: List[Tuple[str, str]]) -> Any:
         log.debug(f"Running inference for: {message}, with message history: {history}")
         res = llm.query(message, history)
         # gradio auto add the response at the top of the list instead of the bottom
