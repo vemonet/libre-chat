@@ -6,8 +6,8 @@ services:
     image: ghcr.io/vemonet/libre-chat:main
     volumes:
       - ./:/app # Share the whole directory with chat.yml, models, vectorstore
-    ports:
-      - 8000:8000
+    # ports:
+    #   - 8000:8000
     shm_size: '16g'
     environment:
       - LIBRECHAT_WORKERS=8

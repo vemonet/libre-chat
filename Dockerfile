@@ -19,5 +19,4 @@ RUN pip install -e .
 
 ENV LIBRECHAT_WORKERS=8
 
-ENTRYPOINT [ "gunicorn", "tests.main:app", "-w", "$LIBRECHAT_WORKERS", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000" ]
-# ENTRYPOINT [ "uvicorn", "tests.main:app", "--host", "0.0.0.0" ]
+ENTRYPOINT [ "/app/start.sh" ]
