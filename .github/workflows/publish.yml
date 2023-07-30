@@ -15,6 +15,7 @@ jobs:
       contents: read
       packages: write
       id-token: write
+      pages: write
 
   publish:
     needs: tests
