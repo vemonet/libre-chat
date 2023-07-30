@@ -2,9 +2,9 @@ The whole deployment can be configured from a YAML file: paths to the model and 
 
 Libre Chat can be used to train and deploy a **documents-based question answering agent**
 
-When starting the service Libre Chat will automatically check if the *vectorstore* is already available, if not, it will build it from the provided *documents*. It currently only supports PDF, but more options could be easily added, let us know if you need something in the issues.
+When starting the service Libre Chat will automatically check if the `vectorstore` is already available, if not, it will build it from the provided `documents`. It currently only supports PDF, but more options could be easily added, let us know if you need something in the issues.
 
-Below is an example of configuration using the llama-2 7B GGML model, with a FAISS vectorstore, to deploy a question answering agent that will source its answers from the documents provided:
+Below is an example of configuration using the Llama 2 7B GGML model, with a FAISS vectorstore, to deploy a question answering agent that will source its answers from the documents provided in the `./documents` folder:
 
 ```yaml title="chat.yml"
 llm:
@@ -58,3 +58,5 @@ info:
     url: "https://raw.github.com/vemonet/libre-chat/main/LICENSE.txt"
   max_workers: 4
 ```
+
+If no files are found at the path provided, e.g. `model_path`, and a download URL has been defined, e.g. `model_download`, Libre Chat will automatically download the file from the provided URL, and unzip it if it is a `.zip` file.

@@ -3,7 +3,7 @@ on: [push, pull_request, workflow_call, workflow_dispatch]
 
 jobs:
 
-  CodeQL-Analysis:
+  codeql:
     name: 🔎 CodeQL analysis
     runs-on: ubuntu-latest
     permissions:
@@ -90,7 +90,7 @@ jobs:
   update-docs:
     name: 📖 Update docs website
     if: ${{ github.event_name == 'push' }}
-    needs: [ tests, tests-download ]
+    needs: [ tests, tests-download, codeql ]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -134,7 +134,7 @@ jobs:
 
   build:
     name: 🐳 Build and publish docker image
-    needs: [ tests, tests-download ]
+    needs: [ tests, tests-download, codeql ]
     runs-on: ubuntu-latest
     permissions:
       contents: read

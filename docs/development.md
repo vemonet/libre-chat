@@ -11,137 +11,69 @@ git clone https://github.com/vemonet/libre-chat
 cd libre-chat
 ```
 
-To install the project for development you can either use [`venv`](https://docs.python.org/3/library/venv.html) to create a virtual environment yourself, or use [`hatch`](https://hatch.pypa.io) to automatically handle virtual environments for you.
+For development we use [Hatch](https://hatch.pypa.io), this will automatically handle virtual environments and make sure all dependencies are installed when you run a script in the project. Install it with `pipx` or `pip`:
 
-=== "hatch"
+```bash
+pipx install hatch
+```
 
-    Install [Hatch](https://hatch.pypa.io), this will automatically handle virtual environments and make sure all dependencies are installed when you run a script in the project:
+Download pre-trained model and embeddings for local development:
 
-    ```bash
-    pipx install hatch
-    ```
+```bash
+./download.sh
+```
 
-    ??? note "Optionally you can improve `hatch` terminal completion"
+??? note "Optionally you can improve `hatch` terminal completion"
 
-        See the [official documentation](https://hatch.pypa.io/latest/cli/about/#tab-completion) for more details. For ZSH you can run these commands:
-
-        ```bash
-        _HATCH_COMPLETE=zsh_source hatch > ~/.hatch-complete.zsh
-        echo ". ~/.hatch-complete.zsh" >> ~/.zshrc
-        ```
-
-=== "venv"
-
-    Create the virtual environment in the project folder :
+    See the [official documentation](https://hatch.pypa.io/latest/cli/about/#tab-completion) for more details. For ZSH you can run these commands:
 
     ```bash
-    python3 -m venv .venv
-    ```
-
-    Activate the virtual environment:
-
-    ```bash
-    source .venv/bin/activate
-    ```
-
-    Install all dependencies required for development:
-
-    ```bash
-    pip install -e ".[dev,doc,test]"
-    ```
-
-    Install `pre-commit` to enable automated formatting and linting of the code at each commit:
-
-    ```bash
-    pre-commit install
+    _HATCH_COMPLETE=zsh_source hatch > ~/.hatch-complete.zsh
+    echo ". ~/.hatch-complete.zsh" >> ~/.zshrc
     ```
 
 
 ## 🧑‍💻 Development workflow
 
-=== "hatch"
+Start a conversational chat web service in development, without vectorstore:
 
-    Try to sign a nanopublication with the code defined in `scripts/dev.py` to test your changes:
+```bash
+hatch run dev
+```
 
-    ```bash
-    hatch run dev
-    ```
+Start a documents-based question answering agent in development, using a vectorstore:
 
-    The code will be automatically formatted when you commit your changes using `pre-commit`. But you can also run the script to format the code yourself:
-
-    ```bash
-    hatch run fmt
-    ```
-
-=== "venv"
-
-    Try to sign a nanopublication with the code defined in `scripts/dev.py` to test your changes:
-
-    ```bash
-    ./scripts/dev.sh
-    ```
-
-    The code will be automatically formatted when you commit your changes using `pre-commit`. But you can also run the script to format the code yourself:
-
-    ```bash
-    ./scripts/format.sh
-    ```
-
-    Check the code for errors, and if it is in accordance with the PEP8 style guide, by running `flake8` and `mypy`:
-
-    ```bash
-    ./scripts/lint.sh
-    ```
+```bash
+hatch run vector
+```
 
 ## ✅ Run the tests
 
-[![Test package](https://github.com/vemonet/libre-chat/actions/workflows/test.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/test.yml){:target="_blank"} [![Coverage Status](https://coveralls.io/repos/github/vemonet/libre-chat/badge.svg?branch=main)](https://coveralls.io/github/vemonet/libre-chat?branch=main){:target="_blank"}
-
 Make sure the existing tests still work by running the test suite and linting checks. Note that any pull requests to the repository on github will automatically trigger running of the test suite.
 
+Run the tests locally:
 
-###
+```bash
+hatch run test
+```
 
-=== "hatch"
+To display all logs when debugging:
 
-	Run the tests locally:
+```bash
+hatch run test -s
+```
 
-	```bash
-	hatch run test
-	```
+Run the tests on multiple python versions:
 
-	To display all logs when debugging:
+```bash
+hatch run all:test
+```
 
-	```bash
-	hatch run test -s
-	```
+Run only a specific test:
 
-	Run the tests on multiple python versions:
-
-	```bash
-	hatch run all:test
-	```
-
-	Run only a specific test:
-
-	```bash
-	hatch run test tests/test_api.py::test_post_prompt_conversational
-	```
-
-=== "venv"
-
-	Run the tests locally:
-
-	```bash
-	./scripts/test.sh
-	```
-
-	You can also run only a specific test:
-
-	```bash
-	./scripts/test.sh tests/test_api.py::test_post_prompt_conversational
-	```
-
+```bash
+hatch run test tests/test_api.py::test_post_prompt_conversational
+```
 
 ## 📖 Generate docs
 
@@ -149,17 +81,9 @@ The documentation (this website) is automatically generated from the markdown fi
 
 Serve the docs on [http://localhost:8001](http://localhost:8001){:target="_blank"}
 
-=== "hatch"
-
-    ```bash
-    hatch run docs
-    ```
-
-=== "venv"
-
-    ```bash
-    ./scripts/docs.sh
-    ```
+```bash
+hatch run docs
+```
 
 ### ♻️ Reset the environment
 
@@ -176,8 +100,6 @@ hatch -v env create
 ```
 
 ## 🏷️ Publish a new release
-
-[![Publish package](https://github.com/vemonet/libre-chat/actions/workflows/publish.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/publish.yml){:target="_blank"}
 
 1. Make sure the `PYPI_TOKEN` secret has been defined in the GitHub repository (in Settings > Secrets > Actions). You can get an API token from PyPI at [pypi.org/manage/account](https://pypi.org/manage/account).
 2. Increment the `__version__` in `libre_chat/__init__.py`

@@ -24,13 +24,15 @@ Available as a `pip` package 🐍, or `docker` image 🐳
 
 ## ℹ️ How it works
 
-1. Install it as a `pip` package 🐍, or use the `docker` image 🐳
+No need to program! The whole deployment can be configured from a YAML file: paths to the model/documents/vectorstore, model settings, web services infos, etc. Create a `chat.yml` file with your configuration then starts the web service.
+
+1. Install it as a `pip` package 🐍, or create a `docker-compose.yml` file to use the `docker` image 🐳
 
 2. Configure the service in a `chat.yml` file
 
-3. Start the chat web service from the terminal with `libre-chat start` or `docker run -it -p 8000:8000 ghcr.io/vemonet/libre-chat:main`
+3. Start the chat web service from the terminal with `libre-chat start` or `docker compose up`
 
-For more advanced uses, seasoned developers can also use the models, and deploy the API using objects in python scripts.
+Seasoned developers can also use the models, and deploy the API in python scripts sing the `libre_chat` module.
 
 !!! help "Report issues"
 
@@ -44,12 +46,3 @@ Here are some projects using `libre-chat`:
 
 * TODO
 -->
-
-## 🤝 Credits
-
-Inspired by:
-
-- [github.com/kennethleungty/Llama-2-Open-Source-LLM-CPU-Inference](https://github.com/kennethleungty/Llama-2-Open-Source-LLM-CPU-Inference)
-- [github.com/liltom-eth/llama2-webui](https://github.com/liltom-eth/llama2-webui)
-
-Library built with [MaastrichtU-IDS/cookiecutter-python-package](https://github.com/MaastrichtU-IDS/cookiecutter-python-package){:target="_blank"}.

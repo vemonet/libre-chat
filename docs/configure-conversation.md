@@ -1,4 +1,4 @@
-The whole deployment can be configured from a YAML file: paths to the model and vectorstore, model settings, web services infos. Create a `chat.yml` file with your configuration before starting the web service.
+Create a `chat.yml` file with your configuration before starting the web service.
 
 Below is an example of configuration using the llama-2 7B GGML model, without vectorstore, to deploy a **generic conversational agent**
 
