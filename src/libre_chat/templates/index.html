@@ -28,23 +28,45 @@
                         {{ title }}
                     </h2>
                     <!-- Top nav buttons -->
-                    <div class="flex space-x-1 absolute top-2 right-3">
-                        <button id="theme-switch-btn" class="px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
+                    <div class="nav-btns-desktop flex space-x-1 absolute top-2 right-8">
+                        <button data-tooltip="Switch theme" id="theme-switch-btn" class="px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
                             <i id="sun-icon" class="fas fa-sun"></i>
                             <i id="moon-icon" class="fas fa-moon hidden"></i>
                         </button>
-                        <a href="/docs" target="_blank" rel="noopener noreferrer"
+                        <a href="/docs" target="_blank" rel="noopener noreferrer" data-tooltip="OpenAPI documentation"
                             class="text-black hover:text-black dark:text-white">
-                            <button class="px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
-                                <img class="h-8 mr-3" src="https://raw.github.com/vemonet/libre-chat/main/docs/assets/openapi_logo.svg">
+                            <button class="px-4 py-3 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
+                                <img class="h-5" src="https://raw.github.com/vemonet/libre-chat/main/docs/assets/openapi_logo.svg">
                             </button>
                         </a>
                         <a href="{{ repository_url }}" target="_blank" rel="noopener noreferrer"
                             class="text-black hover:text-black dark:text-white">
-                            <button class="px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
-                                <i class="fab fa-github text-2xl"></i>
+                            <button data-tooltip="Source code" class="px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
+                                <i class="fab fa-github text-xl"></i>
                             </button>
                         </a>
+                    </div>
+                    <!-- Nav on mobile -->
+                    <div class="nav-btns-mobile flex gap-1 absolute top-2 right-3">
+                        <button data-tooltip="Menu" id="mobile-nav-btn" class="px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <div id="nav-btns-mobile" class="hidden">
+                            <!-- <button data-tooltip="Switch theme" id="theme-switch-btn" class="px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
+                                <i id="sun-icon" class="fas fa-sun"></i>
+                                <i id="moon-icon" class="fas fa-moon hidden"></i>
+                            </button> -->
+                            <a href="/docs" target="_blank" rel="noopener noreferrer" class="text-black hover:text-black dark:text-white">
+                                <button data-tooltip-target="tooltip-api" class="px-4 py-3 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
+                                    <img class="h-5" src="https://raw.github.com/vemonet/libre-chat/main/docs/assets/openapi_logo.svg">
+                                </button>
+                            </a>
+                            <a href="{{ repository_url }}" target="_blank" rel="noopener noreferrer" class="text-black hover:text-black dark:text-white">
+                                <button data-tooltip="Source code" class="px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
+                                    <i class="fab fa-github text-xl"></i>
+                                </button>
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <div id="description" class="py-4 text-center">
@@ -229,6 +251,13 @@
                 toggleIcons();
             }
             themeSwitchBtn.addEventListener("click", toggleDarkMode);
+
+            // Toggle mobile navigation menu
+            const mobileNavBtn = document.getElementById("mobile-nav-btn");
+            const navBtnsMobile = document.getElementById("nav-btns-mobile");
+            mobileNavBtn.addEventListener("click", () => {
+                navBtnsMobile.classList.toggle("hidden");
+            });
         });
     </script>
 
@@ -243,6 +272,61 @@
             content: attr(placeholder);
             opacity: 0.6;
             pointer-events: none;
+        }
+
+        /* Add tooltip for top nav on desktop */
+        @media (min-width: 640px) {
+            [data-tooltip] {
+                position: relative;
+                cursor: pointer;
+            }
+            [data-tooltip]:before {
+                content: attr(data-tooltip);
+                position: absolute;
+                bottom: -45px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 0.5rem;
+                background-color: #333;
+                color: white;
+                font-size: 0.75rem;
+                border-radius: 4px;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.2s ease-in-out;
+                white-space: nowrap;
+            }
+            [data-tooltip]:hover:before {
+                opacity: 1;
+            }
+        }
+
+        /* Menu for mobile navigation */
+        .nav-btns-mobile {
+            display: none;
+        }
+        @media (max-width: 640px) {
+            .nav-btns-desktop {
+                display: none;
+            }
+            .nav-btns-mobile {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+            #nav-btns-mobile {
+                /* display: none; */
+                position: absolute;
+                top: 48px;
+                right: 0;
+                z-index: 10;
+                background-color: rgb(71 85 105);
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+            .nav-btns-mobile.show {
+                display: flex;
+            }
         }
     </style>
 
