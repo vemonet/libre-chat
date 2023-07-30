@@ -38,9 +38,12 @@ info:
   - What is the capital of the Netherlands?
   - How can I create a logger with timestamp using python logging?
   favicon: "https://raw.github.com/vemonet/libre-chat/main/docs/assets/logo.png"
+  repository_url: str = "https://github.com/vemonet/libre-chat"
+  public_url: str = "https://chat.semanticscience.org"
   contact:
     name: "Vincent Emonet"
     email: "vincent.emonet@gmail.com"
   license_info:
     name: "MIT license"
     url: "https://raw.github.com/vemonet/libre-chat/main/LICENSE.txt"
+  workers: 4

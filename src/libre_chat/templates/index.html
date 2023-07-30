@@ -24,7 +24,7 @@
             <div class="container mx-auto px-2 max-w-5xl">
                 <div class="container mx-auto max-w-5xl p-4 border-b border-slate-300 dark:border-slate-600 flex justify-center items-center">
                     <h2 class="text-xl font-semibold flex">
-                        <span><img class="h-8 mr-3" src="{{ favicon }}"></span>
+                        <img class="h-8 mr-3" src="{{ favicon }}">
                         {{ title }}
                     </h2>
                     <!-- Top nav buttons -->
@@ -33,6 +33,12 @@
                             <i id="sun-icon" class="fas fa-sun"></i>
                             <i id="moon-icon" class="fas fa-moon hidden"></i>
                         </button>
+                        <a href="/docs" target="_blank" rel="noopener noreferrer"
+                            class="text-black hover:text-black dark:text-white">
+                            <button class="px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
+                                <img class="h-8 mr-3" src="https://raw.github.com/vemonet/libre-chat/main/docs/assets/openapi_logo.svg">
+                            </button>
+                        </a>
                         <a href="{{ repository_url }}" target="_blank" rel="noopener noreferrer"
                             class="text-black hover:text-black dark:text-white">
                             <button class="px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
@@ -69,6 +75,7 @@
                 </button>
             </div>
         </form>
+        <!-- List of examples -->
         <div class="py-2 px-4 justify-center items-center text-xs flex space-x-2" id="example-buttons"></div>
     </div>
 
@@ -76,25 +83,10 @@
         tailwind.config = {
             darkMode: 'class',
         }
-        const description = document.getElementById("description");
-        console.log(description.innerHTML);
-        description.innerHTML = marked.parse(description.innerHTML.trim());
-
         document.addEventListener("DOMContentLoaded", function() {
-            const chatContainer = document.getElementById("chat-container");
-            const chatThread = document.getElementById("chat-thread");
-            const chatForm = document.getElementById("chat-form");
+            const description = document.getElementById("description");
             const userInput = document.getElementById("user-input");
-            const submitBtn = document.getElementById("submit-btn");
-            const sendIcon = document.getElementById("send-icon");
-            const loadingSpinner = document.getElementById("loading-spinner");
-            const exampleButtons = document.getElementById("example-buttons");
-            const exampleStrings = [
-                {% for example in examples %}
-                    "{{ example }}",
-                {% endfor %}
-            ];
-            let fetchInProgress = false;
+            description.innerHTML = marked.parse(description.innerHTML.trim());
 
             // Warning card to send users messages
             const warningCard = document.getElementById("warning-card");
@@ -107,6 +99,12 @@
             }
 
             // Generate example buttons dynamically
+            const exampleButtons = document.getElementById("example-buttons");
+            const exampleStrings = [
+                {% for example in examples %}
+                    "{{ example }}",
+                {% endfor %}
+            ];
             exampleStrings.forEach(example => {
                 const button = document.createElement("button");
                 button.textContent = example;
@@ -120,6 +118,9 @@
             });
 
             // Append a message to the chat
+            const chatContainer = document.getElementById("chat-container");
+            const chatThread = document.getElementById("chat-thread");
+            const chatForm = document.getElementById("chat-form");
             function appendMessage(message, sender) {
                 const messageElement = document.createElement("div");
 
@@ -130,9 +131,11 @@
                 messageElement.innerHTML = `<div>
                     <div class="container flex items-center mx-auto px-2 py-8 max-w-5xl">
                         ${iconHtml}
-                        <p class="text-sm">
-                            ${marked(message)}
-                        </p>
+                        <div>
+                            <p class="text-sm">
+                                ${marked(message)}
+                            </p>
+                        </div>
                     </div>
                 </div>`;
                 chatThread.appendChild(messageElement);
@@ -142,14 +145,18 @@
             appendMessage(welcomeMsg, "bot")
 
             // Send user input to the chat API
+            const submitBtn = document.getElementById("submit-btn");
+            const sendIcon = document.getElementById("send-icon");
+            const loadingSpinner = document.getElementById("loading-spinner");
             function submitInput(userInput) {
-                if (fetchInProgress) return;
+                if (!loadingSpinner.classList.contains("hidden")) {
+                    showWarning("⏳ Thinking...");
+                    return
+                }
                 const prompt = userInput.textContent;
                 if (prompt.trim() !== "") {
                     appendMessage(prompt, "user");
                     userInput.textContent = "";
-                    fetchInProgress = true;
-                    // showWarning("⏳ Thinking...");
                     loadingSpinner.classList.remove("hidden");
                     sendIcon.classList.add("hidden");
                     submitBtn.disabled = true;
@@ -172,7 +179,6 @@
                             appendMessage("Oops! Something went wrong. Please try again.", "bot");
                         }).finally(() => {
                             chatContainer.scrollTop = chatContainer.scrollHeight
-                            fetchInProgress = false; // Reset fetch in progress
                             loadingSpinner.classList.add("hidden");
                             sendIcon.classList.remove("hidden");
                             submitBtn.disabled = false;
@@ -233,7 +239,7 @@
         a:hover {
             color: #0056b3;
         }
-        #user-input[placeholder]:empty:before {
+        [placeholder]:empty:before {
             content: attr(placeholder);
             opacity: 0.6;
             pointer-events: none;
