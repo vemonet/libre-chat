@@ -108,7 +108,11 @@
         document.addEventListener("DOMContentLoaded", function() {
             const description = document.getElementById("description");
             const userInput = document.getElementById("user-input");
+            const submitBtn = document.getElementById("submit-btn");
+            const sendIcon = document.getElementById("send-icon");
+            const loadingSpinner = document.getElementById("loading-spinner");
             description.innerHTML = marked.parse(description.innerHTML.trim());
+
 
             // Warning card to send users messages
             const warningCard = document.getElementById("warning-card");
@@ -119,6 +123,7 @@
             function hideWarning() {
                 warningCard.style.display = "none";
             }
+
 
             // Generate example buttons dynamically
             const exampleButtons = document.getElementById("example-buttons");
@@ -138,6 +143,7 @@
                 });
                 exampleButtons.appendChild(button);
             });
+
 
             // Append a message to the chat
             const chatContainer = document.getElementById("chat-container");
@@ -166,10 +172,29 @@
             const welcomeMsg = "Hello! How can I help you today?";
             appendMessage(welcomeMsg, "bot")
 
-            // Send user input to the chat API
-            const submitBtn = document.getElementById("submit-btn");
-            const sendIcon = document.getElementById("send-icon");
-            const loadingSpinner = document.getElementById("loading-spinner");
+
+            // Create a new WebSocket connection
+            const currentLocation = window.location;
+            const socket = new WebSocket(`ws://${currentLocation.host}/ws`);
+            socket.onopen = (event) => {
+                console.log("🔗 Connected to the chatbot");
+            };
+            // Event listener for when a message is received from the WebSocket
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                appendMessage(data.result, "bot");
+                chatContainer.scrollTop = chatContainer.scrollHeight
+                loadingSpinner.classList.add("hidden");
+                sendIcon.classList.remove("hidden");
+                submitBtn.disabled = false;
+                hideWarning();
+            };
+            socket.onclose = (event) => {
+                console.log("❌ Chatbot disconnected");
+            };
+
+
+            // Send the user input to the chat API
             function submitInput(userInput) {
                 if (!loadingSpinner.classList.contains("hidden")) {
                     showWarning("⏳ Thinking...");
@@ -185,29 +210,32 @@
                     const params = {
                         prompt: prompt,
                     };
-                    fetch("/prompt", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(params),
-                    }).then(response => response.json())
-                        .then(data => {
-                            console.log(data);
-                            appendMessage(data.result, "bot");
-                        })
-                        .catch(error => {
-                            console.error("Error:", error);
-                            appendMessage("Oops! Something went wrong. Please try again.", "bot");
-                        }).finally(() => {
-                            chatContainer.scrollTop = chatContainer.scrollHeight
-                            loadingSpinner.classList.add("hidden");
-                            sendIcon.classList.remove("hidden");
-                            submitBtn.disabled = false;
-                            hideWarning();
-                        });
+                    socket.send(JSON.stringify(params));
+                    // fetch("/prompt", {
+                    //     method: "POST",
+                    //     headers: {
+                    //         "Content-Type": "application/json",
+                    //     },
+                    //     body: JSON.stringify(params),
+                    // }).then(response => response.json())
+                    //     .then(data => {
+                    //         console.log(data);
+                    //         appendMessage(data.result, "bot");
+                    //     })
+                    //     .catch(error => {
+                    //         console.error("Error:", error);
+                    //         appendMessage("Oops! Something went wrong. Please try again.", "bot");
+                    //     }).finally(() => {
+                    //         chatContainer.scrollTop = chatContainer.scrollHeight
+                    //         loadingSpinner.classList.add("hidden");
+                    //         sendIcon.classList.remove("hidden");
+                    //         submitBtn.disabled = false;
+                    //         hideWarning();
+                    //     });
                 }
             }
+
+
             // Submit form when hit enter, or click submit button
             userInput.addEventListener("keydown", function(event) {
                 chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -226,6 +254,7 @@
             }
             userInput.addEventListener("input", togglePlaceholder);
             togglePlaceholder();
+
 
             // Light/dark theme setup, default to dark if nothing found
             const sunIcon = document.getElementById("sun-icon");
@@ -251,6 +280,7 @@
                 toggleIcons();
             }
             themeSwitchBtn.addEventListener("click", toggleDarkMode);
+
 
             // Toggle mobile navigation menu
             const mobileNavBtn = document.getElementById("mobile-nav-btn");

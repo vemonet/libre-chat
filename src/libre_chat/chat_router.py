@@ -1,11 +1,12 @@
+import json
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Union
 
-from fastapi import APIRouter, Body, Request
+from fastapi import APIRouter, Body, Request, WebSocket
 from fastapi.responses import JSONResponse
 
 from libre_chat.chat_conf import ChatConf, default_conf
-from libre_chat.utils import Prompt
+from libre_chat.utils import Prompt, log
 
 __all__ = [
     "ChatRouter",
@@ -83,6 +84,8 @@ class ChatRouter(APIRouter):
             # responses=api_responses,
             **kwargs,
         )
+        # Create a list to store all connected WebSocket clients
+        self.connected_clients: List[WebSocket] = []
 
         @self.get(
             self.path,
@@ -114,4 +117,21 @@ class ChatRouter(APIRouter):
             :param request: The HTTP POST request with a .body()
             :param prompt: Prompt to send to the LLM.
             """
-            return get_prompt(request, prompt.prompt)
+            return JSONResponse(self.llm.query(prompt.prompt))
+
+        @self.websocket("/ws")
+        async def websocket_endpoint(websocket: WebSocket) -> None:
+            await websocket.accept()
+            self.connected_clients.append(websocket)
+            log.info(f"🧦 New connection to the web socket: {len(self.connected_clients)} clients are connected")
+            try:
+                # Loop to receive messages from the WebSocket client
+                while True:
+                    data = await websocket.receive_text()
+                    # Deserialize the JSON data received from the client
+                    payload = json.loads(data)
+                    await websocket.send_text(json.dumps(self.llm.query(payload["prompt"])))
+            except Exception as e:
+                log.error(f"WebSocket error: {e}")
+            finally:
+                self.connected_clients.remove(websocket)
