@@ -125,11 +125,10 @@ exclude = [
 
 [tool.coverage.run]
 branch = true
-source_pkgs = ["libre_chat"]
-source = ["src/"]
+source = ["libre_chat"]
 
 [tool.coverage.paths]
-libre_chat = ["src/libre_chat"]
+source = ["src/"]
 
 [tool.coverage.report]
 omit = ["tests/*", "src/libre_chat/ui.py"]
@@ -138,6 +137,7 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "if TYPE_CHECKING:",
 ]
+# fail_under = 90 show_missing = true skip_covered = true
 
 
 [tool.mypy]

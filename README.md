@@ -21,7 +21,7 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 - 🤖 Various types of agents can be deployed:
   - **💬 Generic conversation**: do not need any additional training, just configure settings such as the template prompt
   - **📚 Documents-based question answering**: automatically build similarity vectors from locally provided PDF documents, the chatbot will use them to answer your question, and return which documents were used to generate the answer.
-- 🪶 Modern and lightweight chat web interface, working as well on desktop as on mobile, with support for light/dark theme
+- 🪶 Modern and lightweight chat web interface, working well on desktop and mobile, with support for light/dark theme
 
 
 ![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/assets/screenshot.png)
