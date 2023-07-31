@@ -40,6 +40,6 @@ export APP_MODULE=${APP_MODULE:-"$MODULE_NAME:$VARIABLE_NAME"}
 # -w: number of worker processes for handling requests [1]
 # --threads: number of worker threads for handling requests. [1]
 
-echo "🦄 Starting gunicorn with $LIBRECHAT_WORKERS for module $APP_MODULE on $BIND"
+echo "🦄 Starting gunicorn with $LIBRECHAT_WORKERS workers on $BIND for the module $APP_MODULE"
 
 exec gunicorn -w "$LIBRECHAT_WORKERS" -k "$WORKER_CLASS" -b "$BIND" "$APP_MODULE"
