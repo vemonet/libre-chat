@@ -13,6 +13,10 @@ ADD tests/download.sh ./download.sh
 RUN ./download.sh && \
     rm download.sh
 
+ADD requirements.txt .
+
+RUN pip install -r requirements.txt
+
 ADD . .
 
 RUN pip install -e .
