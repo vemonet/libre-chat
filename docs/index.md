@@ -20,7 +20,7 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 ![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/assets/screenshot-light.png)
 
 !!! warning "Early stage"
-	Development on this project has just started, use it with caution. The chatbot remembers things only when using the generic conversation agent, and running on a single worker (production deployment spawning multiple workers with gunicorn will not remember what you said before)
+	Development on this project has just started, use it with caution.
 
 ## ℹ️ How it works
 
