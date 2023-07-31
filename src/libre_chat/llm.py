@@ -156,7 +156,7 @@ class Llm:
             if self.vector_path:
                 vectorstore.save_local(self.vector_path)
         else:
-            log.warn(f"⚠️ No documents found in {documents_path}, could not build the vectorstore")
+            log.warning(f"⚠️ No documents found in {documents_path}, could not build the vectorstore")
         return self.vector_path
 
     def query(self, prompt: str, history: Optional[List[Tuple[str, str]]] = None) -> Dict[str, str]:

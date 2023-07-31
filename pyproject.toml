@@ -96,16 +96,15 @@ fmt = [
 ]
 test = [
     "fmt",
-    "pytest {args}",
+    "pytest --cov=src/ {args}",
 ]
 cov = [
-    "pytest --cov-report html {args}",
+    "pytest --cov=src/ --cov-report html {args}",
     "python -c 'import webbrowser; webbrowser.open(\"http://0.0.0.0:3000\")'",
     "python -m http.server 3000 --directory ./htmlcov",
 ]
 docs = "mkdocs serve -a localhost:8001"
 compile = "pip-compile -o requirements.txt pyproject.toml"
-# --extra test
 
 
 [[tool.hatch.envs.all.matrix]]
@@ -123,20 +122,22 @@ exclude = [
     "/documents",
 ]
 
+
 [tool.coverage.run]
 branch = true
 source_pkgs = ["libre_chat"]
+source = ["src/"]
+
+[tool.coverage.paths]
+libre_chat = ["src/libre_chat"]
 
 [tool.coverage.report]
-omit = ["tests/*"]
+omit = ["tests/*", "src/libre_chat/ui.py"]
 exclude_lines = [
     "no cov",
     "if __name__ == .__main__.:",
     "if TYPE_CHECKING:",
 ]
-
-[tool.coverage.paths]
-libre_chat = ["src/libre_chat"]
 
 
 [tool.mypy]
@@ -153,7 +154,7 @@ warn_redundant_casts = true
 disallow_untyped_calls = true
 disallow_untyped_defs = true
 disallow_any_generics = true
-no_implicit_optional=true
+no_implicit_optional = true
 
 
 [tool.pytest.ini_options]
@@ -167,7 +168,9 @@ addopts = [
 filterwarnings = [
     "ignore::DeprecationWarning:httpx.*:",
     "ignore::DeprecationWarning:setuptools.*:",
-    "ignore::DeprecationWarning:gradio.*:"
+    "ignore::DeprecationWarning:gradio.*:",
+    "ignore::DeprecationWarning:distutils.*",
+    "ignore::DeprecationWarning:pkg_resources.*",
 ]
 
 

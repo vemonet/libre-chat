@@ -28,3 +28,11 @@ def test_build_vectorstore() -> None:
     shutil.rmtree(llm.conf.vector.vector_path)
     llm.build_vectorstore()
     assert os.path.exists(llm.conf.vector.vector_path)
+
+
+def test_build_failed_no_docs() -> None:
+    """Test fail building the vectorstore when no documents"""
+    llm_empt = Llm(conf=parse_config("config/chat-vectorstore-qa.yml"), documents_path="nothinghere")
+    shutil.rmtree(llm.conf.vector.vector_path)
+    llm_empt.build_vectorstore()
+    assert not os.path.exists(llm_empt.conf.vector.vector_path)
