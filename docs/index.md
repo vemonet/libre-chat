@@ -20,7 +20,7 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 ![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/assets/screenshot-light.png)
 
 !!! warning "Early stage"
-	Development on this project has just started, use it with caution
+	Development on this project has just started, use it with caution. The chatbot remembers things only when using the generic conversation agent, and running on a single worker (production deployment spawning multiple workers with gunicorn will not remember what you said before)
 
 ## ℹ️ How it works
 
@@ -47,12 +47,3 @@ Seasoned developers can also manipulate LLM models, and deploy the API in python
 !!! Question "Supporting other models"
 
     Let us know if you managed to run other models with Libre Chat, or if you would like to see a specific model supported.
-
-<!--
-
-## 🗃️ Projects using libre-chat
-
-Here are some projects using `libre-chat`:
-
-* TODO
--->
