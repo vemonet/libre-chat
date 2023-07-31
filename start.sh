@@ -3,6 +3,9 @@ set -e
 
 # Copied from https://github.com/tiangolo/uvicorn-gunicorn-docker/blob/master/docker-images/start.sh
 
+export BIND=${BIND:-"0.0.0.0:8000"}
+export WORKER_CLASS=${WORKER_CLASS:-"uvicorn.workers.UvicornWorker"}
+
 if [ -f /app/tests/main.py ]; then
     DEFAULT_MODULE_NAME=tests.main
 elif [ -f /app/app/main.py ]; then
@@ -22,7 +25,6 @@ export APP_MODULE=${APP_MODULE:-"$MODULE_NAME:$VARIABLE_NAME"}
 #     DEFAULT_GUNICORN_CONF=/gunicorn_conf.py
 # fi
 # export GUNICORN_CONF=${GUNICORN_CONF:-$DEFAULT_GUNICORN_CONF}
-# export WORKER_CLASS=${WORKER_CLASS:-"uvicorn.workers.UvicornWorker"}
 
 # # If there's a prestart.sh script in the /app directory or other path specified, run it before starting
 # PRE_START_PATH=${PRE_START_PATH:-/app/prestart.sh}
@@ -38,7 +40,6 @@ export APP_MODULE=${APP_MODULE:-"$MODULE_NAME:$VARIABLE_NAME"}
 # -w: number of worker processes for handling requests [1]
 # --threads: number of worker threads for handling requests. [1]
 
-echo "WORKERS $LIBRECHAT_WORKERS"
+echo "🦄 Starting gunicorn with $LIBRECHAT_WORKERS for module $APP_MODULE on $BIND"
 
-# exec gunicorn -w "$LIBRECHAT_WORKERS" -k "$WORKER_CLASS" -b "0.0.0.0:8000" "$APP_MODULE"
-exec gunicorn -k "$WORKER_CLASS" -b "0.0.0.0:8000" "$APP_MODULE"
+exec gunicorn -w "$LIBRECHAT_WORKERS" -k "$WORKER_CLASS" -b "$BIND" "$APP_MODULE"
