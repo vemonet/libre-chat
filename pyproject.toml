@@ -112,16 +112,31 @@ compile = "pip-compile -o requirements.txt pyproject.toml"
 python = ["3.8", "3.9", "3.10", "3.11"]
 
 
+
 ## TOOLS
 [tool.hatch.version]
 path = "src/libre_chat/__init__.py"
 
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "/.github",
+    "/documents",
+]
+
 [tool.coverage.run]
 branch = true
-# source = ["src"]
+source_pkgs = ["libre_chat"]
 
 [tool.coverage.report]
 omit = ["tests/*"]
+exclude_lines = [
+    "no cov",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[tool.coverage.paths]
+libre_chat = ["src/libre_chat"]
 
 
 [tool.mypy]
@@ -208,6 +223,10 @@ ignore = [
 
 [tool.ruff.mccabe]
 max-complexity = 10
+
+[tool.ruff.isort]
+known-third-party = ["langchain"]
+
 
 # If you need to import packages from git URLs
 # [tool.hatch.metadata]
