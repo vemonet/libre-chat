@@ -38,4 +38,4 @@ export APP_MODULE=${APP_MODULE:-"$MODULE_NAME:$VARIABLE_NAME"}
 # -w: number of worker processes for handling requests [1]
 # --threads: number of worker threads for handling requests. [1]
 
-exec gunicorn -w $LIBRECHAT_WORKERS -k "$WORKER_CLASS" "$APP_MODULE"
+exec gunicorn -w "$LIBRECHAT_WORKERS" -k "$WORKER_CLASS" "$APP_MODULE"
