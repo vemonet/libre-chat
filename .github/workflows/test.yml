@@ -84,7 +84,7 @@ jobs:
   update-docs:
     name: 📚 Update docs website
     if: ${{ github.event_name == 'push' }}
-    needs: [ tests, tests-download, codeql ]
+    needs: [ tests, tests-download ] # codeql
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -128,7 +128,7 @@ jobs:
 
   build:
     name: 🐳 Build and publish docker image
-    needs: [ tests, tests-download, codeql ]
+    needs: [ tests, tests-download ]  # codeql
     runs-on: ubuntu-latest
     permissions:
       contents: read
