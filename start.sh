@@ -16,8 +16,14 @@ fi
 MODULE_NAME=${MODULE_NAME:-$DEFAULT_MODULE_NAME}
 VARIABLE_NAME=${VARIABLE_NAME:-app}
 export APP_MODULE=${APP_MODULE:-"$MODULE_NAME:$VARIABLE_NAME"}
-
 export TIMEOUT=${TIMEOUT:-600} # 10min
+
+echo "🦄 Starting gunicorn with $LIBRECHAT_WORKERS workers on $BIND for the module $APP_MODULE"
+exec gunicorn -w "$LIBRECHAT_WORKERS" -k "$WORKER_CLASS" -b "$BIND" --timeout "$TIMEOUT" "$APP_MODULE"
+
+# -w: number of worker processes for handling requests [1]
+# --threads: number of worker threads for handling requests. [1]
+
 
 
 # if [ -f /app/gunicorn_conf.py ]; then
@@ -38,11 +44,3 @@ export TIMEOUT=${TIMEOUT:-600} # 10min
 # else
 #     echo "There is no script $PRE_START_PATH"
 # fi
-
-# Start Gunicorn -w $LIBRECHAT_WORKERS --bind 0.0.0.0:8000 -c "$GUNICORN_CONF"
-# -w: number of worker processes for handling requests [1]
-# --threads: number of worker threads for handling requests. [1]
-
-echo "🦄 Starting gunicorn with $LIBRECHAT_WORKERS workers on $BIND for the module $APP_MODULE"
-
-exec gunicorn -w "$LIBRECHAT_WORKERS" -k "$WORKER_CLASS" -b "$BIND" --timeout "$TIMEOUT" "$APP_MODULE"
