@@ -14,35 +14,16 @@ __all__ = [
 
 api_responses: Optional[Dict[Union[int, str], Dict[str, Any]]] = {
     200: {
-        "description": "SPARQL query results",
+        "description": "Chat response",
         "content": {
-            "application/sparql-results+json": {
-                "results": {"bindings": []},
-                "head": {"vars": []},
-            },
             "application/json": {
-                "results": {"bindings": []},
-                "head": {"vars": []},
+                "result": "",
+                "source_docs": [],
             },
-            "text/csv": {"example": "s,p,o"},
-            "application/sparql-results+csv": {"example": "s,p,o"},
-            "text/turtle": {"example": "service description"},
-            "application/sparql-results+xml": {"example": "<root></root>"},
-            "application/xml": {"example": "<root></root>"},
-            # "application/rdf+xml": {
-            #     "example": '<?xml version="1.0" encoding="UTF-8"?> <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"></rdf:RDF>'
-            # },
         },
     },
-    400: {
-        "description": "Bad Request",
-    },
-    403: {
-        "description": "Forbidden",
-    },
-    422: {
-        "description": "Unprocessable Entity",
-    },
+    400: {"description": "Bad Request"},
+    422: {"description": "Unprocessable Entity"},
 }
 
 
@@ -81,7 +62,7 @@ class ChatRouter(APIRouter):
         # Instantiate APIRouter
         super().__init__(
             *args,
-            # responses=api_responses,
+            responses=api_responses,
             **kwargs,
         )
         # Create a list to store all connected WebSocket clients
@@ -123,7 +104,7 @@ class ChatRouter(APIRouter):
         async def websocket_endpoint(websocket: WebSocket) -> None:
             await websocket.accept()
             self.connected_clients.append(websocket)
-            log.info(f"🧦 New connection to the web socket: {len(self.connected_clients)} clients are connected")
+            log.info(f"🔌 New websocket connection: {len(self.connected_clients)} clients are connected")
             try:
                 # Loop to receive messages from the WebSocket client
                 while True:

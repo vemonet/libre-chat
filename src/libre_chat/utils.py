@@ -9,6 +9,8 @@ from typing import Dict, List, Optional, Tuple
 import requests
 from uvicorn.logging import ColourizedFormatter
 
+__all__ = ["Prompt", "parallel_download", "log"]
+
 
 @dataclass
 class Prompt:

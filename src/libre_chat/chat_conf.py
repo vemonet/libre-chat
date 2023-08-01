@@ -6,6 +6,8 @@ from pydantic_yaml import parse_yaml_raw_as
 
 from libre_chat.utils import BOLD, END, YELLOW, log
 
+__all__ = ["ChatConf", "parse_config"]
+
 
 class SettingsTemplate(BaseSettings):
     variables: List[str] = ["input", "history"]

@@ -1,4 +1,4 @@
-// Add web worker to cache assets
+// Web worker to cache assets
 const CACHE_NAME = 'libre-chat-assets';
 
 self.addEventListener('install', event => {
@@ -25,22 +25,3 @@ self.addEventListener('fetch', event => {
         })
     );
 });
-
-
-// const urlsToCache = [
-//     "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css",
-// ];
-// self.addEventListener('install', event => {
-//     event.waitUntil(
-//         caches.open(CACHE_NAME)
-//         .then(cache => cache.addAll(urlsToCache))
-//     );
-// });
-// self.addEventListener('fetch', event => {
-//     event.respondWith(
-//         caches.match(event.request)
-//         .then(response => {
-//             return response || fetch(event.request);
-//         })
-//     );
-// });
