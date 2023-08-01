@@ -17,6 +17,9 @@ MODULE_NAME=${MODULE_NAME:-$DEFAULT_MODULE_NAME}
 VARIABLE_NAME=${VARIABLE_NAME:-app}
 export APP_MODULE=${APP_MODULE:-"$MODULE_NAME:$VARIABLE_NAME"}
 
+export TIMEOUT=${TIMEOUT:-600} # 10min
+
+
 # if [ -f /app/gunicorn_conf.py ]; then
 #     DEFAULT_GUNICORN_CONF=/app/gunicorn_conf.py
 # elif [ -f /app/app/gunicorn_conf.py ]; then
@@ -42,4 +45,4 @@ export APP_MODULE=${APP_MODULE:-"$MODULE_NAME:$VARIABLE_NAME"}
 
 echo "🦄 Starting gunicorn with $LIBRECHAT_WORKERS workers on $BIND for the module $APP_MODULE"
 
-exec gunicorn -w "$LIBRECHAT_WORKERS" -k "$WORKER_CLASS" -b "$BIND" "$APP_MODULE"
+exec gunicorn -w "$LIBRECHAT_WORKERS" -k "$WORKER_CLASS" -b "$BIND" --timeout "$TIMEOUT" "$APP_MODULE"
