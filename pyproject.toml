@@ -66,6 +66,7 @@ doc = [
     "mkdocstrings[python] >=0.19.1",
     "mdx-include >=1.4.1",
     "mkdocs-markdownextradata-plugin >=0.2.5",
+    "mkdocs-open-in-new-tab",
 ]
 
 

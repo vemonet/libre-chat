@@ -211,9 +211,19 @@
             // Create a new WebSocket connection
             const currentLocation = window.location;
             const protocol = currentLocation.protocol === "https:" ? "wss:" : "ws:";
-            const socket = new WebSocket(`${protocol}//${currentLocation.host}/ws`);
+            let socket = new WebSocket(`${protocol}//${currentLocation.host}/ws`);
             socket.onopen = (event) => {
                 console.log("🔌 Connected to the chatbot");
+            };
+            socket.onclose = (event) => {
+                showWarning(`⚠️ An error happened: ${event}`)
+                disableLoading();
+                console.log("❌ Chatbot disconnected, reconnecting");
+                socket = new WebSocket(`${protocol}//${currentLocation.host}/ws`);
+            };
+            socket.onerror = (error) => {
+                showWarning("⚠️ An error happened:", error)
+                disableLoading();
             };
             // Event listener for when a message is received from the WebSocket
             socket.onmessage = (event) => {
@@ -222,13 +232,6 @@
                 chatContainer.scrollTop = chatContainer.scrollHeight
                 disableLoading();
                 hideWarning();
-            };
-            socket.onclose = (event) => {
-                console.log("❌ Chatbot disconnected");
-            };
-            socket.onerror = (error) => {
-                showWarning("⚠️ An error happened:", error)
-                disableLoading();
             };
 
 

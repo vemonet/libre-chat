@@ -70,6 +70,7 @@ nav:
 plugins:
 # - admonition
 - search
+- open-in-new-tab
 - autorefs
 - mkdocstrings:
     default_handler: python

@@ -1,4 +1,4 @@
-[![Image size](https://ghcr-badge.egpl.dev/vemonet/libre-chat/size)](https://github.com/vemonet/libre-chat/pkgs/container/libre-chat){:target="_blank"}
+[![Image size](https://ghcr-badge.egpl.dev/vemonet/libre-chat/size)](https://github.com/vemonet/libre-chat/pkgs/container/libre-chat)
 
 Libre Chat is available as a [docker image](https://github.com/vemonet/libre-chat/pkgs/container/libre-chat), it is recommended to use docker for deploying in production as it uses gunicorn to run multiple workers.
 

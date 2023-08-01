@@ -1,4 +1,4 @@
-[![Version](https://img.shields.io/pypi/v/libre-chat)](https://pypi.org/project/libre-chat) [![Python versions](https://img.shields.io/pypi/pyversions/libre-chat)](https://pypi.org/project/libre-chat) [![Image size](https://ghcr-badge.egpl.dev/vemonet/libre-chat/size)](https://github.com/vemonet/libre-chat/pkgs/container/libre-chat){:target="_blank"} [![MIT license](https://img.shields.io/pypi/l/libre-chat)](https://github.com/vemonet/libre-chat/blob/main/LICENSE.txt)
+[![Version](https://img.shields.io/pypi/v/libre-chat)](https://pypi.org/project/libre-chat) [![Python versions](https://img.shields.io/pypi/pyversions/libre-chat)](https://pypi.org/project/libre-chat) [![Image size](https://ghcr-badge.egpl.dev/vemonet/libre-chat/size)](https://github.com/vemonet/libre-chat/pkgs/container/libre-chat) [![MIT license](https://img.shields.io/pypi/l/libre-chat)](https://github.com/vemonet/libre-chat/blob/main/LICENSE.txt)
 
 Easily configure and deploy a **fully self-hosted chatbot web service** based on open source Large Language Models (LLMs), such as [Llama 2](https://ai.meta.com/llama/), without the need for knowledge in machine learning or programmation.
 
@@ -36,7 +36,7 @@ Seasoned developers can also manipulate LLM models, and deploy the API in python
 
 !!! help "Report issues"
 
-    Feel free to create [issues on GitHub](https://github.com/vemonet/libre-chat/issues){:target="_blank"}, if you are facing problems, have a question, or would like to see a feature implemented. Pull requests are welcome!
+    Feel free to create [issues on GitHub](https://github.com/vemonet/libre-chat/issues), if you are facing problems, have a question, or would like to see a feature implemented. Pull requests are welcome!
 
 ## 📥 Download supported models
 
@@ -50,11 +50,11 @@ Seasoned developers can also manipulate LLM models, and deploy the API in python
 
 ## 🔎 Technical overview
 
-The web service is deployed using a **FastAPI** endpoint. It has 4 routes, plus its OpenAPI documentation available on `/docs`:
+The web service is deployed using a [**⚡ FastAPI**](https://fastapi.tiangolo.com) endpoint. It has 4 routes, plus its [OpenAPI](https://www.openapis.org/) documentation available on `/docs`:
 
 - 📮 `GET` and `POST` on `/prompt` to query the model
 - 🔌 Websocket on `/ws` to open a connection with the API, and query the model
 - 🖥️ Chatbot web UI served on the root URL `/`
-  - The web UI is contained within a single HTML file templated using Jinja2, written in vanilla JS, using Tailwind CSS for styling, and marked for markdown rendering
+    - The web UI is contained within a single HTML file templated using [Jinja2](https://jinja.palletsprojects.com), written in vanilla JS, using [Tailwind](https://tailwindcss.com) CSS for styling, and [marked](https://marked.js.org/) for markdown rendering
 
-All files required for querying the model are stored and accessed locally using **LangChain**: the main model binary, the embeddings and documents to create the vectorstore, and the vectorstore itself.
+All files required for querying the model are stored and accessed locally using [**🦜🔗 LangChain**](https://python.langchain.com): the main model binary, the embeddings and documents to create the vectors, and the [vectorstore](https://python.langchain.com/docs/modules/data_connection/vectorstores/).

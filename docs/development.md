@@ -1,20 +1,20 @@
-[![Version](https://img.shields.io/pypi/v/libre-chat)](https://pypi.org/project/libre-chat) [![Python versions](https://img.shields.io/pypi/pyversions/libre-chat)](https://pypi.org/project/libre-chat) [![Image size](https://ghcr-badge.egpl.dev/vemonet/libre-chat/size)](https://github.com/vemonet/libre-chat/pkgs/container/libre-chat){:target="_blank"} [![Pull requests welcome](https://img.shields.io/badge/pull%20requests-welcome-brightgreen)](https://github.com/vemonet/libre-chat/fork)
+[![Version](https://img.shields.io/pypi/v/libre-chat)](https://pypi.org/project/libre-chat) [![Python versions](https://img.shields.io/pypi/pyversions/libre-chat)](https://pypi.org/project/libre-chat) [![Image size](https://ghcr-badge.egpl.dev/vemonet/libre-chat/size)](https://github.com/vemonet/libre-chat/pkgs/container/libre-chat) [![Pull requests welcome](https://img.shields.io/badge/pull%20requests-welcome-brightgreen)](https://github.com/vemonet/libre-chat/fork)
 
-[![Publish package](https://github.com/vemonet/libre-chat/actions/workflows/publish.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/publish.yml){:target="_blank"} [![Test package](https://github.com/vemonet/libre-chat/actions/workflows/test.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/test.yml){:target="_blank"} [![Coverage Status](https://coveralls.io/repos/github/vemonet/libre-chat/badge.svg?branch=main)](https://coveralls.io/github/vemonet/libre-chat?branch=main){:target="_blank"}
+[![Publish package](https://github.com/vemonet/libre-chat/actions/workflows/publish.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/publish.yml) [![Test package](https://github.com/vemonet/libre-chat/actions/workflows/test.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/test.yml) [![Coverage Status](https://coveralls.io/repos/github/vemonet/libre-chat/badge.svg?branch=main)](https://coveralls.io/github/vemonet/libre-chat?branch=main)
 
 [![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg){ loading=lazy .off-glb }](https://github.com/pypa/hatch) [![linting - Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json){ loading=lazy .off-glb }](https://github.com/astral-sh/ruff) [![code style - Black](https://img.shields.io/badge/code%20style-black-000000.svg){ loading=lazy .off-glb }](https://github.com/psf/black) [![types - Mypy](https://img.shields.io/badge/types-Mypy-blue.svg){ loading=lazy .off-glb }](https://github.com/python/mypy)
 
 
 ## 📥 Install for development
 
-Clone the repository and go in the project folder:
+Clone the repository and go to the project folder:
 
 ```bash
 git clone https://github.com/vemonet/libre-chat
 cd libre-chat
 ```
 
-For development we use [Hatch](https://hatch.pypa.io), this will automatically handle virtual environments and make sure all dependencies are installed when you run a script in the project. Install it with `pipx` or `pip`:
+For development we use [Hatch](https://hatch.pypa.io), it will automatically handle virtual environments, and make sure all dependencies are installed when you run a script in the project. Install it with `pipx` or `pip`:
 
 ```bash
 pipx install hatch
@@ -38,15 +38,21 @@ Start a conversational chat web service, without vectorstore:
 hatch run dev
 ```
 
-Start a documents-based question answering agent, using a vectorstore:
+Start a documents-based question answering service, using a vectorstore:
 
 ```bash
 hatch run vector
 ```
 
+Use the CLI to build a vectorstore at a specific path:
+
+```bash
+hatch run libre-llm build --documents documents2 --vector vectorstore/db2
+```
+
 ## ✅ Run the tests
 
-Make sure the existing tests still work by running the test suite, types, and linting checks. Note that any pull requests to the repository on github will automatically trigger running of the test suite.
+Make sure the existing tests still work by running the test suite, mypy, and linting checks. .
 
 Run the tests locally:
 
@@ -68,11 +74,11 @@ hatch run test tests/test_api.py::test_post_prompt_conversation -s
     hatch run all:test
     ```
 
-## 📖 Generate docs
+## 📖 Generate the docs
 
-The documentation (this website) is automatically generated from the markdown files in the `docs` folder and python docstring comments, and published by a GitHub Actions workflow.
+The documentation (this website) is automatically generated and published by a GitHub Actions workflow from the markdown files in the `docs/` folder, and python `docstring` comments.
 
-To check it locally, serve the docs on [http://localhost:8001](http://localhost:8001){:target="_blank"} with:
+To check the documentation website locally, serve it with:
 
 ```bash
 hatch run docs
@@ -86,10 +92,16 @@ In case you are facing issues with dependencies not updating properly you can ea
 hatch env prune
 ```
 
-Manually trigger installing the dependencies in a local virtual environment:
+Manually trigger the installation of dependencies in a local virtual environment (done automatically when you run any script):
 
 ```bash
 hatch -v env create
+```
+
+Enter a new shell with the environment activated:
+
+```bash
+hatch shell
 ```
 
 ## 🏷️ Publish a new release

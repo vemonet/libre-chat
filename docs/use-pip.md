@@ -8,7 +8,7 @@
 
 ## 📦 Install
 
-Install from [PyPI](https://pypi.org/project/libre-chat/){:target="_blank"} with `pipx` or `pip`:
+Install from [PyPI](https://pypi.org/project/libre-chat/) with `pipx` or `pip`:
 
 ```bash
 pip install libre-chat
