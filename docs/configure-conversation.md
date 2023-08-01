@@ -41,8 +41,9 @@ info:
   description: |
     Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama)
   examples:
-  - "What is the capital of the Netherlands?"
-  - "How can I create a logger with timestamp using python logging?"
+  - What is the capital of the Netherlands?
+  - Which drugs are approved by the FDA to mitigate Alzheimer symptoms?
+  - How can I create a logger with timestamp using python logging?
   contact:
     name: "Vincent Emonet"
     email: "vincent.emonet@gmail.com"

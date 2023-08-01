@@ -261,4 +261,4 @@ Inspired by:
 - [ ] Speed up inference, better use of GPUs
 - [ ] Add support for returning sources in UI when using documents-based QA
 - [ ] Add authentication mechanisms (OAuth/OpenID Connect)
-- [ ] Improve handling of chat history, which is broken when using multiple workers, and unsafe when having multiple users (couple it with authentication)
+- [ ] Stream response for the websocket to show words one by one
