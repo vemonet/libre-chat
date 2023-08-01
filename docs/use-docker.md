@@ -2,6 +2,10 @@
 
 Libre Chat is available as a [docker image](https://github.com/vemonet/libre-chat/pkgs/container/libre-chat), it is recommended to use docker for deploying in production as it uses gunicorn to run multiple workers.
 
+!!! Warning "Shared memory for multiple users"
+
+    Memory of the chatbot is shared betweem the users that are on the same worker.
+
 ## ⚡ Quickstart
 
 If you just want to quickly deploy it using the pre-trained model `Llama-2-7B-Chat-GGML`, you can use docker:
