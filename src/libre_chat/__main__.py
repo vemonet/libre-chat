@@ -16,7 +16,9 @@ cli = typer.Typer(help="Deploy API and web UI for LLMs, such as Llama 2, using l
 
 @cli.command("start")
 def start(
-    config: str = typer.Argument(default_conf.config_path, help="Path to the libre-chat YAML configuration file"),
+    config: str = typer.Argument(
+        default_conf.config_path, help="Path to the libre-chat YAML configuration file"
+    ),
     # model: str = typer.Option(conf.llm.model_path, help="Path to the model binary"),
     # vector: str = typer.Option(conf.vector.vector_path, help="Path to the vector db folder"),
     host: str = typer.Option("localhost", help="Host URL"),
@@ -43,9 +45,13 @@ def start(
 
 @cli.command("build")
 def build(
-    config: str = typer.Argument(default_conf.config_path, help="Path to the libre-chat YAML configuration file"),
+    config: str = typer.Argument(
+        default_conf.config_path, help="Path to the libre-chat YAML configuration file"
+    ),
     vector: Optional[str] = typer.Option(None, help="Path to the vector db folder"),
-    documents: Optional[str] = typer.Option(None, help="Path to the folder containing documents to vectorize"),
+    documents: Optional[str] = typer.Option(
+        None, help="Path to the folder containing documents to vectorize"
+    ),
     log_level: str = typer.Option("info", help="Log level (info, debug, warn, error)"),
 ) -> None:
     logging.basicConfig(level=logging.getLevelName(log_level.upper()))
@@ -58,11 +64,12 @@ def build(
         conf.vector.vector_path = vector
     if documents:
         conf.vector.documents_path = documents
-    log.info(f"Vectorizing documents from {BOLD}{documents}{END} as vectorstore in {conf.vector.vector_path}")
+    log.info(
+        f"Vectorizing documents from {BOLD}{documents}{END} as vectorstore in {conf.vector.vector_path}"
+    )
     if conf.vector.vector_path:
         shutil.rmtree(conf.vector.vector_path)
-    llm = Llm(conf=conf)
-    llm.build_vectorstore()
+    Llm(conf=conf)
     log.info(f"Documents successfully vectorized in {BOLD}{conf.vector.vector_path}{END}")
 
 

@@ -59,7 +59,8 @@ nav:
     - Deploy:
       - 🐳 With Docker: use-docker.md
       - 🐍 With pip: use-pip.md
-    - 🛠️ Development: development.md
+    - Advanced:
+      - 🛠️ Development: development.md
   - Code reference:
       - LLM: Llm.md
       - LLM Endpoint: ChatEndpoint.md
@@ -68,7 +69,6 @@ nav:
   - Issues: https://github.com/vemonet/libre-chat/issues" target="_blank
 
 plugins:
-# - admonition
 - search
 - open-in-new-tab
 - autorefs

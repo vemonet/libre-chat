@@ -5,10 +5,11 @@ from typing import Dict, List, Optional, Tuple
 import torch
 from langchain import PromptTemplate
 from langchain.chains import ConversationChain, RetrievalQA
-from langchain.document_loaders import DirectoryLoader, PyPDFLoader
+from langchain.document_loaders import DirectoryLoader
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.llms import CTransformers
 from langchain.memory import ConversationBufferMemory
+from langchain.schema.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 
@@ -36,8 +37,9 @@ class Llm:
         vector_path: Optional[str] = None,
         vector_download: Optional[str] = None,
         documents_path: Optional[str] = None,
-        template_variables: Optional[List[str]] = None,
-        template_prompt: Optional[str] = None,
+        document_loaders: Optional[List[Dict[str, str]]] = None,
+        prompt_variables: Optional[List[str]] = None,
+        prompt_template: Optional[str] = None,
         max_new_tokens: Optional[int] = None,
         temperature: Optional[float] = None,
         return_source_documents: Optional[bool] = None,
@@ -52,21 +54,34 @@ class Llm:
         self.model_path = model_path if model_path else self.conf.llm.model_path
         self.model_type = model_type if model_type else self.conf.llm.model_type
         self.model_download = model_download if model_download else self.conf.llm.model_download
-        self.embeddings_path = embeddings_path if embeddings_path else self.conf.vector.embeddings_path
-        self.embeddings_download = embeddings_download if embeddings_download else self.conf.vector.embeddings_download
+        self.embeddings_path = (
+            embeddings_path if embeddings_path else self.conf.vector.embeddings_path
+        )
+        self.embeddings_download = (
+            embeddings_download if embeddings_download else self.conf.vector.embeddings_download
+        )
         self.vector_path = vector_path if vector_path else self.conf.vector.vector_path
-        self.vector_download = vector_download if vector_download else self.conf.vector.vector_download
+        self.vector_download = (
+            vector_download if vector_download else self.conf.vector.vector_download
+        )
         self.documents_path = documents_path if documents_path else self.conf.vector.documents_path
+        self.document_loaders = (
+            document_loaders if document_loaders else self.conf.vector.document_loaders
+        )
         self.return_source_documents = (
-            return_source_documents if return_source_documents else self.conf.vector.return_source_documents
+            return_source_documents
+            if return_source_documents
+            else self.conf.vector.return_source_documents
         )
         self.vector_count = vector_count if vector_count else self.conf.vector.vector_count
         self.chunk_size = chunk_size if chunk_size else self.conf.vector.chunk_size
         self.chunk_overlap = chunk_overlap if chunk_overlap else self.conf.vector.chunk_overlap
         self.max_new_tokens = max_new_tokens if max_new_tokens else self.conf.llm.max_new_tokens
         self.temperature = temperature if temperature else self.conf.llm.temperature
-        self.template_variables: List[str] = template_variables if template_variables else self.conf.template.variables
-        self.template_prompt = template_prompt if template_prompt else self.conf.template.prompt
+        self.prompt_variables: List[str] = (
+            prompt_variables if prompt_variables else self.conf.prompt.variables
+        )
+        self.prompt_template = prompt_template if prompt_template else self.conf.prompt.template
 
         if torch.cuda.is_available():
             self.device = torch.device(0)
@@ -79,17 +94,19 @@ class Llm:
 
         os.environ["NUMEXPR_MAX_THREADS"] = str(self.conf.info.workers)
 
-        if not self.template_prompt:
+        if not self.prompt_template:
             if self.vector_path:
-                self.template_prompt = DEFAULT_QA_TEMPLATE
-                self.template_variables = ["question", "context"]
+                self.prompt_template = DEFAULT_QA_PROMPT
+                self.prompt_variables = ["question", "context"]
             else:
-                self.template_prompt = DEFAULT_GENERIC_TEMPLATE
-                self.template_variables = ["input", "history"]
-        if len(self.template_variables) < 1:
+                self.prompt_template = DEFAULT_CONVERSATION_PROMPT
+                self.prompt_variables = ["input", "history"]
+        if len(self.prompt_variables) < 1:
             raise ValueError("You should provide at least 1 template variable")
 
-        self.template = PromptTemplate(template=self.template_prompt, input_variables=self.template_variables)
+        self.prompt = PromptTemplate(
+            template=self.prompt_template, input_variables=self.prompt_variables
+        )
         self.download_data()
         if self.vector_path:
             self.build_vectorstore()
@@ -106,7 +123,8 @@ class Llm:
     def setup_dbqa(self) -> None:
         """Setup the model and vector db for QA"""
         log.info(f"🤖 Loading CTransformers model from {BOLD}{self.model_path}{END}")
-        # Instantiate local CTransformers model
+        # Instantiate local CTransformers model https://github.com/marella/ctransformers#config
+        # NOTE: streaming not implemented yet on the LLM class (only available for OpenAI API)
         llm = CTransformers(  # type: ignore
             model=self.model_path,
             # model_file=self.model_path,
@@ -117,20 +135,28 @@ class Llm:
             log.info(
                 f"💫 Loading vector database at {BOLD}{self.vector_path}{END}, with embeddings from {BOLD}{self.embeddings_path}{END}"
             )
-            embeddings = HuggingFaceEmbeddings(model_name=self.embeddings_path, model_kwargs={"device": self.device})
+            embeddings = HuggingFaceEmbeddings(
+                model_name=self.embeddings_path, model_kwargs={"device": self.device}
+            )
             vectordb = FAISS.load_local(self.vector_path, embeddings)
 
             self.dbqa = RetrievalQA.from_chain_type(
                 llm=llm,
                 chain_type="stuff",
-                retriever=vectordb.as_retriever(search_kwargs={"k": self.vector_count}),
+                retriever=vectordb.as_retriever(
+                    search_type="similarity",  # Or: similarity_score_threshold, mmr
+                    search_kwargs={
+                        "k": self.vector_count
+                    }  # Number of Documents to return. Defaults to 4.
+                    # To filter we could use the kwarg score_threshold (between 0 and 1)
+                ),
                 return_source_documents=self.return_source_documents,
-                chain_type_kwargs={"prompt": self.template},
+                chain_type_kwargs={"prompt": self.prompt},
             )
         else:
             log.info("🦜 No vector database provided, using a generic LLM")
             self.conversation = ConversationChain(
-                llm=llm, prompt=self.template, verbose=True, memory=ConversationBufferMemory()
+                llm=llm, prompt=self.prompt, verbose=True, memory=ConversationBufferMemory()
             )
 
     def build_vectorstore(self, documents_path: Optional[str] = None) -> Optional[str]:
@@ -147,16 +173,31 @@ class Llm:
             log.info(
                 f"🏗️  No vectorstore found at {self.vector_path}. Building the vectorstore from the {BOLD}{CYAN}{docs_count}{END} documents found in {BOLD}{documents_path}{END}"
             )
-            loader = DirectoryLoader(documents_path, glob="*.pdf", loader_cls=PyPDFLoader)  # type: ignore
-            documents = loader.load()
-            text_splitter = RecursiveCharacterTextSplitter(chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap)
-            texts = text_splitter.split_documents(documents)
-            embeddings = HuggingFaceEmbeddings(model_name=self.embeddings_path, model_kwargs={"device": self.device})
-            vectorstore = FAISS.from_documents(texts, embeddings)
+            documents: List[Document] = []
+            # Loading all file types provided in the document_loaders object
+            for doc_load in self.document_loaders:
+                loader = DirectoryLoader(
+                    documents_path, glob=doc_load["glob"], loader_cls=doc_load["loader_cls"]  # type: ignore
+                )
+                loaded_docs = loader.load()
+                log.info(f"🗃️  Loaded {len(loaded_docs)} items from {doc_load['glob']} files")
+                documents.extend(loaded_docs)
+
+            # Split the text up into small, semantically meaningful chunks (often sentences) https://js.langchain.com/docs/modules/data_connection/document_transformers/
+            text_splitter = RecursiveCharacterTextSplitter(
+                chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap
+            )
+            splitted_texts = text_splitter.split_documents(documents)
+            embeddings = HuggingFaceEmbeddings(
+                model_name=self.embeddings_path, model_kwargs={"device": self.device}
+            )
+            vectorstore = FAISS.from_documents(splitted_texts, embeddings)
             if self.vector_path:
                 vectorstore.save_local(self.vector_path)
         else:
-            log.warning(f"⚠️ No documents found in {documents_path}, could not build the vectorstore")
+            log.warning(
+                f"⚠️ No documents found in {documents_path}, could not build the vectorstore"
+            )
         return self.vector_path
 
     def query(self, prompt: str, history: Optional[List[Tuple[str, str]]] = None) -> Dict[str, str]:
@@ -168,7 +209,13 @@ class Llm:
         if self.vector_path:
             # TODO: handle history
             res = self.dbqa({"query": prompt})
-            log.debug(f"💭 Complete response from the LLM: {res}")
+            log.info(f"💭 Complete response from the LLM: {res}")
+            for i, doc in enumerate(res["source_documents"]):
+                # doc.to_json() not implemented yet
+                res["source_documents"][i] = {
+                    "page_content": doc.page_content,
+                    "metadata": doc.metadata,
+                }
             if "result" not in res:
                 raise Exception(f"No result was returned by the LLM: {res}")
         else:
@@ -177,7 +224,7 @@ class Llm:
         return res
 
 
-DEFAULT_GENERIC_TEMPLATE = """Assistant is a large language model trained by everyone.
+DEFAULT_CONVERSATION_PROMPT = """Assistant is a large language model trained by everyone.
 
 Assistant is designed to be able to assist with a wide range of tasks, from answering simple questions to providing in-depth explanations and discussions on a wide range of topics. As a language model, Assistant is able to generate human-like text based on the input it receives, allowing it to engage in natural-sounding conversations and provide responses that are coherent and relevant to the topic at hand.
 
@@ -189,7 +236,7 @@ Overall, Assistant is a powerful tool that can help with a wide range of tasks a
 Human: {input}
 Assistant:"""
 
-DEFAULT_QA_TEMPLATE = """Use the following pieces of information to answer the user's question.
+DEFAULT_QA_PROMPT = """Use the following pieces of information to answer the user's question.
 If you don't know the answer, just say that you don't know, don't try to make up an answer.
 
 Context: {context}

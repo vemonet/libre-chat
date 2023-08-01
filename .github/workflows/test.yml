@@ -41,7 +41,6 @@ jobs:
     - name: Install dependencies
       run: |
         pipx install hatch
-        tests/download.sh
 
     - name: Test with coverage
       run: |

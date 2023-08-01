@@ -90,7 +90,10 @@ post-install-commands = [
 
 [tool.hatch.envs.default.scripts]
 dev = "uvicorn tests.main:app --reload {args}"
-vector = "libre-chat start config/chat-vectorstore-qa.yml"
+vector = [
+    # "rm -rf vectorstore/db_faiss",
+    "libre-chat start config/chat-vectorstore-qa.yml",
+]
 fmt = [
     "pre-commit run --all --all-files",
     "mypy",
@@ -177,7 +180,7 @@ filterwarnings = [
 
 [tool.black]
 color = true
-line-length = 120
+line-length = 100
 target-version = ['py38']
 skip-string-normalization = false
 

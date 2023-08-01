@@ -1,6 +1,14 @@
 import os
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
+from langchain.document_loaders import (
+    CSVLoader,
+    JSONLoader,
+    PyPDFLoader,
+    TextLoader,
+    UnstructuredHTMLLoader,
+    UnstructuredMarkdownLoader,
+)
 from pydantic import BaseSettings
 from pydantic_yaml import parse_yaml_raw_as
 
@@ -9,9 +17,9 @@ from libre_chat.utils import BOLD, END, YELLOW, log
 __all__ = ["ChatConf", "parse_config"]
 
 
-class SettingsTemplate(BaseSettings):
+class SettingsPrompt(BaseSettings):
     variables: List[str] = ["input", "history"]
-    prompt: str = """Your are an assistant, please help me
+    template: str = """Your are an assistant, please help me
 
 {history}
 Human: {input}
@@ -50,9 +58,17 @@ class SettingsVector(BaseSettings):
     embeddings_path: str = "sentence-transformers/all-MiniLM-L6-v2"
     # or embeddings_path: str = "./embeddings/all-MiniLM-L6-v2"
     embeddings_download: Optional[str] = None
-    vector_path: Optional[str] = None  # "vectorstore/db_faiss"
+    vector_path: Optional[str] = None
     vector_download: Optional[str] = None
     documents_path: str = "documents/"
+    document_loaders: List[Dict[str, Union[Union[str, Any]]]] = [
+        {"glob": "*.pdf", "loader_cls": PyPDFLoader},
+        {"glob": "*.[c|t]sv", "loader_cls": CSVLoader},
+        {"glob": "*.?xhtm?l", "loader_cls": UnstructuredHTMLLoader},
+        {"glob": "*.json*", "loader_cls": JSONLoader},
+        {"glob": "*.md*", "loader_cls": UnstructuredMarkdownLoader},
+        {"glob": "*.txt", "loader_cls": TextLoader},
+    ]
     return_source_documents: bool = True
     vector_count: int = 2
     chunk_size: int = 500
@@ -78,7 +94,7 @@ class ChatConf(BaseSettings):
     llm: SettingsLlm = SettingsLlm()
     vector: SettingsVector = SettingsVector()
     info: SettingsInfo = SettingsInfo()
-    template: SettingsTemplate = SettingsTemplate()
+    prompt: SettingsPrompt = SettingsPrompt()
 
     class Config:
         env_prefix = "librechat_"

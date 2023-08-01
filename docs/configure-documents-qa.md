@@ -16,8 +16,8 @@ llm:
   model_path: ./models/llama-2-7b-chat.ggmlv3.q3_K_L.bin
   # We recommend to predownload the files, but you can provide download URLs that will be used if the files are not present
   model_download: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.ggmlv3.q3_K_L.bin
-  temperature: 0.01
-  max_new_tokens: 256
+  temperature: 0.01    # Config how creative (but also potentially wrong) the model can be. 0 is safe, 1 is adventurous
+  max_new_tokens: 1024 # Max number of words the LLM can generate
 
 template:
   variables: ["question", "context"]
@@ -32,17 +32,18 @@ template:
     Helpful answer:
 
 vector:
-  vector_path: ./vectorstore/db_faiss # Path to the vectorstore to do QA retrieval
+  vector_path: ./vectorstore/db_faiss            # Path to the vectorstore to do QA retrieval
   vector_download: null
   embeddings_path: ./embeddings/all-MiniLM-L6-v2 # Embeddings used to generate the vectors
   # You can also directly use embeddings model from HuggingFace:
   # embeddings_path: sentence-transformers/all-MiniLM-L6-v2
   embeddings_download: https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/v0.2/all-MiniLM-L6-v2.zip
-  documents_path: ./documents # For documents to vectorize
-  return_source_documents: true
-  vector_count: 2
-  chunk_size: 500
-  chunk_overlap: 50
+  documents_path: ./documents   # Path to documents to vectorize
+  return_source_documents: true # Return in which documents the answer has been sourced
+  vector_count: 2               # Number of Documents to return
+  # Split the text up into small, semantically meaningful chunks (often sentences):
+  chunk_size: 500               # Maximum size of chunks to return, in terms of number of characters
+  chunk_overlap: 50             # Overlap in characters between chunks
 
 info:
   title: "Libre Chat"
@@ -52,6 +53,9 @@ info:
   examples:
   - What is the capital of the Netherlands?
   - Which drugs are approved by the FDA to mitigate Alzheimer symptoms?
+  favicon: https://raw.github.com/vemonet/libre-chat/main/docs/assets/logo.png
+  repository_url: https://github.com/vemonet/libre-chat
+  public_url: https://chat.semanticscience.org
   contact:
     name: "Vincent Emonet"
     email: "vincent.emonet@gmail.com"
