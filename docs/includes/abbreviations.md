@@ -24,3 +24,7 @@
 *[PDF]: Portable Document Format
 *[ZSH]: The Z shell (Zsh) is a Unix shell that can be used as an interactive login shell, and as a command interpreter for shell scripting.
 *[BASH]: The Bourne-Again SHell (BASH) is a Unix shell that can be used as an interactive login shell, and as a command interpreter for shell scripting.
+*[OpenAPI]: OpenAPI, formerly known as Swagger, is a specification language for HTTP APIs that defines structure and syntax in a way that is not wedded to the programming language the API is created in.
+*[JS]: JavaScript
+*[TS]: TypeScript
+*[CSS]: CSS is the acronym of "Cascading Style Sheets". CSS is a computer language for laying out and structuring web pages (HTML or XML)

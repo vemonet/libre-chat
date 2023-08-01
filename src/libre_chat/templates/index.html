@@ -210,7 +210,8 @@
 
             // Create a new WebSocket connection
             const currentLocation = window.location;
-            const socket = new WebSocket(`ws://${currentLocation.host}/ws`);
+            const protocol = currentLocation.protocol === "https:" ? "wss:" : "ws:";
+            const socket = new WebSocket(`${protocol}//${currentLocation.host}/ws`);
             socket.onopen = (event) => {
                 console.log("🔌 Connected to the chatbot");
             };

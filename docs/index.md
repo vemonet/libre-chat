@@ -47,3 +47,14 @@ Seasoned developers can also manipulate LLM models, and deploy the API in python
 !!! Question "Supporting other models"
 
     Let us know if you managed to run other models with Libre Chat, or if you would like to see a specific model supported.
+
+## 🔎 Technical overview
+
+The web service is deployed using a **FastAPI** endpoint. It has 4 routes, plus its OpenAPI documentation available on `/docs`:
+
+- 📮 `GET` and `POST` on `/prompt` to query the model
+- 🔌 Websocket on `/ws` to open a connection with the API, and query the model
+- 🖥️ Chatbot web UI served on the root URL `/`
+  - The web UI is contained within a single HTML file templated using Jinja2, written in vanilla JS, using Tailwind CSS for styling, and marked for markdown rendering
+
+All files required for querying the model are stored and accessed locally using **LangChain**: the main model binary, the embeddings and documents to create the vectorstore, and the vectorstore itself.
