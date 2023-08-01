@@ -14,10 +14,12 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 
 - 🪶 Modern and lightweight chat web interface, working well on desktop and mobile, with support for light/dark theme
 
+Checkout the demo at [**chat.semanticscience.org**](https://chat.semanticscience.org)
 
-![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/assets/screenshot.png)
 
-![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/assets/screenshot-light.png)
+![UI screenshot](/libre-chat/assets/screenshot.png)
+
+![UI screenshot](/libre-chat/assets/screenshot-light.png)
 
 !!! warning "Early stage"
 	Development on this project has just started, use it with caution.

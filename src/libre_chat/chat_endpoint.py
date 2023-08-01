@@ -15,24 +15,6 @@ __all__ = [
     "ChatEndpoint",
 ]
 
-# websocket_timeout: int = 600 # 10min
-
-# class WebSocketTimeoutMiddleware:
-#     def __init__(self, app: FastAPI) -> None:
-#         self.app = app
-
-#     async def __call__(self, scope: Dict[str, str], receive: Callable[[], Awaitable[MutableMapping[str, Any]]], send: Callable[[Any], Any]) -> None:
-#         if scope["type"] == "websocket":
-#             scope["receive"] = self.receive # type: ignore
-#         await self.app(scope, receive, send)
-
-#     async def receive(self, *args: Any, **kwargs: Any) -> Any:
-#         try:
-#             return await self.app.receive(*args, **kwargs) # type: ignore
-#         except WebSocketDisconnect:
-#             await asyncio.sleep(websocket_timeout)
-#             raise WebSocketDisconnect
-
 
 class ChatEndpoint(FastAPI):
     """
@@ -70,7 +52,6 @@ class ChatEndpoint(FastAPI):
             contact=self.conf.info.contact,
             **kwargs,
         )
-        # self.add_middleware(WebSocketTimeoutMiddleware)
 
         chat_router = ChatRouter(
             llm=self.llm,

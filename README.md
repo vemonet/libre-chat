@@ -23,6 +23,8 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
   - **📚 Documents-based question answering**: automatically build similarity vectors from locally provided PDF documents, the chatbot will use them to answer your question, and return which documents were used to generate the answer.
 - 🪶 Modern and lightweight chat web interface, working well on desktop and mobile, with support for light/dark theme
 
+Checkout the demo at [**chat.semanticscience.org**](https://chat.semanticscience.org)
+
 
 ![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/assets/screenshot.png)
 
