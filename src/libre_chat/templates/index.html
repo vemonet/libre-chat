@@ -213,9 +213,9 @@
             const currentLocation = window.location;
             const protocol = currentLocation.protocol === "https:" ? "wss:" : "ws:";
             const websocketUrl = `${protocol}//${currentLocation.host}/ws`;
+            let socket;
             function createWebSocket() {
-                const socket = new WebSocket(websocketUrl);
-
+                socket = new WebSocket(websocketUrl);
                 socket.onopen = () => {
                     console.log("🔌 Connected to the chatbot");
                 };
@@ -235,6 +235,7 @@
                     disableLoading();
                 };
 
+                // Receive response from the websocket
                 socket.onmessage = (event) => {
                     const data = JSON.parse(event.data);
                     appendMessage(data.result, "bot");
@@ -243,8 +244,7 @@
                     hideWarning();
                 };
             }
-            createWebSocket();
-
+            createWebSocket()
 
             // Send the user input to the chat API
             function submitInput(userInput) {
