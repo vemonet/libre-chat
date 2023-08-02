@@ -1,6 +1,6 @@
 """Module: Open-source LLM setup"""
 import os
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import torch
 from langchain import PromptTemplate
@@ -42,9 +42,12 @@ class Llm:
         prompt_template: Optional[str] = None,
         max_new_tokens: Optional[int] = None,
         temperature: Optional[float] = None,
-        return_sources_count: Optional[int] = None,
         chunk_size: Optional[int] = None,
         chunk_overlap: Optional[int] = None,
+        chain_type: Optional[str] = None,
+        search_type: Optional[str] = None,
+        return_sources_count: Optional[int] = None,
+        score_threshold: Optional[float] = None,
     ) -> None:
         """
         Constructor for the LLM
@@ -69,6 +72,11 @@ class Llm:
         )
         self.return_sources_count = (
             return_sources_count if return_sources_count else self.conf.vector.return_sources_count
+        )
+        self.chain_type = chain_type if chain_type else self.conf.vector.chain_type
+        self.search_type = search_type if search_type else self.conf.vector.search_type
+        self.score_threshold = (
+            score_threshold if score_threshold else self.conf.vector.score_threshold
         )
         self.chunk_size = chunk_size if chunk_size else self.conf.vector.chunk_size
         self.chunk_overlap = chunk_overlap if chunk_overlap else self.conf.vector.chunk_overlap
@@ -136,15 +144,14 @@ class Llm:
             )
             vectordb = FAISS.load_local(self.vector_path, embeddings)
 
+            search_args: Dict[str, Any] = {"k": self.return_sources_count}
+            if self.score_threshold is not None:
+                search_args["score_threshold"] = self.score_threshold
             self.dbqa = RetrievalQA.from_chain_type(
                 llm=llm,
-                chain_type="stuff",
+                chain_type=self.chain_type,
                 retriever=vectordb.as_retriever(
-                    search_type="similarity",  # Or: similarity_score_threshold, mmr
-                    search_kwargs={
-                        "k": self.return_sources_count
-                    }  # Number of Documents to return. Defaults to 4.
-                    # To filter we could use the kwarg score_threshold (between 0 and 1)
+                    search_type=self.search_type, search_kwargs=search_args
                 ),
                 return_source_documents=self.return_sources_count > 0,
                 chain_type_kwargs={"prompt": self.prompt},

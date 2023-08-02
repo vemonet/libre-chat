@@ -14,7 +14,7 @@ from pydantic_yaml import parse_yaml_raw_as
 
 from libre_chat.utils import BOLD, END, YELLOW, log
 
-__all__ = ["ChatConf", "parse_config"]
+__all__ = ["ChatConf", "parse_conf"]
 
 
 class SettingsPrompt(BaseSettings):
@@ -63,7 +63,7 @@ class SettingsVector(BaseSettings):
     documents_path: str = "documents/"
     document_loaders: List[Dict[str, Union[Union[str, Any]]]] = [
         {"glob": "*.pdf", "loader_cls": PyPDFLoader},
-        {"glob": "*.[c|t]sv", "loader_cls": CSVLoader},
+        {"glob": "*.[c|t|p]sv", "loader_cls": CSVLoader},
         {"glob": "*.?xhtm?l", "loader_cls": UnstructuredHTMLLoader},
         {"glob": "*.json*", "loader_cls": JSONLoader},
         {"glob": "*.md*", "loader_cls": UnstructuredMarkdownLoader},
@@ -71,7 +71,10 @@ class SettingsVector(BaseSettings):
     ]
     chunk_size: int = 500
     chunk_overlap: int = 50
+    chain_type: str = "stuff"  # Or: map_reduce, reduce, map_rerank https://docs.langchain.com/docs/components/chains/index_related_chains
+    search_type: str = "similarity"  # Or: similarity_score_threshold, mmr https://python.langchain.com/docs/modules/data_connection/retrievers/vectorstore
     return_sources_count: int = 4
+    score_threshold: Optional[float] = None  # Between 0 and 1
 
     class Config:
         env_prefix = "librechat_"
@@ -102,7 +105,7 @@ class ChatConf(BaseSettings):
 default_conf = ChatConf()
 
 
-def parse_config(path: str = default_conf.config_path) -> ChatConf:
+def parse_conf(path: str = default_conf.config_path) -> ChatConf:
     if os.path.exists(path):
         with open(path) as file:
             cfg = parse_yaml_raw_as(ChatConf, file.read())

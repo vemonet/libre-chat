@@ -106,8 +106,9 @@ test = [
     "pytest --cov=src/ {args}",
 ]
 cov = [
+    "fmt",
     "pytest --cov=src/ --cov-report html {args}",
-    "python -c 'import webbrowser; webbrowser.open(\"http://0.0.0.0:3000\")'",
+    # "python -c 'import webbrowser; webbrowser.open(\"http://0.0.0.0:3000\")'",
     "python -m http.server 3000 --directory ./htmlcov",
 ]
 docs = "mkdocs serve -a localhost:8001"

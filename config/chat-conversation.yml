@@ -23,10 +23,12 @@ vector:
   embeddings_path: ./embeddings/all-MiniLM-L6-v2 # Path to embeddings used to generate the vectors, or use directly from HuggingFace: sentence-transformers/all-MiniLM-L6-v2
   embeddings_download: https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/v0.2/all-MiniLM-L6-v2.zip
   documents_path: ./documents # Path to documents to vectorize
-  return_sources_count: 2     # Number of sources to return when generating an answer
-  # When vectorizing we split the text up into small, semantically meaningful chunks (often sentences):
   chunk_size: 500             # Maximum size of chunks, in terms of number of characters
   chunk_overlap: 50           # Overlap in characters between chunks
+  chain_type: stuff           # Or: map_reduce, reduce, map_rerank. More details: https://docs.langchain.com/docs/components/chains/index_related_chains
+  search_type: similarity     # Or: similarity_score_threshold, mmr. More details: https://python.langchain.com/docs/modules/data_connection/retrievers/vectorstore
+  return_sources_count: 2     # Number of sources to return when generating an answer
+  score_threshold: null       # If using the similarity_score_threshold search type. Between 0 and 1
 
 info:
   title: "Libre Chat"

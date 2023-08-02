@@ -3,10 +3,10 @@ import shutil
 
 import pytest
 
-from libre_chat.chat_conf import parse_config
+from libre_chat.chat_conf import parse_conf
 from libre_chat.llm import Llm
 
-llm = Llm(conf=parse_config("config/chat-vectorstore-qa.yml"))
+llm = Llm(conf=parse_conf("config/chat-vectorstore-qa.yml"))
 
 
 def test_query_vectorstore_capital() -> None:
@@ -45,7 +45,7 @@ def test_build_vectorstore() -> None:
 def test_build_failed_no_docs() -> None:
     """Test fail building the vectorstore when no documents"""
     llm_empt = Llm(
-        conf=parse_config("config/chat-vectorstore-qa.yml"), documents_path="tests/tmp/nothinghere"
+        conf=parse_conf("config/chat-vectorstore-qa.yml"), documents_path="tests/tmp/nothinghere"
     )
     shutil.rmtree(llm.conf.vector.vector_path)
     llm_empt.build_vectorstore()

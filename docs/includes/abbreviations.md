@@ -28,3 +28,6 @@
 *[JS]: JavaScript
 *[TS]: TypeScript
 *[CSS]: CSS is the acronym of "Cascading Style Sheets". CSS is a computer language for laying out and structuring web pages (HTML or XML)
+*[CSV]: Comma-Separated Value
+*[TSV]: Tab-Separated Value
+*[PSV]: Pipe-Separated Value

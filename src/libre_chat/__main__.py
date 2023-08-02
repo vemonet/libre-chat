@@ -6,7 +6,7 @@ import typer
 import uvicorn
 
 from libre_chat import __version__
-from libre_chat.chat_conf import default_conf, parse_config
+from libre_chat.chat_conf import default_conf, parse_conf
 from libre_chat.chat_endpoint import ChatEndpoint
 from libre_chat.llm import Llm
 from libre_chat.utils import BOLD, END, log, log_format
@@ -30,7 +30,7 @@ def start(
     log_config = uvicorn.config.LOGGING_CONFIG
     log_config["formatters"]["access"]["fmt"] = log_format
     log_config["formatters"]["default"]["fmt"] = log_format
-    conf = parse_config(config)
+    conf = parse_conf(config)
     llm = Llm(conf=conf)
     app = ChatEndpoint(llm=llm, conf=conf)
     uvicorn.run(
@@ -59,7 +59,7 @@ def build(
     log_config["formatters"]["access"]["fmt"] = log_format
     log_config["formatters"]["default"]["fmt"] = log_format
 
-    conf = parse_config(config)
+    conf = parse_conf(config)
     if vector:
         conf.vector.vector_path = vector
     if documents:

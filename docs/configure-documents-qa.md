@@ -4,9 +4,50 @@ Libre Chat can be used to train and deploy a **documents-based question answerin
 
 When starting the service Libre Chat will automatically check if the `vectorstore` is already available, if not, it will build it from the documents provided in the directory available at the given `documents_path`.
 
-!!! Question "Document types to support"
+!!! abstract "File types supported"
 
-    We currently only support PDF, but more options could be easily added, let us know if you need something in the [issues](https://github.com/vemonet/libre-chat/issues).
+    Libre Chat will automatically vectorize the file types below. Let us know if you need anything else in the [issues](https://github.com/vemonet/libre-chat/issues).
+
+    | File type | Pattern       |
+    | --------- | ------------- |
+    | PDF       | `*.pdf`       |
+    | CSV       | `*.[c|t|p]sv` |
+    | JSON      | `*.json*`     |
+    | HTML      | `.?xhtm?l`    |
+    | Markdown  | `*.md*`       |
+    | Text      | `*.txt`       |
+
+??? example "Use custom document loaders"
+
+    Custom document loaders can be defined when instantiating the `Llm` class:
+
+    ```python
+    from langchain.document_loaders import (
+        CSVLoader,
+        JSONLoader,
+        PyPDFLoader,
+        TextLoader,
+        UnstructuredHTMLLoader,
+        UnstructuredMarkdownLoader,
+    )
+    from libre_chat import Llm, parse_config
+
+    loaders = [
+        {"glob": "*.pdf", "loader_cls": PyPDFLoader},
+        {"glob": "*.[c|t|p]sv", "loader_cls": CSVLoader},
+        {"glob": "*.?xhtm?l", "loader_cls": UnstructuredHTMLLoader},
+        {"glob": "*.json*", "loader_cls": JSONLoader},
+        {"glob": "*.md*", "loader_cls": UnstructuredMarkdownLoader},
+        {"glob": "*.txt", "loader_cls": TextLoader},
+    ]
+
+    llm = Llm(
+        conf=parse_conf("config/chat-vectorstore-qa.yml"),
+        document_loaders=loaders
+    )
+    ```
+
+
 
 Below is an example of configuration using the Llama 2 7B GGML model, with a Faiss vectorstore, to deploy a question answering agent that will source its answers from the documents provided in the `./documents` folder:
 
@@ -38,10 +79,13 @@ vector:
   # embeddings_path: sentence-transformers/all-MiniLM-L6-v2
   embeddings_download: https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/v0.2/all-MiniLM-L6-v2.zip
   documents_path: ./documents # Path to documents to vectorize
-  return_sources_count: 2     # Number of sources to return when generating an answer
   # When vectorizing we split the text up into small, semantically meaningful chunks (often sentences):
   chunk_size: 500             # Maximum size of chunks, in terms of number of characters
   chunk_overlap: 50           # Overlap in characters between chunks
+  chain_type: stuff           # Or: map_reduce, reduce, map_rerank. More details: https://docs.langchain.com/docs/components/chains/index_related_chains
+  search_type: similarity     # Or: similarity_score_threshold, mmr. More details: https://python.langchain.com/docs/modules/data_connection/retrievers/vectorstore
+  return_sources_count: 2     # Number of sources to return when generating an answer
+  score_threshold: null       # If using the similarity_score_threshold search type. Between 0 and 1
 
 info:
   title: "Libre Chat"
