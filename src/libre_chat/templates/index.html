@@ -170,19 +170,36 @@
                 exampleButtons.appendChild(button);
             });
 
+            // "page_content": "Drug repositioning and repurposing for Alzheimer disease\nClive Ballard1,✉, Dag Aarsland2,3, Jeffrey Cummings4, John O’Brien5, Roger Mills2,6, Jose \nLuis Molinuevo7, Tormod Fladby8, Gareth Williams2, Pat Doherty2, Anne Corbett1, Janet \nSultana9\n1College of Medicine and Health, University of Exeter, Exeter, UK.\n2Institute of Psychiatry Psychology and Neuroscience, King’s College London, London, UK.\n3SESAM (Regional Center for Elderly Medicine and Interaction), University Hospital Stavanger,",
+            // "metadata": {
+            //     "source": "documents/drug_repositioning_for_alzheimer_disease.pdf",
+            //     "page": 0
+            // }
 
             // Append a message to the chat
             const chatContainer = document.getElementById("chat-container");
             const chatThread = document.getElementById("chat-thread");
             const chatForm = document.getElementById("chat-form");
-            function appendMessage(message, sender) {
+            function appendMessage(message, sender, source_documents=null) {
                 const messageElement = document.createElement("div");
+                let sourcesHtml = ""
+                if (source_documents && source_documents.length > 0) {
+                    sourcesHtml += `<article class="prose dark:prose-invert text-sm my-2 max-w-full">Sources:&nbsp;&nbsp;`
+                    for (const [i, doc] of source_documents.entries()) {
+                        const sourceId = doc.metadata.source ? doc.metadata.source : (i+1).toString()
+                        const pageBit = doc.metadata.hasOwnProperty("page") ? `📖 On page ${doc.metadata.page.toString()}:\n ` : ""
+                        const sourceContent = doc.page_content.replaceAll('"',"'") // .slice(0, 500)
+                        sourcesHtml += `<code data-tooltip="${pageBit}${sourceContent}" class="px-3">${sourceId}</code>&nbsp;&nbsp;`
+                    }
+                    sourcesHtml += "</article>"
+                }
+
                 const iconHtml = sender === "user" ?
                     '<i class="fas fa-user-astronaut text-xl mr-4"></i>' : // fa-comment fa-user-secret fa-user-astronaut
                     '<i class="fas fa-robot text-xl mr-4"></i>';
                 messageElement.className = `border-b border-slate-400 ${sender === "user" ? "bg-gray-100 dark:bg-gray-700" : "bg-gray-200 dark:bg-gray-600"}`;
-                messageElement.innerHTML = `<div>
-                    <div class="container flex items-center mx-auto px-2 py-8 max-w-5xl">
+                messageElement.innerHTML = `<div class="px-2 py-8 mx-auto max-w-5xl">
+                    <div class="container flex items-center">
                         ${iconHtml}
                         <div >
                             <article class="prose dark:prose-invert max-w-full">
@@ -190,11 +207,25 @@
                             </article>
                         </div>
                     </div>
+                    ${sourcesHtml}
                 </div>`;
                 chatThread.appendChild(messageElement);
                 chatContainer.scrollTop = chatContainer.scrollHeight;
             }
             appendMessage(welcomeMsg, "bot")
+
+            // Function to show the tooltip content on click
+            function showTooltipContent(event) {
+                const tooltip = event.target.getAttribute("data-tooltip");
+                if (tooltip) {
+                    window.alert(tooltip);
+                }
+            }
+            // Attach click event to all <code> elements
+            const codeElements = document.getElementsByTagName("code");
+            for (const codeElement of codeElements) {
+                codeElement.addEventListener("click", showTooltipContent);
+            }
 
             function enableLoading() {
                 loadingSpinner.classList.remove("hidden");
@@ -217,7 +248,7 @@
             function createWebSocket() {
                 socket = new WebSocket(websocketUrl);
                 socket.onopen = () => {
-                    console.log("🔌 Connected to the chatbot");
+                    console.log("🔌 Connected to the API websocket");
                 };
                 socket.onclose = (event) => {
                     console.warn("WebSocket closed with code:", event.code, "reason:", event.reason);
@@ -238,7 +269,8 @@
                 // Receive response from the websocket
                 socket.onmessage = (event) => {
                     const data = JSON.parse(event.data);
-                    appendMessage(data.result, "bot");
+                    console.log(data)
+                    appendMessage(data.result, "bot", data.source_documents);
                     chatContainer.scrollTop = chatContainer.scrollHeight
                     disableLoading();
                     hideWarning();
@@ -341,6 +373,7 @@
             [data-tooltip] {
                 position: relative;
                 cursor: pointer;
+                white-space: nowrap;
             }
             [data-tooltip]:before {
                 content: attr(data-tooltip);
@@ -351,12 +384,15 @@
                 padding: 0.5rem;
                 background-color: #333;
                 color: white;
-                font-size: 0.75rem;
+                font-size: 0.9rem;
+                font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
                 border-radius: 4px;
                 opacity: 0;
                 pointer-events: none;
                 transition: opacity 0.2s ease-in-out;
-                white-space: nowrap;
+                white-space: normal;
+                max-width: 100%;
+                width: 30rem;
             }
             [data-tooltip]:hover:before {
                 opacity: 1;

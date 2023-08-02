@@ -2,7 +2,7 @@ The whole deployment can be configured from a YAML file: paths to the model and 
 
 Libre Chat can be used to train and deploy a **documents-based question answering agent**
 
-When starting the service Libre Chat will automatically check if the `vectorstore` is already available, if not, it will build it from the provided `documents`.
+When starting the service Libre Chat will automatically check if the `vectorstore` is already available, if not, it will build it from the documents provided in the directory available at the given `documents_path`.
 
 !!! Question "Document types to support"
 
@@ -13,15 +13,14 @@ Below is an example of configuration using the Llama 2 7B GGML model, with a Fai
 ```yaml title="chat.yml"
 llm:
   model_type: llama
-  model_path: ./models/llama-2-7b-chat.ggmlv3.q3_K_L.bin
-  # We recommend to predownload the files, but you can provide download URLs that will be used if the files are not present
+  model_path: ./models/llama-2-7b-chat.ggmlv3.q3_K_L.bin # We recommend to predownload the files, but you can provide download URLs that will be used if the files are not present
   model_download: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.ggmlv3.q3_K_L.bin
   temperature: 0.01    # Config how creative (but also potentially wrong) the model can be. 0 is safe, 1 is adventurous
   max_new_tokens: 1024 # Max number of words the LLM can generate
 
-template:
+prompt:
   variables: ["question", "context"]
-  prompt: |
+  template: |
     Use the following pieces of information to answer the user's question.
     If you don't know the answer, just say that you don't know, don't try to make up an answer.
 
@@ -38,21 +37,21 @@ vector:
   # You can also directly use embeddings model from HuggingFace:
   # embeddings_path: sentence-transformers/all-MiniLM-L6-v2
   embeddings_download: https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/v0.2/all-MiniLM-L6-v2.zip
-  documents_path: ./documents   # Path to documents to vectorize
-  return_source_documents: true # Return in which documents the answer has been sourced
-  vector_count: 2               # Number of Documents to return
-  # Split the text up into small, semantically meaningful chunks (often sentences):
-  chunk_size: 500               # Maximum size of chunks to return, in terms of number of characters
-  chunk_overlap: 50             # Overlap in characters between chunks
+  documents_path: ./documents # Path to documents to vectorize
+  return_sources_count: 2     # Number of sources to return when generating an answer
+  # When vectorizing we split the text up into small, semantically meaningful chunks (often sentences):
+  chunk_size: 500             # Maximum size of chunks, in terms of number of characters
+  chunk_overlap: 50           # Overlap in characters between chunks
 
 info:
   title: "Libre Chat"
   version: "0.1.0"
   description: |
-    Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama)
+    Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama) [7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)
   examples:
   - What is the capital of the Netherlands?
   - Which drugs are approved by the FDA to mitigate Alzheimer symptoms?
+  - What was the GDP of France in 1998?
   favicon: https://raw.github.com/vemonet/libre-chat/main/docs/assets/logo.png
   repository_url: https://github.com/vemonet/libre-chat
   public_url: https://chat.semanticscience.org

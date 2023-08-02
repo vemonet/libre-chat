@@ -36,7 +36,7 @@ class SettingsInfo(BaseSettings):
     ]
     title: str = "Libre Chat"
     version: str = "0.1.0"
-    description: str = """Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama)"""
+    description: str = """Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama) [7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)"""
     public_url: str = "https://your-endpoint-url"
     repository_url: str = "https://github.com/vemonet/libre-chat"
     favicon: str = "https://raw.github.com/vemonet/libre-chat/main/docs/assets/logo.png"
@@ -69,10 +69,9 @@ class SettingsVector(BaseSettings):
         {"glob": "*.md*", "loader_cls": UnstructuredMarkdownLoader},
         {"glob": "*.txt", "loader_cls": TextLoader},
     ]
-    return_source_documents: bool = True
-    vector_count: int = 2
     chunk_size: int = 500
     chunk_overlap: int = 50
+    return_sources_count: int = 4
 
     class Config:
         env_prefix = "librechat_"

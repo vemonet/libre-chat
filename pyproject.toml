@@ -91,8 +91,11 @@ post-install-commands = [
 [tool.hatch.envs.default.scripts]
 dev = "uvicorn tests.main:app --reload {args}"
 vector = [
-    # "rm -rf vectorstore/db_faiss",
     "libre-chat start config/chat-vectorstore-qa.yml",
+]
+vector-build = [
+    "rm -rf vectorstore/db_faiss",
+    "vector",
 ]
 fmt = [
     "pre-commit run --all --all-files",

@@ -42,8 +42,7 @@ class Llm:
         prompt_template: Optional[str] = None,
         max_new_tokens: Optional[int] = None,
         temperature: Optional[float] = None,
-        return_source_documents: Optional[bool] = None,
-        vector_count: Optional[int] = None,
+        return_sources_count: Optional[int] = None,
         chunk_size: Optional[int] = None,
         chunk_overlap: Optional[int] = None,
     ) -> None:
@@ -68,12 +67,9 @@ class Llm:
         self.document_loaders = (
             document_loaders if document_loaders else self.conf.vector.document_loaders
         )
-        self.return_source_documents = (
-            return_source_documents
-            if return_source_documents
-            else self.conf.vector.return_source_documents
+        self.return_sources_count = (
+            return_sources_count if return_sources_count else self.conf.vector.return_sources_count
         )
-        self.vector_count = vector_count if vector_count else self.conf.vector.vector_count
         self.chunk_size = chunk_size if chunk_size else self.conf.vector.chunk_size
         self.chunk_overlap = chunk_overlap if chunk_overlap else self.conf.vector.chunk_overlap
         self.max_new_tokens = max_new_tokens if max_new_tokens else self.conf.llm.max_new_tokens
@@ -146,11 +142,11 @@ class Llm:
                 retriever=vectordb.as_retriever(
                     search_type="similarity",  # Or: similarity_score_threshold, mmr
                     search_kwargs={
-                        "k": self.vector_count
+                        "k": self.return_sources_count
                     }  # Number of Documents to return. Defaults to 4.
                     # To filter we could use the kwarg score_threshold (between 0 and 1)
                 ),
-                return_source_documents=self.return_source_documents,
+                return_source_documents=self.return_sources_count > 0,
                 chain_type_kwargs={"prompt": self.prompt},
             )
         else:

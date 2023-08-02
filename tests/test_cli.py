@@ -1,3 +1,5 @@
+from unittest.mock import MagicMock, patch
+
 from typer.testing import CliRunner
 
 from libre_chat.__main__ import cli
@@ -20,6 +22,9 @@ def test_build() -> None:
     assert result.exit_code == 0
 
 
-# def test_start():
-#     result = runner.invoke(cli, ["start"])
-#     assert result.exit_code == 0
+# Mock uvicorn.run to prevent API hanging
+@patch("libre_chat.__main__.uvicorn.run")
+def test_start(mock_run: MagicMock) -> None:
+    mock_run.return_value = None
+    result = runner.invoke(cli, ["start"])
+    assert result.exit_code == 0

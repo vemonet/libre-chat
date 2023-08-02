@@ -85,15 +85,14 @@ vector:
   # embeddings_path: sentence-transformers/all-MiniLM-L6-v2
   embeddings_download: https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/v0.2/all-MiniLM-L6-v2.zip
   documents_path: ./documents # For documents to vectorize
-  return_source_documents: true
-  vector_count: 2
+  return_sources_count: 2             # Number of sources to return when generating an answer
   chunk_size: 500
   chunk_overlap: 50
 info:
   title: "Libre Chat"
   version: "0.1.0"
   description: |
-    Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama)
+    Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama) [7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)
   examples:
   - "What is the capital of the Netherlands?"
   - "How can I create a logger with timestamp using python logging?"
