@@ -54,7 +54,6 @@ def test_build_failed_no_docs() -> None:
     assert not os.path.exists(llm_empt.conf.vector.vector_path)
 
 
-# TODO: add test similarity_search
 def test_similarity_score_threshold() -> None:
     """Test similarity_score_threshold with vectorstore"""
     Llm(

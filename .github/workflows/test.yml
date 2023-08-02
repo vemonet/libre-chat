@@ -3,25 +3,6 @@ on: [push, pull_request, workflow_call, workflow_dispatch]
 
 jobs:
 
-  # Commented because it was hanging for 20min, probably servers issues
-  # codeql:
-  #   name: 🔎 CodeQL analysis
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     security-events: write
-  #     actions: read
-  #     contents: read
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v3
-  #     - name: Initialize CodeQL
-  #       uses: github/codeql-action/init@v2
-  #       with:
-  #         languages: python
-  #     - name: Perform CodeQL Analysis
-  #       uses: github/codeql-action/analyze@v2
-
-
   tests:
     name: ✅ Run tests on python versions
     runs-on: ubuntu-latest
@@ -32,6 +13,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: ♻️ Cache models
+      uses: actions/cache@v3
+      with:
+        path: models
+        key: ${{ runner.os }}-models
+        # key: ${{ runner.os }}-models-${{ hashFiles('models/**') }}
+        # restore-keys: |
+        #   ${{ runner.os }}-models-
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
@@ -50,7 +40,7 @@ jobs:
       uses: coverallsapp/github-action@v2
 
 
-  tests-download:
+  tests-platforms:
     name: ☑️ Tests on platforms
     runs-on: ${{ matrix.os }}
     strategy:
@@ -83,7 +73,7 @@ jobs:
   update-docs:
     name: 📚 Update docs website
     if: ${{ github.event_name == 'push' }}
-    needs: [ tests, tests-download ] # codeql
+    needs: [ tests, tests-platforms ] # codeql
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -127,7 +117,7 @@ jobs:
 
   build:
     name: 🐳 Build and publish docker image
-    needs: [ tests, tests-download ]  # codeql
+    needs: [ tests, tests-platforms ]  # codeql
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -140,6 +130,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: ♻️ Cache models
+        uses: actions/cache@v3
+        with:
+          path: models
+          key: ${{ runner.os }}-models
 
       # Install the cosign tool except on PR
       - name: Install cosign
@@ -194,3 +190,22 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+
+
+  # Commented because it was hanging for 20min, probably servers issues
+  # codeql:
+  #   name: 🔎 CodeQL analysis
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     security-events: write
+  #     actions: read
+  #     contents: read
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
+  #     - name: Initialize CodeQL
+  #       uses: github/codeql-action/init@v2
+  #       with:
+  #         languages: python
+  #     - name: Perform CodeQL Analysis
+  #       uses: github/codeql-action/analyze@v2

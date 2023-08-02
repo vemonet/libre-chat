@@ -146,7 +146,8 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "if TYPE_CHECKING:",
 ]
-# fail_under = 85 show_missing = true skip_covered = true
+show_missing = true
+# fail_under = 85 skip_covered = true
 
 
 [tool.mypy]
