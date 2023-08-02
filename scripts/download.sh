@@ -9,4 +9,5 @@ mkdir -p embeddings
 cd embeddings
 wget -N https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/v0.2/all-MiniLM-L6-v2.zip
 unzip -d all-MiniLM-L6-v2 all-MiniLM-L6-v2.zip
+rm all-MiniLM-L6-v2.zip
 cd ..
