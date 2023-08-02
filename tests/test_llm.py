@@ -1,6 +1,6 @@
 import os
 import shutil
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -37,13 +37,11 @@ def test_failed_empty_query() -> None:
     assert str(exc_info.value) == "Provide a prompt"
 
 
-def test_failed_query_no_result() -> None:
-    """Test failed query to LLM return no result"""
-    with patch.object(llm, "dbqa") as mock_dbqa:
-        mock_dbqa.return_value = {"source_documents": []}
-        with pytest.raises(Exception) as exc_info:
-            llm.query("Nothing")
-        assert "No result was returned by the LLM" in str(exc_info.value)
+def test_llm_failed_no_prompt_variables() -> None:
+    """Test fail building Llm when no prompt variable provided"""
+    with pytest.raises(Exception) as exc_info:
+        Llm(conf=parse_conf("config/chat-vectorstore-qa.yml"), prompt_variables=[])
+    assert "You should provide at least 1 template variable" in str(exc_info.value)
 
 
 def test_build_vectorstore() -> None:
@@ -86,3 +84,22 @@ def test_documents_dir_dont_exist() -> None:
     tmp_docs = "tests/tmp/docs"
     Llm(conf=parse_conf("config/chat-conversation.yml"), documents_path=tmp_docs)
     assert os.path.exists(tmp_docs)
+
+
+@patch("torch.cuda.is_available")
+@patch("torch.cuda.device")
+def test_cuda(mock_device: MagicMock, mock_is_available: MagicMock) -> None:
+    """Pretend we have GPU, but run on cpu anyway"""
+    mock_device.return_value = "cpu"
+    mock_is_available.return_value = True
+    llm = Llm(conf=parse_conf("config/chat-conversation.yml"))
+    assert llm is not None
+
+
+def test_failed_query_no_result() -> None:
+    """Test failed query to LLM return no result"""
+    with patch.object(llm, "dbqa") as mock_dbqa:
+        mock_dbqa.return_value = {"source_documents": []}
+        with pytest.raises(Exception) as exc_info:
+            llm.query("Nothing")
+        assert "No result was returned by the LLM" in str(exc_info.value)

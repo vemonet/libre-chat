@@ -23,7 +23,7 @@ jobs:
 
 
   tests:
-    name: ✅ Run tests with pre-downloaded data
+    name: ✅ Run tests on python versions
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -51,7 +51,7 @@ jobs:
 
 
   tests-download:
-    name: ☑️ Tests with no pre-download
+    name: ☑️ Tests on platforms
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false

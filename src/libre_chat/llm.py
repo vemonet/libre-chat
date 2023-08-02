@@ -84,7 +84,7 @@ class Llm:
         self.max_new_tokens = max_new_tokens if max_new_tokens else self.conf.llm.max_new_tokens
         self.temperature = temperature if temperature else self.conf.llm.temperature
         self.prompt_variables: List[str] = (
-            prompt_variables if prompt_variables else self.conf.prompt.variables
+            prompt_variables if prompt_variables is not None else self.conf.prompt.variables
         )
         self.prompt_template = prompt_template if prompt_template else self.conf.prompt.template
 

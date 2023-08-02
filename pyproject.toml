@@ -105,11 +105,12 @@ test = [
     "fmt",
     "pytest {args}",
 ]
+cov-start = "python -m http.server 3000 --directory ./htmlcov"
 cov = [
     "fmt",
     "pytest --cov-report html {args}",
     # "python -c 'import webbrowser; webbrowser.open(\"http://0.0.0.0:3000\")'",
-    "python -m http.server 3000 --directory ./htmlcov",
+    "cov-start",
 ]
 docs = "mkdocs serve -a localhost:8001"
 compile = "pip-compile -o requirements.txt pyproject.toml"
