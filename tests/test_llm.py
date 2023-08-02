@@ -41,9 +41,11 @@ def test_failed_empty_query() -> None:
 def test_failed_query_no_result(mock_run: MagicMock) -> None:
     """Test failed query to LLM return no result"""
     mock_run.return_value = {"source_documents": []}
-    with pytest.raises(ValueError) as exc_info:
-        llm.query("Nothing")
-    assert "No result was returned by the LLM" in str(exc_info.value)
+    with patch.object(Llm, "dbqa") as mock_dbqa:
+        mock_dbqa.return_value = {"source_documents": []}
+        with pytest.raises(ValueError) as exc_info:
+            llm.query("Nothing")
+        assert "No result was returned by the LLM" in str(exc_info.value)
 
 
 def test_build_vectorstore() -> None:

@@ -103,11 +103,11 @@ fmt = [
 ]
 test = [
     "fmt",
-    "pytest --cov=src/ {args}",
+    "pytest {args}",
 ]
 cov = [
     "fmt",
-    "pytest --cov=src/ --cov-report html {args}",
+    "pytest --cov-report html {args}",
     # "python -c 'import webbrowser; webbrowser.open(\"http://0.0.0.0:3000\")'",
     "python -m http.server 3000 --directory ./htmlcov",
 ]
@@ -167,11 +167,12 @@ no_implicit_optional = true
 
 [tool.pytest.ini_options]
 addopts = [
-    "-vvv",
+    "-vvv", # Verbose level 3
     "--cov=src",
     "--color=yes",
     "--cov-report=term-missing",
-    # "--cov-fail-under=85",
+    "--cov-fail-under=85",
+    # "-n", "4", # run in parallel on 4 processes, requires pytest-xdist
 ]
 filterwarnings = [
     "ignore::DeprecationWarning:httpx.*:",
