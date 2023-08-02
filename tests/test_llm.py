@@ -103,7 +103,7 @@ def test_cuda(mock_device: MagicMock, mock_is_available: MagicMock) -> None:
     """Pretend we have GPU, but run on cpu anyway"""
     mock_device.return_value = "cpu"
     mock_is_available.return_value = True
-    llm = Llm(conf=parse_conf("config/chat-conversation.yml"))
+    llm = Llm(conf=parse_conf("tests/config/additional-prop.yml"))
     assert llm is not None
 
 

@@ -18,6 +18,13 @@ VARIABLE_NAME=${VARIABLE_NAME:-app}
 export APP_MODULE=${APP_MODULE:-"$MODULE_NAME:$VARIABLE_NAME"}
 export TIMEOUT=${TIMEOUT:-600} # 10min
 
+if [ -n "$LIBRECHAT_CONF_URL" ]; then
+    # Do something when the environment variable is not null
+    echo "📋 LIBRECHAT_CONF_URL provided, downlading it to chat.yml: $LIBRECHAT_CONF_URL"
+    curl -L -o chat.yml $LIBRECHAT_CONF_URL
+fi
+
+
 echo "🦄 Starting gunicorn with $LIBRECHAT_WORKERS workers on $BIND for the module $APP_MODULE"
 exec gunicorn -w "$LIBRECHAT_WORKERS" -k "$WORKER_CLASS" -b "$BIND" --timeout "$TIMEOUT" "$APP_MODULE"
 

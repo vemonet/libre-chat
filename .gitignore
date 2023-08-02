@@ -4,6 +4,8 @@ embeddings/
 data/
 gradio_cached_examples/
 sentence-transformers/
+try-*/
+tests/tmp/
 docker-compose.prod.yml
 
 # Python artefacts

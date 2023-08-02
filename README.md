@@ -186,7 +186,9 @@ Inspired by:
 ## 📋 To do
 
 - [X] Add support for returning sources in UI when using documents-based QA
-- [X] Stream response for the websocket to show words one by one: LangChain only implemented itfor OpenAI at the moment
+- [X] Stream response for the websocket to show words one by one: LangChain only implemented it for OpenAI at the moment
+- [ ] Improve config parsing error handling
+- [ ] Kubernetes deployment
 - [ ] Try with 70B model
 - [ ] Speed up inference, better use of GPUs
 - [ ] Add authentication mechanisms (OAuth/OpenID Connect)

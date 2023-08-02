@@ -17,7 +17,7 @@ cli = typer.Typer(help="Deploy API and web UI for LLMs, such as Llama 2, using l
 @cli.command("start")
 def start(
     config: str = typer.Argument(
-        default_conf.config_path, help="Path to the libre-chat YAML configuration file"
+        default_conf.conf_path, help="Path to the libre-chat YAML configuration file"
     ),
     # model: str = typer.Option(conf.llm.model_path, help="Path to the model binary"),
     # vector: str = typer.Option(conf.vector.vector_path, help="Path to the vector db folder"),
@@ -46,7 +46,7 @@ def start(
 @cli.command("build")
 def build(
     config: str = typer.Argument(
-        default_conf.config_path, help="Path to the libre-chat YAML configuration file"
+        default_conf.conf_path, help="Path to the libre-chat YAML configuration file"
     ),
     vector: Optional[str] = typer.Option(None, help="Path to the vector db folder"),
     documents: Optional[str] = typer.Option(
