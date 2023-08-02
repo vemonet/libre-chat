@@ -20,7 +20,8 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 - 🦜 Powered by [`LangChain`](https://python.langchain.com) to support performant open source models inference: **Llama 2 GGML** ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) | [13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf) | [70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf)), **Llama 2 GPTQ** ([7B](https://huggingface.co/TheBloke/Llama-2-7B-chat-GPTQ) | [13B](https://huggingface.co/TheBloke/Llama-2-13B-chat-GPTQ) | [70B](https://huggingface.co/TheBloke/Llama-2-70B-chat-GPTQ))
 - 🤖 Various types of agents can be deployed:
   - **💬 Generic conversation**: do not need any additional training, just configure settings such as the template prompt
-  - **📚 Documents-based question answering**: automatically build similarity vectors from locally provided PDF documents, the chatbot will use them to answer your question, and return which documents were used to generate the answer.
+  - **📚 Documents-based question answering**: automatically build similarity vectors from documents uploaded through the API UI, the chatbot will use them to answer your question, and return which documents were used to generate the answer.
+- 🔍 Readable logs to understand what is going on
 - 🪶 Modern and lightweight chat web interface, working well on desktop and mobile, with support for light/dark theme
 
 Checkout the demo at [**chat.semanticscience.org**](https://chat.semanticscience.org)
@@ -187,7 +188,6 @@ Inspired by:
 
 - [X] Add support for returning sources in UI when using documents-based QA
 - [X] Stream response for the websocket to show words one by one: LangChain only implemented it for OpenAI at the moment
-- [ ] Improve config parsing error handling
 - [ ] Kubernetes deployment
 - [ ] Try with 70B model
 - [ ] Speed up inference, better use of GPUs

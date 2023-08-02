@@ -31,6 +31,8 @@ dynamic = ["version"]
 dependencies = [
     "typer >=0.6.0",
     "fastapi",
+    "pydantic-yaml",
+    "requests",
     "jinja2",
     "gradio",
     "uvicorn",
@@ -40,8 +42,7 @@ dependencies = [
     "faiss-cpu >=1.7.4",
     "sentence_transformers",
     "pypdf",
-    "pydantic-yaml",
-    "requests",
+    # "redis",
     # "pydantic <2.0.0",
 ]
 
@@ -59,6 +60,7 @@ test = [
     "httpx",
     "pip-tools",
     "types-requests",
+    # "types-redis",
 ]
 doc = [
     "mkdocs >=1.4.2",

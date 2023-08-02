@@ -1,7 +1,9 @@
+import os
+import zipfile
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Union
 
-from fastapi import APIRouter, Body, Request, WebSocket
+from fastapi import APIRouter, Body, File, HTTPException, Request, UploadFile, WebSocket
 from fastapi.responses import JSONResponse
 from langchain.schema.document import Document
 
@@ -116,3 +118,62 @@ class ChatRouter(APIRouter):
                 log.error(f"WebSocket error: {e}")
             finally:
                 self.connected_clients.remove(websocket)
+
+        @self.post(
+            "/documents",
+            description="""Upload documents to be added to the vectorstore, you can provide a zip file that will be automatically unzipped.""",
+            response_description="Operation result",
+            response_model={},
+            tags=["vectorstore"],
+        )
+        def upload_documents(
+            files: List[UploadFile] = File(...),
+            admin_pass: Optional[str] = None,
+            # current_user: User = Depends(get_current_user),
+        ) -> JSONResponse:
+            if not files:
+                raise HTTPException(status_code=400, detail="No files provided for upload")
+            os.makedirs(self.conf.vector.documents_path, exist_ok=True)
+            if self.conf.auth.admin_pass and admin_pass != self.conf.auth.admin_pass:
+                raise HTTPException(
+                    status_code=403,
+                    detail="The admin pass key provided was wrong",
+                )
+
+            for uploaded in files:
+                if uploaded.filename:
+                    file_path = os.path.join(self.conf.vector.documents_path, uploaded.filename)
+                    with open(file_path, "wb") as file:
+                        file.write(uploaded.file.read())
+                    # Check if the uploaded file is a zip file
+                    if uploaded.filename.endswith(".zip"):
+                        log.info(f"🤐 Unzipping {file_path}")
+                        with zipfile.ZipFile(file_path, "r") as zip_ref:
+                            zip_ref.extractall(self.conf.vector.documents_path)
+                        os.remove(file_path)
+            self.llm.build_vectorstore()
+            self.llm.setup_dbqa()
+            return JSONResponse(
+                {
+                    "message": f"Documents uploaded in {self.conf.vector.documents_path}, vectorstore rebuilt."
+                }
+            )
+
+        @self.get(
+            "/documents",
+            description="""List documents uploaded to the server.""",
+            response_description="List of files",
+            response_model={},
+            tags=["vectorstore"],
+        )
+        def list_documents(
+            admin_pass: Optional[str] = None,
+        ) -> JSONResponse:
+            """List all documents in the documents folder."""
+            if self.conf.auth.admin_pass and admin_pass != self.conf.auth.admin_pass:
+                raise HTTPException(
+                    status_code=403,
+                    detail="The admin pass key provided was wrong",
+                )
+            file_list = os.listdir(self.conf.vector.documents_path)
+            return JSONResponse({"count": len(file_list), "files": file_list})

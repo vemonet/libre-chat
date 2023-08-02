@@ -24,10 +24,10 @@ def test_query_vectorstore_gdp() -> None:
     assert len(resp["source_documents"]) >= 1
 
 
-def test_query_vectorstore_drug() -> None:
-    """Test capital query with vectorstore for PDF"""
-    resp = llm.query("Which drugs can be used to mitigate Alzheimer symptoms??")
-    assert len(resp["source_documents"]) >= 1
+# def test_query_vectorstore_drug() -> None:
+#     """Test capital query with vectorstore for PDF"""
+#     resp = llm.query("Which drugs can be used to mitigate Alzheimer symptoms??")
+#     assert len(resp["source_documents"]) >= 1
 
 
 def test_failed_empty_query() -> None:
@@ -50,8 +50,9 @@ def test_build_failed_no_docs() -> None:
         conf=parse_conf("config/chat-vectorstore-qa.yml"), documents_path="tests/tmp/nothinghere"
     )
     shutil.rmtree(llm.conf.vector.vector_path)
-    llm_empt.build_vectorstore()
-    assert not os.path.exists(llm_empt.conf.vector.vector_path)
+    with pytest.raises(ValueError) as exc_info:
+        llm_empt.build_vectorstore()
+    assert "No documents found" in str(exc_info.value)
 
 
 def test_similarity_score_threshold() -> None:

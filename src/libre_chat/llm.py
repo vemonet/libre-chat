@@ -1,11 +1,10 @@
 """Module: Open-source LLM setup"""
 import os
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple
 
 import torch
 from langchain import PromptTemplate
 from langchain.chains import ConversationChain, RetrievalQA
-from langchain.chains.retrieval_qa.base import BaseRetrievalQA
 from langchain.document_loaders import DirectoryLoader
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.llms import CTransformers
@@ -38,6 +37,7 @@ class Llm:
         vector_path: Optional[str] = None,
         vector_download: Optional[str] = None,
         documents_path: Optional[str] = None,
+        documents_download: Optional[str] = None,
         document_loaders: Optional[List[Dict[str, str]]] = None,
         prompt_variables: Optional[List[str]] = None,
         prompt_template: Optional[str] = None,
@@ -53,6 +53,8 @@ class Llm:
         """
         Constructor for the LLM
         """
+        # NOTE: if we need to share infos between workers import redis
+        # self.redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
         self.conf = conf if conf else default_conf
         self.model_path = model_path if model_path else self.conf.llm.model_path
         self.model_type = model_type if model_type else self.conf.llm.model_type
@@ -68,6 +70,9 @@ class Llm:
             vector_download if vector_download else self.conf.vector.vector_download
         )
         self.documents_path = documents_path if documents_path else self.conf.vector.documents_path
+        self.documents_download = (
+            documents_download if documents_download else self.conf.vector.documents_download
+        )
         self.document_loaders = (
             document_loaders if document_loaders else self.conf.vector.document_loaders
         )
@@ -97,6 +102,7 @@ class Llm:
         if not os.path.exists(self.documents_path):
             os.makedirs(self.documents_path)
 
+        # Not sure it's the best place to do this
         os.environ["NUMEXPR_MAX_THREADS"] = str(self.conf.info.workers)
 
         # TODO: remove? There is always a default from ChatConf
@@ -114,45 +120,31 @@ class Llm:
             template=self.prompt_template, input_variables=self.prompt_variables
         )
         self.download_data()
-        if self.vector_path:
+        if self.vector_path and not os.path.exists(self.vector_path):
             self.build_vectorstore()
+        else:
+            log.info(
+                f"♻️  Reusing existing vectorstore at {BOLD}{self.vector_path}{END}, skip building the vectorstore"
+            )
 
         log.info(f"🤖 Loading CTransformers model from {BOLD}{self.model_path}{END}")
         # Instantiate local CTransformers model https://github.com/marella/ctransformers#config
         # NOTE: streaming not implemented yet on the LLM class (only available for OpenAI API)
-        llm = CTransformers(  # type: ignore
+        self.llm = CTransformers(  # type: ignore
             model=self.model_path,
             # model_file=self.model_path,
             model_type=self.model_type,
             config={"max_new_tokens": self.max_new_tokens, "temperature": self.temperature},
         )
-        self.dbqa: Union[BaseRetrievalQA, None] = None
         if self.vector_path:
-            # Setup the vectorstore for QA
             log.info(
                 f"💫 Loading vectorstore from {BOLD}{self.vector_path}{END}, with embeddings from {BOLD}{self.embeddings_path}{END}"
             )
-            embeddings = HuggingFaceEmbeddings(
-                model_name=self.embeddings_path, model_kwargs={"device": self.device}
-            )
-            vectordb = FAISS.load_local(self.vector_path, embeddings)
-
-            search_args: Dict[str, Any] = {"k": self.return_sources_count}
-            if self.score_threshold is not None:
-                search_args["score_threshold"] = self.score_threshold
-            self.dbqa = RetrievalQA.from_chain_type(
-                llm=llm,
-                chain_type=self.chain_type,
-                retriever=vectordb.as_retriever(
-                    search_type=self.search_type, search_kwargs=search_args
-                ),
-                return_source_documents=self.return_sources_count > 0,
-                chain_type_kwargs={"prompt": self.prompt},
-            )
+            self.setup_dbqa()
         else:
             log.info("🦜 No vector database provided, using a generic LLM")
             self.conversation = ConversationChain(
-                llm=llm, prompt=self.prompt, verbose=True, memory=ConversationBufferMemory()
+                llm=self.llm, prompt=self.prompt, verbose=True, memory=ConversationBufferMemory()
             )
 
     def download_data(self) -> None:
@@ -161,95 +153,75 @@ class Llm:
         ddl_list.append({"url": self.model_download, "path": self.model_path})
         ddl_list.append({"url": self.embeddings_download, "path": self.embeddings_path})
         ddl_list.append({"url": self.vector_download, "path": self.vector_path})
+        # ddl_list.append({"url": self.vector_download, "path": self.vector_path})
         parallel_download(ddl_list, self.conf.info.workers)
 
-    # def setup_dbqa(self) -> None:
-    #     """Setup the model and vector db for QA"""
-    #     log.info(f"🤖 Loading CTransformers model from {BOLD}{self.model_path}{END}")
-    #     # Instantiate local CTransformers model https://github.com/marella/ctransformers#config
-    #     # NOTE: streaming not implemented yet on the LLM class (only available for OpenAI API)
-    #     llm = CTransformers(  # type: ignore
-    #         model=self.model_path,
-    #         # model_file=self.model_path,
-    #         model_type=self.model_type,
-    #         config={"max_new_tokens": self.max_new_tokens, "temperature": self.temperature},
-    #     )
-    #     if self.vector_path:
-    #         log.info(
-    #             f"💫 Loading vector database at {BOLD}{self.vector_path}{END}, with embeddings from {BOLD}{self.embeddings_path}{END}"
-    #         )
-    #         embeddings = HuggingFaceEmbeddings(
-    #             model_name=self.embeddings_path, model_kwargs={"device": self.device}
-    #         )
-    #         vectordb = FAISS.load_local(self.vector_path, embeddings)
-
-    #         search_args: Dict[str, Any] = {"k": self.return_sources_count}
-    #         if self.score_threshold is not None:
-    #             search_args["score_threshold"] = self.score_threshold
-    #         self.dbqa = RetrievalQA.from_chain_type(
-    #             llm=llm,
-    #             chain_type=self.chain_type,
-    #             retriever=vectordb.as_retriever(
-    #                 search_type=self.search_type, search_kwargs=search_args
-    #             ),
-    #             return_source_documents=self.return_sources_count > 0,
-    #             chain_type_kwargs={"prompt": self.prompt},
-    #         )
-    #     else:
-    #         log.info("🦜 No vector database provided, using a generic LLM")
-    #         self.conversation = ConversationChain(
-    #             llm=llm, prompt=self.prompt, verbose=True, memory=ConversationBufferMemory()
-    #         )
-
-    def build_vectorstore(self, documents_path: Optional[str] = None) -> Optional[str]:
-        """Build vectorstore from PDF documents with FAISS."""
-        if self.vector_path and os.path.exists(self.vector_path):
-            log.info(
-                f"♻️  Reusing existing vectorstore at {BOLD}{self.vector_path}{END}, skip building the vectorstore"
-            )
-            return self.vector_path
-        if not documents_path:
-            documents_path = self.documents_path
-        docs_count = len(os.listdir(documents_path))
-        if docs_count > 0:
-            log.info(
-                f"🏗️  No vectorstore found at {self.vector_path}. Building the vectorstore from the {BOLD}{CYAN}{docs_count}{END} documents found in {BOLD}{documents_path}{END}"
-            )
-            documents: List[Document] = []
-            # Loading all file types provided in the document_loaders object
-            for doc_load in self.document_loaders:
-                loader = DirectoryLoader(
-                    documents_path, glob=doc_load["glob"], loader_cls=doc_load["loader_cls"]  # type: ignore
-                )
-                loaded_docs = loader.load()
-                log.info(f"🗃️  Loaded {len(loaded_docs)} items from {doc_load['glob']} files")
-                documents.extend(loaded_docs)
-
-            # Split the text up into small, semantically meaningful chunks (often sentences) https://js.langchain.com/docs/modules/data_connection/document_transformers/
-            text_splitter = RecursiveCharacterTextSplitter(
-                chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap
-            )
-            splitted_texts = text_splitter.split_documents(documents)
+    def setup_dbqa(self) -> None:
+        """Setup the vectorstore for QA"""
+        if self.vector_path:
             embeddings = HuggingFaceEmbeddings(
                 model_name=self.embeddings_path, model_kwargs={"device": self.device}
             )
-            vectorstore = FAISS.from_documents(splitted_texts, embeddings)
-            if self.vector_path:
-                vectorstore.save_local(self.vector_path)
-        else:
-            log.warning(
+            vectorstore = FAISS.load_local(self.vector_path, embeddings)
+
+            search_args: Dict[str, Any] = {"k": self.return_sources_count}
+            if self.score_threshold is not None:
+                search_args["score_threshold"] = self.score_threshold
+            self.dbqa = RetrievalQA.from_chain_type(
+                llm=self.llm,
+                chain_type=self.chain_type,
+                retriever=vectorstore.as_retriever(
+                    search_type=self.search_type, search_kwargs=search_args
+                ),
+                return_source_documents=self.return_sources_count > 0,
+                chain_type_kwargs={"prompt": self.prompt},
+            )
+
+    def build_vectorstore(self, documents_path: Optional[str] = None) -> FAISS:
+        """Build vectorstore from PDF documents with FAISS."""
+        if not documents_path:
+            documents_path = self.documents_path
+        docs_count = len(os.listdir(documents_path))
+        if docs_count < 1:
+            raise ValueError(
                 f"⚠️ No documents found in {documents_path}, could not build the vectorstore"
             )
-        return self.vector_path
+        log.info(
+            f"🏗️ Building the vectorstore from the {BOLD}{CYAN}{docs_count}{END} documents found in {BOLD}{documents_path}{END}"
+        )
+        documents: List[Document] = []
+        # Loading all file types provided in the document_loaders object
+        for doc_load in self.document_loaders:
+            loader = DirectoryLoader(
+                documents_path, glob=doc_load["glob"], loader_cls=doc_load["loader_cls"]  # type: ignore
+            )
+            loaded_docs = loader.load()
+            log.info(f"🗃️  Loaded {len(loaded_docs)} items from {doc_load['glob']} files")
+            documents.extend(loaded_docs)
+
+        # Split the text up into small, semantically meaningful chunks (often sentences) https://js.langchain.com/docs/modules/data_connection/document_transformers/
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap
+        )
+        splitted_texts = text_splitter.split_documents(documents)
+        embeddings = HuggingFaceEmbeddings(
+            model_name=self.embeddings_path, model_kwargs={"device": self.device}
+        )
+        vectorstore = FAISS.from_documents(splitted_texts, embeddings)
+        if self.vector_path:
+            vectorstore.save_local(self.vector_path)
+        return vectorstore
 
     def query(self, prompt: str, history: Optional[List[Tuple[str, str]]] = None) -> Dict[str, str]:
         """Query the built LLM"""
         log.info(f"💬 Querying the LLM with prompt: {prompt}")
         if len(prompt) < 1:
             raise ValueError("Provide a prompt")
-
-        if self.vector_path and self.dbqa:
+        # TODO: we might need to check if the vectorstore has changed since the last time it was queried,
+        # And rerun self.setup_dbqa() if it has changed. Otherwise uploading file will not be applied to all workers
+        if self.vector_path:
             # TODO: handle history
+            self.setup_dbqa()  # we need to reload the dbqa each time to make sure all workers are up-to-date
             res = self.dbqa({"query": prompt})
             log.info(f"💭 Complete response from the LLM: {res}")
             for i, doc in enumerate(res["source_documents"]):

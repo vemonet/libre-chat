@@ -57,6 +57,7 @@ class SettingsVector(BaseConf):
     vector_path: Optional[str] = None
     vector_download: Optional[str] = None
     documents_path: str = "documents/"
+    documents_download: Optional[str] = None
     document_loaders: List[Dict[str, Union[Union[str, Any]]]] = [
         {"glob": "*.pdf", "loader_cls": PyPDFLoader},
         {"glob": "*.[c|t|p]sv", "loader_cls": CSVLoader},
@@ -81,6 +82,10 @@ class SettingsLlm(BaseConf):
     temperature: float = 0.01
 
 
+class SettingsAuth(BaseConf):
+    admin_pass: Optional[str] = None
+
+
 class ChatConf(BaseConf):
     conf_path: str = "chat.yml"
     conf_url: Optional[str] = None
@@ -88,6 +93,7 @@ class ChatConf(BaseConf):
     vector: SettingsVector = SettingsVector()
     info: SettingsInfo = SettingsInfo()
     prompt: SettingsPrompt = SettingsPrompt()
+    auth: SettingsAuth = SettingsAuth()
 
 
 default_conf = ChatConf()
