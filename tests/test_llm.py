@@ -87,9 +87,13 @@ def test_llm_failed_no_prompt_variables() -> None:
 
 def test_no_prompt_template() -> None:
     """Test no prompt templates provided"""
-    llm_conv = Llm(conf=parse_conf("config/chat-conversation.yml"), prompt_template="")
+    conf_conv = parse_conf("config/chat-conversation.yml")
+    conf_conv.prompt.template = ""
+    llm_conv = Llm(conf=conf_conv)
     assert "{input}" in llm_conv.prompt_template
-    llm_qa = Llm(conf=parse_conf("config/chat-vectorstore-qa.yml"), prompt_template="")
+    conf_qa = parse_conf("config/chat-vectorstore-qa.yml")
+    conf_qa.prompt.template = ""
+    llm_qa = Llm(conf=conf_qa)
     assert "{question}" in llm_qa.prompt_template
 
 
