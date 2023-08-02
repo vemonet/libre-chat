@@ -175,11 +175,14 @@ addopts = [
     # "-n", "4", # run in parallel on 4 processes, requires pytest-xdist
 ]
 filterwarnings = [
+    # "ignore::DeprecationWarning", # Ignore all deprecation warnings
     "ignore::DeprecationWarning:httpx.*:",
     "ignore::DeprecationWarning:setuptools.*:",
     "ignore::DeprecationWarning:gradio.*:",
     "ignore::DeprecationWarning:distutils.*",
     "ignore::DeprecationWarning:pkg_resources.*",
+    "ignore::DeprecationWarning:faiss.*:",
+    "ignore::DeprecationWarning:altair.*:",
 ]
 
 
