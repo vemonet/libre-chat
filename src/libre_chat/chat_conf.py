@@ -19,11 +19,7 @@ __all__ = ["ChatConf", "parse_conf"]
 
 class SettingsPrompt(BaseSettings):
     variables: List[str] = ["input", "history"]
-    template: str = """Your are an assistant, please help me
-
-{history}
-Human: {input}
-Assistant:"""
+    template: str = ""
 
     class Config:
         env_prefix = "librechat_"

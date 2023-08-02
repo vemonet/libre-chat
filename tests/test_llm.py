@@ -37,13 +37,6 @@ def test_failed_empty_query() -> None:
     assert str(exc_info.value) == "Provide a prompt"
 
 
-def test_llm_failed_no_prompt_variables() -> None:
-    """Test fail building Llm when no prompt variable provided"""
-    with pytest.raises(Exception) as exc_info:
-        Llm(conf=parse_conf("config/chat-vectorstore-qa.yml"), prompt_variables=[])
-    assert "You should provide at least 1 template variable" in str(exc_info.value)
-
-
 def test_build_vectorstore() -> None:
     """Test building the vectorstore"""
     shutil.rmtree(llm.conf.vector.vector_path)
@@ -84,6 +77,21 @@ def test_documents_dir_dont_exist() -> None:
     tmp_docs = "tests/tmp/docs"
     Llm(conf=parse_conf("config/chat-conversation.yml"), documents_path=tmp_docs)
     assert os.path.exists(tmp_docs)
+
+
+def test_llm_failed_no_prompt_variables() -> None:
+    """Test fail building Llm when no prompt variable provided"""
+    with pytest.raises(Exception) as exc_info:
+        Llm(conf=parse_conf("config/chat-vectorstore-qa.yml"), prompt_variables=[])
+    assert "You should provide at least 1 template variable" in str(exc_info.value)
+
+
+def test_no_prompt_template() -> None:
+    """Test no prompt templates provided"""
+    llm = Llm(conf=parse_conf("config/chat-conversation.yml"), prompt_template="")
+    assert "{input}" in llm.prompt_template
+    llm_qa = Llm(conf=parse_conf("config/chat-vectorstore-qa.yml"), prompt_template="")
+    assert "{question}" in llm_qa.prompt_template
 
 
 @patch("torch.cuda.is_available")
