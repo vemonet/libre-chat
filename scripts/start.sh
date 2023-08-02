@@ -1,4 +1,4 @@
-#! /usr/bin/env sh
+#!/usr/bin/env sh
 set -e
 
 # Copied from https://github.com/tiangolo/uvicorn-gunicorn-docker/blob/master/docker-images/start.sh

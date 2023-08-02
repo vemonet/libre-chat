@@ -1,6 +1,6 @@
 import os
 import shutil
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -37,13 +37,11 @@ def test_failed_empty_query() -> None:
     assert str(exc_info.value) == "Provide a prompt"
 
 
-@patch("libre_chat.llm.Llm.dbqa")
-def test_failed_query_no_result(mock_run: MagicMock) -> None:
+def test_failed_query_no_result() -> None:
     """Test failed query to LLM return no result"""
-    mock_run.return_value = {"source_documents": []}
-    with patch.object(Llm, "dbqa") as mock_dbqa:
+    with patch.object(llm, "dbqa") as mock_dbqa:
         mock_dbqa.return_value = {"source_documents": []}
-        with pytest.raises(ValueError) as exc_info:
+        with pytest.raises(Exception) as exc_info:
             llm.query("Nothing")
         assert "No result was returned by the LLM" in str(exc_info.value)
 

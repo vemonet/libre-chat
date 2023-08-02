@@ -1,10 +1,11 @@
 """Module: Open-source LLM setup"""
 import os
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import torch
 from langchain import PromptTemplate
 from langchain.chains import ConversationChain, RetrievalQA
+from langchain.chains.retrieval_qa.base import BaseRetrievalQA
 from langchain.document_loaders import DirectoryLoader
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.llms import CTransformers
@@ -115,18 +116,7 @@ class Llm:
         self.download_data()
         if self.vector_path:
             self.build_vectorstore()
-        self.setup_dbqa()
 
-    def download_data(self) -> None:
-        """Download data"""
-        ddl_list = []
-        ddl_list.append({"url": self.model_download, "path": self.model_path})
-        ddl_list.append({"url": self.embeddings_download, "path": self.embeddings_path})
-        ddl_list.append({"url": self.vector_download, "path": self.vector_path})
-        parallel_download(ddl_list, self.conf.info.workers)
-
-    def setup_dbqa(self) -> None:
-        """Setup the model and vector db for QA"""
         log.info(f"🤖 Loading CTransformers model from {BOLD}{self.model_path}{END}")
         # Instantiate local CTransformers model https://github.com/marella/ctransformers#config
         # NOTE: streaming not implemented yet on the LLM class (only available for OpenAI API)
@@ -136,9 +126,11 @@ class Llm:
             model_type=self.model_type,
             config={"max_new_tokens": self.max_new_tokens, "temperature": self.temperature},
         )
+        self.dbqa: Union[BaseRetrievalQA, None] = None
         if self.vector_path:
+            # Setup the vectorstore for QA
             log.info(
-                f"💫 Loading vector database at {BOLD}{self.vector_path}{END}, with embeddings from {BOLD}{self.embeddings_path}{END}"
+                f"💫 Loading vectorstore from {BOLD}{self.vector_path}{END}, with embeddings from {BOLD}{self.embeddings_path}{END}"
             )
             embeddings = HuggingFaceEmbeddings(
                 model_name=self.embeddings_path, model_kwargs={"device": self.device}
@@ -162,6 +154,52 @@ class Llm:
             self.conversation = ConversationChain(
                 llm=llm, prompt=self.prompt, verbose=True, memory=ConversationBufferMemory()
             )
+
+    def download_data(self) -> None:
+        """Download data"""
+        ddl_list = []
+        ddl_list.append({"url": self.model_download, "path": self.model_path})
+        ddl_list.append({"url": self.embeddings_download, "path": self.embeddings_path})
+        ddl_list.append({"url": self.vector_download, "path": self.vector_path})
+        parallel_download(ddl_list, self.conf.info.workers)
+
+    # def setup_dbqa(self) -> None:
+    #     """Setup the model and vector db for QA"""
+    #     log.info(f"🤖 Loading CTransformers model from {BOLD}{self.model_path}{END}")
+    #     # Instantiate local CTransformers model https://github.com/marella/ctransformers#config
+    #     # NOTE: streaming not implemented yet on the LLM class (only available for OpenAI API)
+    #     llm = CTransformers(  # type: ignore
+    #         model=self.model_path,
+    #         # model_file=self.model_path,
+    #         model_type=self.model_type,
+    #         config={"max_new_tokens": self.max_new_tokens, "temperature": self.temperature},
+    #     )
+    #     if self.vector_path:
+    #         log.info(
+    #             f"💫 Loading vector database at {BOLD}{self.vector_path}{END}, with embeddings from {BOLD}{self.embeddings_path}{END}"
+    #         )
+    #         embeddings = HuggingFaceEmbeddings(
+    #             model_name=self.embeddings_path, model_kwargs={"device": self.device}
+    #         )
+    #         vectordb = FAISS.load_local(self.vector_path, embeddings)
+
+    #         search_args: Dict[str, Any] = {"k": self.return_sources_count}
+    #         if self.score_threshold is not None:
+    #             search_args["score_threshold"] = self.score_threshold
+    #         self.dbqa = RetrievalQA.from_chain_type(
+    #             llm=llm,
+    #             chain_type=self.chain_type,
+    #             retriever=vectordb.as_retriever(
+    #                 search_type=self.search_type, search_kwargs=search_args
+    #             ),
+    #             return_source_documents=self.return_sources_count > 0,
+    #             chain_type_kwargs={"prompt": self.prompt},
+    #         )
+    #     else:
+    #         log.info("🦜 No vector database provided, using a generic LLM")
+    #         self.conversation = ConversationChain(
+    #             llm=llm, prompt=self.prompt, verbose=True, memory=ConversationBufferMemory()
+    #         )
 
     def build_vectorstore(self, documents_path: Optional[str] = None) -> Optional[str]:
         """Build vectorstore from PDF documents with FAISS."""
@@ -210,7 +248,7 @@ class Llm:
         if len(prompt) < 1:
             raise ValueError("Provide a prompt")
 
-        if self.vector_path:
+        if self.vector_path and self.dbqa:
             # TODO: handle history
             res = self.dbqa({"query": prompt})
             log.info(f"💭 Complete response from the LLM: {res}")

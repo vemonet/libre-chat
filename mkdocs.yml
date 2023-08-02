@@ -84,9 +84,8 @@ watch:
   - src
   - docs
 
-# https://squidfunk.github.io/mkdocs-material/reference/admonitions/#supported-types
 markdown_extensions:
-  - admonition
+  - admonition # https://squidfunk.github.io/mkdocs-material/reference/admonitions/#supported-types
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite
