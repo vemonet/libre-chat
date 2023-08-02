@@ -98,13 +98,14 @@ class Llm:
 
         os.environ["NUMEXPR_MAX_THREADS"] = str(self.conf.info.workers)
 
-        if not self.prompt_template:
-            if self.vector_path:
-                self.prompt_template = DEFAULT_QA_PROMPT
-                self.prompt_variables = ["question", "context"]
-            else:
-                self.prompt_template = DEFAULT_CONVERSATION_PROMPT
-                self.prompt_variables = ["input", "history"]
+        # TODO: remove? There is always a default from ChatConf
+        # if not self.prompt_template:
+        #     if self.vector_path:
+        #         self.prompt_template = DEFAULT_QA_PROMPT
+        #         self.prompt_variables = ["question", "context"]
+        #     else:
+        #         self.prompt_template = DEFAULT_CONVERSATION_PROMPT
+        #         self.prompt_variables = ["input", "history"]
         if len(self.prompt_variables) < 1:
             raise ValueError("You should provide at least 1 template variable")
 

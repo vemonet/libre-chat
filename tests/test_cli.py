@@ -18,7 +18,17 @@ def test_version() -> None:
 
 
 def test_build() -> None:
-    result = runner.invoke(cli, ["build"])
+    result = runner.invoke(
+        cli,
+        [
+            "build",
+            "config/chat-vectorstore-qa.yml",
+            "--vector",
+            "vectorstore/db_faiss",
+            "--documents",
+            "documents",
+        ],
+    )
     assert result.exit_code == 0
 
 
