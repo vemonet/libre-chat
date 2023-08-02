@@ -142,5 +142,3 @@ The deployment of new releases is done automatically by a GitHub Actions workflo
         ```bash
         gh release create
         ```
-
-<!-- Admonition blocks: https://squidfunk.github.io/mkdocs-material/reference/admonitions/#supported-types -->

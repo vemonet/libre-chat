@@ -100,7 +100,7 @@ class Llm:
         os.environ["NUMEXPR_MAX_THREADS"] = str(self.conf.info.workers)
 
         # TODO: remove? There is always a default from ChatConf
-        if not self.prompt_template:
+        if not self.prompt_template or len(self.prompt_template) < 1:
             if self.vector_path:
                 self.prompt_template = DEFAULT_QA_PROMPT
                 self.prompt_variables = ["question", "context"]
