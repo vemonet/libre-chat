@@ -52,7 +52,7 @@ services:
   libre-chat:
     image: ghcr.io/vemonet/libre-chat:main
     volumes:
-    - ./chat.yml:/app/chat.yml
+    - ./:/data # Share the whole directory with your chat.yml, models, vectorstore
     ports:
       - 8000:8000
 ```

@@ -6,7 +6,13 @@ set -e
 export BIND=${BIND:-"0.0.0.0:8000"}
 export WORKER_CLASS=${WORKER_CLASS:-"uvicorn.workers.UvicornWorker"}
 
-if [ -f /app/tests/main.py ]; then
+if [ ! -f "/data/main.py" ]; then
+    cp /app/tests/main.py /data/main.py
+fi
+
+if [ -f /data/main.py ]; then
+    DEFAULT_MODULE_NAME=main
+elif [ -f /app/tests/main.py ]; then
     DEFAULT_MODULE_NAME=tests.main
 elif [ -f /app/app/main.py ]; then
     DEFAULT_MODULE_NAME=app.main
@@ -23,7 +29,6 @@ if [ -n "$LIBRECHAT_CONF_URL" ]; then
     echo "📋 LIBRECHAT_CONF_URL provided, downlading it to chat.yml: $LIBRECHAT_CONF_URL"
     curl -L -o chat.yml $LIBRECHAT_CONF_URL
 fi
-
 
 echo "🦄 Starting gunicorn with $LIBRECHAT_WORKERS workers on $BIND for the module $APP_MODULE"
 exec gunicorn -w "$LIBRECHAT_WORKERS" -k "$WORKER_CLASS" -b "$BIND" --timeout "$TIMEOUT" "$APP_MODULE"

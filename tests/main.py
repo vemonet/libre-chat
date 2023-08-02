@@ -8,8 +8,8 @@ from libre_chat.llm import Llm
 
 logging.basicConfig(level=logging.getLevelName("INFO"))
 
-# conf = parse_conf("chat.yml")
-conf = parse_conf("tests/config/additional-prop.yml")
+conf = parse_conf("chat.yml")
+# conf = parse_conf("tests/config/additional-prop.yml")
 # conf = parse_conf("config/chat-vectorstore-qa.yml")
 llm = Llm(conf=conf)
 app = ChatEndpoint(llm=llm, conf=conf)
