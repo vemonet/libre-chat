@@ -139,7 +139,6 @@ class ChatRouter(APIRouter):
                     status_code=403,
                     detail="The admin pass key provided was wrong",
                 )
-
             for uploaded in files:
                 if uploaded.filename:
                     file_path = os.path.join(self.conf.vector.documents_path, uploaded.filename)

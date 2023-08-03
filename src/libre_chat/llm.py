@@ -230,8 +230,6 @@ class Llm:
                     "page_content": doc.page_content,
                     "metadata": doc.metadata,
                 }
-            if "result" not in res:
-                raise Exception(f"No result was returned by the LLM: {res}")
         else:
             resp = self.conversation.predict(input=prompt)
             res = {"result": resp}

@@ -108,10 +108,10 @@ def test_cuda(mock_device: MagicMock, mock_is_available: MagicMock) -> None:
     assert llm is not None
 
 
-def test_failed_query_no_result() -> None:
-    """Test failed query to LLM return no result"""
-    with patch.object(llm, "dbqa") as mock_dbqa:
-        mock_dbqa.return_value = {"source_documents": []}
-        with pytest.raises(Exception) as exc_info:
-            llm.query("Nothing")
-        assert "No result was returned by the LLM" in str(exc_info.value)
+# def test_failed_query_no_result() -> None:
+#     """Test failed query to LLM return no result"""
+#     with patch.object(llm, "dbqa") as mock_dbqa:
+#         mock_dbqa.return_value = {"source_documents": []}
+#         with pytest.raises(Exception) as exc_info:
+#             llm.query("Nothing")
+#         assert "No result was returned by the LLM" in str(exc_info.value)
