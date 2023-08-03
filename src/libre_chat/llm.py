@@ -99,8 +99,7 @@ class Llm:
         else:
             log.info("💽 No GPU detected, using CPU")
             self.device = torch.device("cpu")
-        if not os.path.exists(self.documents_path):
-            os.makedirs(self.documents_path)
+        os.makedirs(self.documents_path, exist_ok=True)
 
         # Not sure it's the best place to do this
         os.environ["NUMEXPR_MAX_THREADS"] = str(self.conf.info.workers)

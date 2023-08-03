@@ -46,15 +46,15 @@ jobs:
       run: |
         hatch run test
 
-    # - name: ☂️ Upload coverage to Coveralls # Error on windows
-    #   if: ${{ matrix.os == 'ubuntu-latest' }}
-    #   uses: coverallsapp/github-action@v2
+    - name: ☂️ Upload coverage to Coveralls # Error on windows
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+      uses: coverallsapp/github-action@v2
 
-    - name: ☂️ Upload coverage files
-      uses: actions/upload-artifact@v3
-      with:
-        name: coverage
-        path: coverage
+    # - name: ☂️ Upload coverage files
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     name: coverage
+    #     path: coverage
 
 
   coverage-combine:
