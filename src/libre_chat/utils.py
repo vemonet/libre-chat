@@ -7,20 +7,13 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
 import requests
+from langchain.document_loaders import (
+    UnstructuredEmailLoader,
+)
+from langchain.schema.document import Document
 from uvicorn.logging import ColourizedFormatter
 
 __all__ = ["Prompt", "parallel_download", "log"]
-
-
-@dataclass
-class Prompt:
-    prompt: str
-    history_with_input: List[Tuple[str, str]] = field(default_factory=lambda: [])
-    system_prompt: Optional[str] = None
-    max_new_tokens: Optional[int] = None
-    temperature: Optional[float] = None
-    top_p: Optional[float] = None
-    top_k: Optional[int] = None
 
 
 log_format = "%(levelprefix)s [%(asctime)s] %(message)s [%(module)s:%(funcName)s]"
@@ -35,6 +28,39 @@ END = "\033[0m"
 RED = "\033[91m"
 YELLOW = "\033[33m"
 CYAN = "\033[36m"
+
+
+@dataclass
+class Prompt:
+    prompt: str
+    history_with_input: List[Tuple[str, str]] = field(default_factory=lambda: [])
+    system_prompt: Optional[str] = None
+    max_new_tokens: Optional[int] = None
+    temperature: Optional[float] = None
+    top_p: Optional[float] = None
+    top_k: Optional[int] = None
+
+
+class MyElmLoader(UnstructuredEmailLoader):
+    """Wrapper to fallback to text/plain when default does not work"""
+
+    def load(self) -> List[Document]:
+        """Wrapper adding fallback for elm without html"""
+        try:
+            try:
+                doc = UnstructuredEmailLoader.load(self)
+            except ValueError as e:
+                if "text/html content not found in email" in str(e):
+                    # Try plain text
+                    self.unstructured_kwargs["content_source"] = "text/plain"
+                    doc = UnstructuredEmailLoader.load(self)
+                else:
+                    raise
+        except Exception as e:
+            # Add file_path to exception message
+            raise type(e)(f"{self.file_path}: {e}") from e
+
+        return doc
 
 
 def download_file(url: str, path: str) -> None:

@@ -3,16 +3,21 @@ from typing import Any, Dict, List, Optional, Union
 
 from langchain.document_loaders import (
     CSVLoader,
+    EverNoteLoader,
     JSONLoader,
     PyPDFLoader,
     TextLoader,
+    UnstructuredEPubLoader,
     UnstructuredHTMLLoader,
     UnstructuredMarkdownLoader,
+    UnstructuredODTLoader,
+    UnstructuredPowerPointLoader,
+    UnstructuredWordDocumentLoader,
 )
 from pydantic import BaseSettings, Extra
 from pydantic_yaml import parse_yaml_raw_as
 
-from libre_chat.utils import BOLD, END, YELLOW, log
+from libre_chat.utils import BOLD, END, YELLOW, MyElmLoader, log
 
 __all__ = ["ChatConf", "parse_conf"]
 
@@ -60,29 +65,19 @@ class SettingsVector(BaseConf):
     documents_download: Optional[str] = None
     document_loaders: List[Dict[str, Union[Union[str, Any]]]] = [
         {"glob": "*.pdf", "loader_cls": PyPDFLoader},
-        {"glob": "*.[c|t|p]sv", "loader_cls": CSVLoader},
+        {"glob": "*.[c|t|p]sv", "loader_cls": CSVLoader, "loader_kwargs": {"encoding": "utf8"}},
         {"glob": "*.?xhtm?l", "loader_cls": UnstructuredHTMLLoader},
+        {"glob": "*.xml", "loader_cls": UnstructuredHTMLLoader},
         {"glob": "*.json*", "loader_cls": JSONLoader},
         {"glob": "*.md*", "loader_cls": UnstructuredMarkdownLoader},
-        {"glob": "*.txt", "loader_cls": TextLoader},
+        {"glob": "*.txt", "loader_cls": TextLoader, "loader_kwargs": {"encoding": "utf8"}},
+        {"glob": "*.doc?x", "loader_cls": UnstructuredWordDocumentLoader},
+        {"glob": "*.odt", "loader_cls": UnstructuredODTLoader},
+        {"glob": "*.ppt?x", "loader_cls": UnstructuredPowerPointLoader},
+        {"glob": "*.epub", "loader_cls": UnstructuredEPubLoader},
+        {"glob": "*.eml", "loader_cls": MyElmLoader},
+        {"glob": "*.enex", "loader_cls": EverNoteLoader},
     ]
-    # LOADER_MAPPING = {
-    #     ".csv": (CSVLoader, {"encoding": "utf8"}),
-    #     # ".docx": (Docx2txtLoader, {}),
-    #     ".doc": (UnstructuredWordDocumentLoader, {}),
-    #     ".docx": (UnstructuredWordDocumentLoader, {}),
-    #     ".enex": (EverNoteLoader, {}),
-    #     ".eml": (MyElmLoader, {}),
-    #     ".epub": (UnstructuredEPubLoader, {}),
-    #     ".html": (UnstructuredHTMLLoader, {}),
-    #     ".md": (UnstructuredMarkdownLoader, {}),
-    #     ".odt": (UnstructuredODTLoader, {}),
-    #     ".pdf": (PDFMinerLoader, {}),
-    #     ".ppt": (UnstructuredPowerPointLoader, {}),
-    #     ".pptx": (UnstructuredPowerPointLoader, {}),
-    #     ".txt": (TextLoader, {"encoding": "utf8"}),
-    #     # Add more mappings for other file extensions and loaders as needed
-    # }
 
     chunk_size: int = 500
     chunk_overlap: int = 50

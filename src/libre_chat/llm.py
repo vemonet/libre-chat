@@ -192,10 +192,11 @@ class Llm:
         # Loading all file types provided in the document_loaders object
         for doc_load in self.document_loaders:
             loader = DirectoryLoader(
-                documents_path, glob=doc_load["glob"], loader_cls=doc_load["loader_cls"]  # type: ignore
+                documents_path, glob=doc_load["glob"], loader_cls=doc_load["loader_cls"], loader_kwargs=doc_load["loader_kwargs"] if "loader_kwargs" in doc_load else {}  # type: ignore
             )
             loaded_docs = loader.load()
-            log.info(f"🗃️  Loaded {len(loaded_docs)} items from {doc_load['glob']} files")
+            if len(loaded_docs) > 0:
+                log.info(f"🗃️  Loaded {len(loaded_docs)} items from {doc_load['glob']} files")
             documents.extend(loaded_docs)
 
         # Split the text up into small, semantically meaningful chunks (often sentences) https://js.langchain.com/docs/modules/data_connection/document_transformers/

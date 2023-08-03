@@ -1,6 +1,6 @@
 The whole deployment can be configured from a YAML file: paths to the model and vectorstore, model settings, web services infos. Create a `chat.yml` file with your configuration before starting the web service.
 
-Libre Chat can be used to train and deploy a **documents-based question answering agent**
+Libre Chat can be used to train and deploy a **documents-based question answering chatbot**
 
 When starting the service Libre Chat will automatically check if the `vectorstore` is already available, if not, it will build it from the documents provided in the directory available at the given `documents_path`.
 
@@ -10,14 +10,20 @@ Once the web service is up you can easily upload more documents through the API 
 
     Libre Chat will automatically vectorize the file types below. Let us know if you need anything else in the [issues](https://github.com/vemonet/libre-chat/issues).
 
-    | File type | Pattern       |
-    | --------- | ------------- |
-    | PDF       | `*.pdf`       |
-    | CSV       | `*.[c|t|p]sv` |
-    | JSON      | `*.json*`     |
-    | HTML      | `.?xhtm?l`    |
-    | Markdown  | `*.md*`       |
-    | Text      | `*.txt`       |
+    | File type      | Pattern       |
+    | -------------- | ------------- |
+    | PDF            | `*.pdf`       |
+    | CSV            | `*.[c|t|p]sv` |
+    | JSON           | `*.json*`     |
+    | HTML           | `.?xhtm?l`    |
+    | Markdown       | `*.md*`       |
+    | Text           | `*.txt`       |
+    | Word documents | `*.doc?x`     |
+    | PowerPoint     | `*.ppt?x`     |
+    | ODT            | `*.odt`       |
+    | ePub           | `*.epub`      |
+    | Email          | `*.eml`       |
+    | EverNote       | `*.enex`      |
 
 ??? example "Use custom document loaders"
 

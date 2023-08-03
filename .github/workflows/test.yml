@@ -27,7 +27,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: ♻️ Cache models
-      if: ${{ matrix.os == 'ubuntu-latest' }}
+      # if: ${{ matrix.os == 'ubuntu-latest' }}
       uses: actions/cache@v3
       with:
         path: models
@@ -46,7 +46,9 @@ jobs:
       run: |
         hatch run test
 
-    - run: mv .coverage ".coverage.${{ matrix.os }}.${{ matrix.python-version }}"
+    - name: Rename coverage per os/version
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+      run: mv .coverage ".coverage.${{ matrix.os }}.${{ matrix.python-version }}"
 
     # - name: ☂️ Upload coverage to Coveralls # Error on windows
     #   if: ${{ matrix.os == 'ubuntu-latest' }}

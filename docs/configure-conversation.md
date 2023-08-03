@@ -1,6 +1,6 @@
 Create a `chat.yml` file with your configuration before starting the web service.
 
-Below is an example of configuration using the Llama 2 7B GGML model, without vectorstore, to deploy a **generic conversational agent**
+Below is an example of configuration using the Llama 2 7B GGML model, without vectorstore, to deploy a **generic conversational chatbot**
 
 ```yaml title="chat.yml"
 llm:
