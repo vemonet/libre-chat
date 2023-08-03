@@ -8,6 +8,32 @@ on:
 
 jobs:
 
+
+  update-coverage:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: ☂️ Update coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11' # 3.9
+      - run: pip install smokeshow
+      - uses: dawidd6/action-download-artifact@v2.27.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: test.yml
+          commit: ${{ github.event.workflow_run.head_sha }}
+
+      - run: smokeshow upload coverage-html
+        env:
+          SMOKESHOW_GITHUB_STATUS_DESCRIPTION: Coverage {coverage-percentage}
+          SMOKESHOW_GITHUB_COVERAGE_THRESHOLD: 90
+          SMOKESHOW_GITHUB_CONTEXT: coverage
+          SMOKESHOW_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SMOKESHOW_GITHUB_PR_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          SMOKESHOW_AUTH_KEY: ${{ secrets.SMOKESHOW_AUTH_KEY }}
+
+
   update-docs:
     name: 📚 Update docs website
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
@@ -30,15 +56,12 @@ jobs:
           python-version: 3.9
 
       - name: Install dependencies
-        run: |
-          pip install ".[doc]"
+        run: pip install ".[doc]"
 
       - name: Deploy mkdocs on GitHub Pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          mkdocs build -d docs-dist
-        # mkdocs gh-deploy
+        run: mkdocs build -d docs-dist  # mkdocs gh-deploy dont support new pages
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
@@ -69,6 +92,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Enabling the cache causes the build to go out of storage space
       # - name: ♻️ Cache models
       #   uses: actions/cache@v3
       #   with:
@@ -127,27 +151,3 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
-
-
-  update-coverage:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.11' # 3.9
-      - run: pip install smokeshow
-      - uses: dawidd6/action-download-artifact@v2.27.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: test.yml
-          commit: ${{ github.event.workflow_run.head_sha }}
-
-      - run: smokeshow upload coverage-html
-        env:
-          SMOKESHOW_GITHUB_STATUS_DESCRIPTION: Coverage {coverage-percentage}
-          SMOKESHOW_GITHUB_COVERAGE_THRESHOLD: 90
-          SMOKESHOW_GITHUB_CONTEXT: coverage
-          SMOKESHOW_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SMOKESHOW_GITHUB_PR_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
-          SMOKESHOW_AUTH_KEY: ${{ secrets.SMOKESHOW_AUTH_KEY }}

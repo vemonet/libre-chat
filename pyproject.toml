@@ -138,7 +138,10 @@ exclude = [
 [tool.coverage.run]
 branch = true
 parallel = true # Append process id to the data file name
-source = ["src/libre_chat", "*/libre-chat/src/libre_chat", "*\\libre-chat\\src\\libre_chat"]
+source = [
+    "src/libre_chat",
+    "*/libre-chat/src/libre_chat",
+]
 # source_pkgs = ["libre_chat"]
 # data_file = "coverage/.coverage"
 
