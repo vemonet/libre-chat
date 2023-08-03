@@ -49,17 +49,12 @@ class MyElmLoader(UnstructuredEmailLoader):
         try:
             try:
                 doc = UnstructuredEmailLoader.load(self)
-            except ValueError as e:
-                if "text/html content not found in email" in str(e):
-                    # Try plain text
-                    self.unstructured_kwargs["content_source"] = "text/plain"
-                    doc = UnstructuredEmailLoader.load(self)
-                else:
-                    raise
+            except ValueError:
+                # Try plain text
+                self.unstructured_kwargs["content_source"] = "text/plain"
+                doc = UnstructuredEmailLoader.load(self)
         except Exception as e:
-            # Add file_path to exception message
-            raise type(e)(f"{self.file_path}: {e}") from e
-
+            log.warning(f"📩 Error processing the email file {self.file_path}: {e} ")
         return doc
 
 

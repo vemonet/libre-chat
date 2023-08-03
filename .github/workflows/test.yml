@@ -48,16 +48,16 @@ jobs:
     - name: Rename coverage per os/version
       run: mv .coverage ".coverage.${{ matrix.os }}.${{ matrix.python-version }}"
 
+    - name: ☂️ Upload coverage to Coveralls # Error on windows
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+      uses: coverallsapp/github-action@v2
+
     - name: ☂️ Upload coverage files
       uses: actions/upload-artifact@v3
       if: ${{ matrix.os == 'ubuntu-latest' }}
       with:
         name: coverage
         path: .coverage.*
-
-    # - name: ☂️ Upload coverage to Coveralls # Error on windows
-    #   if: ${{ matrix.os == 'ubuntu-latest' }}
-    #   uses: coverallsapp/github-action@v2
 
 
   coverage-combine:

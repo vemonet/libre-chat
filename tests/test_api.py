@@ -44,7 +44,7 @@ def test_websocket_prompt_conversation() -> None:
 
 def test_documents_success_upload() -> None:
     files = [
-        ("files", ("test.txt", b"content")),
+        ("files", ("test.elm", b"content")),
     ]
     with open("tests/config/amsterdam.zip", "rb") as zip_file:
         files.append(("files", ("amsterdam.zip", zip_file.read())))
@@ -64,13 +64,13 @@ def test_documents_success_list() -> None:
     assert response.status_code == 200
     assert resp["count"] > 0
     assert "test.txt" in resp["files"]
-    os.remove("documents/test.txt")
+    os.remove("documents/test.elm")
     os.remove("documents/amsterdam.txt")
 
 
 def test_documents_wrong_pass() -> None:
     files = [
-        ("files", ("test.txt", b"content")),
+        ("files", ("test.elm", b"content")),
     ]
     resp_upload = client.post(
         "/documents",

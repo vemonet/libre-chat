@@ -23,6 +23,7 @@ RUN pip install -r requirements.txt
 ADD . .
 RUN pip install -e .
 
+# We use /data as workdir for models, embeddings, vectorstore
 WORKDIR /data
 
 ENTRYPOINT [ "/app/scripts/start.sh" ]
