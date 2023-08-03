@@ -44,7 +44,7 @@ jobs:
 
     - name: Test with coverage
       run: |
-        hatch run test --cov-report xml:coverage.xml
+        hatch run test
 
     # - name: ☂️ Upload coverage to Coveralls # Error on windows
     #   if: ${{ matrix.os == 'ubuntu-latest' }}
