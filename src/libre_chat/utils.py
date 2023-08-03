@@ -68,7 +68,8 @@ def parallel_download(files_list: List[Dict[str, Optional[str]]], workers: int =
             if not f["path"]:
                 continue
             parent_folder = os.path.dirname(f["path"])
-            os.makedirs(parent_folder, exist_ok=True)
+            if parent_folder:
+                os.makedirs(parent_folder, exist_ok=True)
             if f["path"] and not os.path.exists(f["path"]) and f["url"]:
                 future = executor.submit(download_file, f["url"], f["path"])
                 futures.append(future)

@@ -48,7 +48,7 @@ def build(
     config: str = typer.Argument(
         default_conf.conf_path, help="Path to the libre-chat YAML configuration file"
     ),
-    vector: Optional[str] = typer.Option(None, help="Path to the vector db folder"),
+    vector: Optional[str] = typer.Option(None, help="Path to the vectorstore folder"),
     documents: Optional[str] = typer.Option(
         None, help="Path to the folder containing documents to vectorize"
     ),
