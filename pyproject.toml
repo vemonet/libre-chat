@@ -105,7 +105,7 @@ fmt = [
 ]
 test = [
     "fmt",
-    "pytest {args}",
+    "coverage run -m pytest {args}",
 ]
 cov-start = "python -m http.server 3000 --directory ./htmlcov"
 cov = [
@@ -134,9 +134,12 @@ exclude = [
 ]
 
 
+# https://coverage.readthedocs.io/en/7.2.2/config.html
 [tool.coverage.run]
 branch = true
+parallel = true # Append process id to the data file name
 source = ["libre_chat"]
+data_file = "coverage/.coverage"
 
 [tool.coverage.paths]
 source = ["src/"]
@@ -239,6 +242,7 @@ ignore = [
 
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["I", "F401"] # module imported but unused
+"tests/*" = ["S105"] # Possible hardcoded password
 
 [tool.ruff.mccabe]
 max-complexity = 10

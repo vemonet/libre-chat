@@ -131,8 +131,6 @@ class ChatRouter(APIRouter):
             admin_pass: Optional[str] = None,
             # current_user: User = Depends(get_current_user),
         ) -> JSONResponse:
-            if not files:
-                raise HTTPException(status_code=400, detail="No files provided for upload")
             os.makedirs(self.conf.vector.documents_path, exist_ok=True)
             if self.conf.auth.admin_pass and admin_pass != self.conf.auth.admin_pass:
                 raise HTTPException(
