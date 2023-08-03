@@ -4,6 +4,8 @@ Libre Chat can be used to train and deploy a **documents-based question answerin
 
 When starting the service Libre Chat will automatically check if the `vectorstore` is already available, if not, it will build it from the documents provided in the directory available at the given `documents_path`.
 
+Once the web service is up you can easily upload more documents through the API UI. Zip files will be automatically unzipped, and the vectorstore will be automatically rebuilt with all the files uploaded to the server. You will also find a call to get the list of all the documents uploaded to the server. You can prevent unwanted users to add files by adding a pass key using the environment variable `LIBRECHAT_ADMIN_KEY`
+
 !!! abstract "File types supported"
 
     Libre Chat will automatically vectorize the file types below. Let us know if you need anything else in the [issues](https://github.com/vemonet/libre-chat/issues).

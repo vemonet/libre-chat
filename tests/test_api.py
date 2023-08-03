@@ -7,7 +7,7 @@ from libre_chat.chat_conf import parse_conf
 from libre_chat.chat_endpoint import ChatEndpoint
 from libre_chat.llm import Llm
 
-conf = parse_conf("chat.yml")
+conf = parse_conf("tests/config/additional-prop.yml")
 conf.auth.admin_pass = "testpass"
 llm = Llm(conf=conf)
 app = ChatEndpoint(llm=llm, conf=conf)
@@ -42,7 +42,7 @@ def test_websocket_prompt_conversation() -> None:
         assert "amsterdam" in resp["result"].lower()
 
 
-def test_documents_upload_success() -> None:
+def test_documents_success_upload() -> None:
     files = [
         ("files", ("test.txt", b"content")),
     ]
@@ -52,13 +52,13 @@ def test_documents_upload_success() -> None:
     response = client.post(
         "/documents",
         files=files,
-        data={"admin_pass": conf.auth.admin_pass},
+        params={"admin_pass": conf.auth.admin_pass},
     )
     assert response.status_code == 200
     assert "Documents uploaded" in response.json()["message"]
 
 
-def test_documents_list_success() -> None:
+def test_documents_success_list() -> None:
     response = client.get("/documents", params={"admin_pass": conf.auth.admin_pass})
     resp = response.json()
     assert response.status_code == 200
