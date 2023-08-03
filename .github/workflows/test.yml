@@ -46,7 +46,6 @@ jobs:
         hatch run test
 
     - name: Rename coverage per os/version
-      if: ${{ matrix.os == 'ubuntu-latest' }}
       run: mv .coverage ".coverage.${{ matrix.os }}.${{ matrix.python-version }}"
 
     # - name: ☂️ Upload coverage to Coveralls # Error on windows
@@ -55,7 +54,7 @@ jobs:
 
     - name: ☂️ Upload coverage files
       uses: actions/upload-artifact@v3
-      if: ${{ matrix.os == 'ubuntu-latest' }}
+      # if: ${{ matrix.os == 'ubuntu-latest' }}
       with:
         name: coverage
         path: .coverage.*
@@ -80,7 +79,7 @@ jobs:
           path: coverage
       - run: pip install coverage[toml]
       - run: ls -la coverage
-      - run: coverage combine coverage
+      - run: coverage combine coverage.win.path
       - run: coverage report
       - run: coverage html --show-contexts --title "☂️ Coverage for ${{ github.sha }}"
       - name: Store coverage HTML
