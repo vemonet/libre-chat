@@ -6,6 +6,7 @@ import pytest
 
 from libre_chat.chat_conf import parse_conf
 from libre_chat.llm import Llm
+from libre_chat.utils import download_file
 
 llm = Llm(conf=parse_conf("config/chat-vectorstore-qa.yml"))
 capital_query = "What is the capital of the Netherlands?"
@@ -84,6 +85,12 @@ def test_llm_failed_no_prompt_variables() -> None:
     with pytest.raises(Exception) as exc_info:
         Llm(conf=parse_conf("config/chat-vectorstore-qa.yml"), prompt_variables=[])
     assert "You should provide at least 1 template variable" in str(exc_info.value)
+
+
+def test_failed_download_file() -> None:
+    """Test fail downloading file"""
+    download_file("http://broken", "tests/tmp/noddl")
+    assert not os.path.exists("tests/tmp/noddl")
 
 
 def test_no_prompt_template() -> None:

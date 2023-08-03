@@ -140,7 +140,7 @@ branch = true
 parallel = true # Append process id to the data file name
 # source = ["src/libre_chat"]
 source_pkgs = ["libre_chat"]
-data_file = "coverage/.coverage"
+# data_file = "coverage/.coverage"
 
 [tool.coverage.paths]
 libre_chat = ["src/libre_chat", "*/libre-chat/src/hatch"]

@@ -66,6 +66,24 @@ class SettingsVector(BaseConf):
         {"glob": "*.md*", "loader_cls": UnstructuredMarkdownLoader},
         {"glob": "*.txt", "loader_cls": TextLoader},
     ]
+    # LOADER_MAPPING = {
+    #     ".csv": (CSVLoader, {"encoding": "utf8"}),
+    #     # ".docx": (Docx2txtLoader, {}),
+    #     ".doc": (UnstructuredWordDocumentLoader, {}),
+    #     ".docx": (UnstructuredWordDocumentLoader, {}),
+    #     ".enex": (EverNoteLoader, {}),
+    #     ".eml": (MyElmLoader, {}),
+    #     ".epub": (UnstructuredEPubLoader, {}),
+    #     ".html": (UnstructuredHTMLLoader, {}),
+    #     ".md": (UnstructuredMarkdownLoader, {}),
+    #     ".odt": (UnstructuredODTLoader, {}),
+    #     ".pdf": (PDFMinerLoader, {}),
+    #     ".ppt": (UnstructuredPowerPointLoader, {}),
+    #     ".pptx": (UnstructuredPowerPointLoader, {}),
+    #     ".txt": (TextLoader, {"encoding": "utf8"}),
+    #     # Add more mappings for other file extensions and loaders as needed
+    # }
+
     chunk_size: int = 500
     chunk_overlap: int = 50
     chain_type: str = "stuff"  # Or: map_reduce, reduce, map_rerank https://docs.langchain.com/docs/components/chains/index_related_chains

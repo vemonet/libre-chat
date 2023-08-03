@@ -40,18 +40,22 @@ CYAN = "\033[36m"
 def download_file(url: str, path: str) -> None:
     ddl_path = f"{path}-ddl" if not url.endswith(".zip") else f"{path}.zip"
     log.info(f"📥 Downloading {url} to {ddl_path}")
-    with requests.get(url, stream=True, timeout=10800) as response:  # 3h timeout
-        response.raise_for_status()
-        with open(ddl_path, "wb") as file:
-            for chunk in response.iter_content(chunk_size=8192):  # Adjust the chunk size as needed
-                file.write(chunk)
-    if ddl_path.endswith(".zip"):
-        log.info(f"🤐 Unzipping {ddl_path} to {path}")
-        with zipfile.ZipFile(ddl_path, "r") as zip_ref:
-            zip_ref.extractall(path)
-    else:
-        shutil.move(ddl_path, path)
-
+    try:
+        with requests.get(url, stream=True, timeout=10800) as response:  # 3h timeout
+            response.raise_for_status()
+            with open(ddl_path, "wb") as file:
+                for chunk in response.iter_content(
+                    chunk_size=8192
+                ):  # Adjust the chunk size as needed
+                    file.write(chunk)
+        if ddl_path.endswith(".zip"):
+            log.info(f"🤐 Unzipping {ddl_path} to {path}")
+            with zipfile.ZipFile(ddl_path, "r") as zip_ref:
+                zip_ref.extractall(path)
+        else:
+            shutil.move(ddl_path, path)
+    except Exception as e:
+        log.warning(f"⚠️ Failed to download {url}: {e}")
     log.info(f"✅ Downloaded: {url} in {path}")
 
 

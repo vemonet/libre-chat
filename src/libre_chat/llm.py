@@ -152,7 +152,7 @@ class Llm:
         ddl_list.append({"url": self.model_download, "path": self.model_path})
         ddl_list.append({"url": self.embeddings_download, "path": self.embeddings_path})
         ddl_list.append({"url": self.vector_download, "path": self.vector_path})
-        # ddl_list.append({"url": self.vector_download, "path": self.vector_path})
+        ddl_list.append({"url": self.documents_download, "path": self.documents_path})
         parallel_download(ddl_list, self.conf.info.workers)
 
     def setup_dbqa(self) -> None:

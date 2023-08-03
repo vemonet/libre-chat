@@ -46,6 +46,8 @@ jobs:
       run: |
         hatch run test
 
+    - run: mv .coverage ".coverage.${{ matrix.os }}.${{ matrix.python-version }}"
+
     # - name: ☂️ Upload coverage to Coveralls # Error on windows
     #   if: ${{ matrix.os == 'ubuntu-latest' }}
     #   uses: coverallsapp/github-action@v2
@@ -54,7 +56,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: coverage
-        path: coverage
+        path: .coverage.*
 
 
   coverage-combine:
