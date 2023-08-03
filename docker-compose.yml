@@ -2,8 +2,8 @@ version: "3"
 services:
 
   libre-chat:
-    # build: .
-    image: ghcr.io/vemonet/libre-chat:main
+    build: .
+    # image: ghcr.io/vemonet/libre-chat:main
     volumes:
       - ./:/data # Share the current directory with chat.yml, models, vectorstore
     shm_size: '16g'
