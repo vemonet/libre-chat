@@ -7,6 +7,7 @@ sentence-transformers/
 try-*/
 tests/tmp/
 docker-compose.prod.yml
+/main.py
 
 # Python artefacts
 build/
