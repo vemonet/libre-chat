@@ -63,7 +63,7 @@ def test_documents_success_list() -> None:
     resp = response.json()
     assert response.status_code == 200
     assert resp["count"] > 0
-    assert "test.txt" in resp["files"]
+    assert "test.elm" in resp["files"]
     os.remove("documents/test.elm")
     os.remove("documents/amsterdam.txt")
 
