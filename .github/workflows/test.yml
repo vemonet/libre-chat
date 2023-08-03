@@ -4,8 +4,8 @@ on: [push, pull_request, workflow_call, workflow_dispatch]
 jobs:
 
   tests:
-    name: ✅ Run tests on python versions
-    runs-on: ubuntu-latest
+    name: ✅ Run tests
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
