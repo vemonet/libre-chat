@@ -71,6 +71,9 @@ doc = [
     "mkdocs-markdownextradata-plugin >=0.2.5",
     "mkdocs-open-in-new-tab",
 ]
+windows = [
+    "python-magic-bin"
+]
 
 
 [project.urls]
@@ -86,6 +89,7 @@ Source = "https://github.com/vemonet/libre-chat"
 features = [
     "test",
     "doc",
+    "windows",
 ]
 post-install-commands = [
     "pre-commit install",

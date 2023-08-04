@@ -10,20 +10,20 @@ Once the web service is up you can easily upload more documents through the API 
 
     Libre Chat will automatically vectorize the file types below. Let us know if you need anything else in the [issues](https://github.com/vemonet/libre-chat/issues).
 
-    | File type      | Pattern       |
-    | -------------- | ------------- |
-    | PDF            | `*.pdf`       |
-    | CSV            | `*.[c|t|p]sv` |
-    | JSON           | `*.json*`     |
-    | HTML           | `.?xhtm?l`    |
-    | Markdown       | `*.md*`       |
-    | Text           | `*.txt`       |
-    | Word documents | `*.doc?x`     |
-    | PowerPoint     | `*.ppt?x`     |
-    | ODT            | `*.odt`       |
-    | ePub           | `*.epub`      |
-    | Email          | `*.eml`       |
-    | EverNote       | `*.enex`      |
+    | File type                  | Pattern       |
+    | -------------------------- | ------------- |
+    | PDF                        | `*.pdf`       |
+    | CSV                        | `*.[c|t|p]sv` |
+    | JSON                       | `*.json*`     |
+    | HTML                       | `.?xhtm?l`    |
+    | Markdown                   | `*.md*`       |
+    | Text                       | `*.txt`       |
+    | Open Document Format (ODT) | `*.odt`       |
+    | Word documents             | `*.doc?x`     |
+    | PowerPoint                 | `*.ppt?x`     |
+    | ePub                       | `*.epub`      |
+    | Email                      | `*.eml`       |
+    | EverNote                   | `*.enex`      |
 
 ??? example "Use custom document loaders"
 

@@ -70,7 +70,7 @@ def test_documents_success_list() -> None:
 
 def test_documents_wrong_pass() -> None:
     files = [
-        ("files", ("test.eml", b"content")),
+        ("files", ("test.txt", b"content")),
     ]
     resp_upload = client.post(
         "/documents",

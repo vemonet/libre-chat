@@ -1,18 +1,14 @@
 [![Version](https://img.shields.io/pypi/v/libre-chat)](https://pypi.org/project/libre-chat) [![Python versions](https://img.shields.io/pypi/pyversions/libre-chat)](https://pypi.org/project/libre-chat)
 
-`libre-chat` is tested on Linux.
+`libre-chat` is tested on Linux, and MacOS, should work on Windows WSL.
 
-??? Note "Using it on Mac or Windows"
+??? Note "Using it on Windows"
 
-    Just use Docker.
+    Use WSL or Docker.
 
-    Tests fails on MacOS, please let us know if you had any chances running it on your Mac.
+    Tests were passing fine on Windows, until I added the `UnstructuredEmailLoader`. Since then the tests are going crazy, throwing `Windows fatal exception: access violation` without reason.
 
-    Tests were passing fine on Windows, until I added the UnstructuredEmailLoader. Since then the tests are going crazy, throwing `Windows fatal exception: access violation` without reason (the whole CTransformers thing was working fine on win, but a loader for text file smakes everything go down, with no logs, classic Windows).
-
-    This was to be expected since Mac and Windows are not computers anymore, they are just a user interface to access the computing power hosted on Linux.
-
-    If anyone have the time to fix those silly threads throwing error, please let me know! But I will personnally not lose time fixing problems of badly built paid proprietary softwares commercialized by the 2 biggest companies in the world. They can do it themselves. Or just switch their bad OS to be based on Linux, and contribute more to the open source community.
+    If anyone have the time to fix this silly error, please let me know!
 
 
 !!! Tip "Production deployment"
