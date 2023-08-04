@@ -1,7 +1,6 @@
 name: 💡 Feature request
-title: '💡 '
 description: Suggest an idea.
-labels: ['type: enhancement']
+labels: ['enhancement']
 
 body:
   - type: textarea
@@ -20,3 +19,9 @@ body:
       description: Describe how you would implement it, if you have some ideas
       placeholder: |
         Your ideas, link to relevant packages...
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add any other context or comment here.
