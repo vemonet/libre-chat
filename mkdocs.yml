@@ -94,7 +94,7 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.details
-  - abbr # TODO: Not working
+  - abbr
   - pymdownx.snippets:
       auto_append:
         - docs/includes/abbreviations.md
@@ -110,9 +110,7 @@ extra:
   social:
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/libre-chat
+    - icon: fontawesome/brands/docker
+      link: https://github.com/vemonet/libre-chat/pkgs/container/libre-chat
     - icon: fontawesome/brands/github
       link: https://github.com/vemonet
-    # - icon: fontawesome/brands/docker
-    #   link: https://github.com/orgs/vemonet/packages
-    # - icon: fontawesome/brands/twitter
-    #   link: https://twitter.com/um_ids

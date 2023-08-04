@@ -63,14 +63,14 @@ def test_documents_success_list() -> None:
     resp = response.json()
     assert response.status_code == 200
     assert resp["count"] > 0
-    assert "test.elm" in resp["files"]
-    os.remove("documents/test.elm")
+    assert "test.eml" in resp["files"]
+    os.remove("documents/test.eml")
     os.remove("documents/amsterdam.txt")
 
 
 def test_documents_wrong_pass() -> None:
     files = [
-        ("files", ("test.elm", b"content")),
+        ("files", ("test.eml", b"content")),
     ]
     resp_upload = client.post(
         "/documents",
