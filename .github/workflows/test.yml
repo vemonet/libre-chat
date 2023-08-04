@@ -18,8 +18,8 @@ jobs:
             os: ubuntu-latest
           - python-version: "3.11"
             os: ubuntu-latest
-          - python-version: "3.11"
-            os: windows-latest
+          # - python-version: "3.11"
+          #   os: windows-latest
           # - python-version: "3.11"
           #   os: macos-latest  # cf. https://github.com/marella/ctransformers/issues/73
 
@@ -59,7 +59,7 @@ jobs:
 
   coverage-combine:
     name: ⚗️ Combine coverage
-    needs: [tests]
+    needs: [ tests ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -75,7 +75,7 @@ jobs:
       - run: ls -la coverage
       - run: coverage combine coverage
       - run: coverage report
-      - run: coverage html --show-contexts --title "☂️ Coverage for Libre Chat [${{ github.sha }}]"
+      - run: coverage html --show-contexts --title "☂️ Coverage for vemonet/libre-chat [${{ github.sha }}]"
       - name: Store coverage HTML
         uses: actions/upload-artifact@v3
         with:
@@ -86,7 +86,7 @@ jobs:
   publish-coverage:
     name: ☂️ Publish coverage
     if: github.event_name != 'pull_request'
-    needs: [coverage-combine]
+    needs: [ coverage-combine ]
     runs-on: ubuntu-latest
     permissions:
       statuses: write
