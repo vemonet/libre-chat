@@ -41,11 +41,11 @@ class Prompt:
     top_k: Optional[int] = None
 
 
-class MyElmLoader(UnstructuredEmailLoader):
+class MyEmlLoader(UnstructuredEmailLoader):
     """Wrapper to fallback to text/plain when default does not work"""
 
     def load(self) -> List[Document]:
-        """Wrapper adding fallback for elm without html"""
+        """Wrapper adding fallback for eml without html"""
         try:
             try:
                 doc = UnstructuredEmailLoader.load(self)

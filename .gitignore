@@ -8,6 +8,8 @@ try-*/
 tests/tmp/
 docker-compose.prod.yml
 /main.py
+documents/amsterdam.txt
+documents/test.eml
 
 # Python artefacts
 build/

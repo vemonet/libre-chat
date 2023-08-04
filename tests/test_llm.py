@@ -93,6 +93,13 @@ def test_failed_download_file() -> None:
     assert not os.path.exists("tests/tmp/noddl")
 
 
+# def test_email_loader() -> None:
+#     """Test fail downloading file"""
+#     loader = MyEmlLoader("tests/config/fake-email.eml")
+#     print(loader.load())
+#     # assert not os.path.exists("tests/tmp/noddl")
+
+
 def test_no_prompt_template() -> None:
     """Test no prompt templates provided"""
     conf_conv = parse_conf("config/chat-conversation.yml")

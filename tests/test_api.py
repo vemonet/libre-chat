@@ -44,7 +44,7 @@ def test_websocket_prompt_conversation() -> None:
 
 def test_documents_success_upload() -> None:
     files = [
-        ("files", ("test.elm", b"content")),
+        ("files", ("test.eml", b"content")),
     ]
     with open("tests/config/amsterdam.zip", "rb") as zip_file:
         files.append(("files", ("amsterdam.zip", zip_file.read())))
