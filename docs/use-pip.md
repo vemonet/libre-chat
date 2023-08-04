@@ -17,15 +17,13 @@ pip install libre-chat
 
 ??? Note "Installing on Windows"
 
-    Use WSL or Docker.
+    We recommend to use WSL or Docker. Otherwise you can install with an extra dependency:
 
     ```bash
     pip install "libre-chat[windows]"
     ```
 
-    Tests were passing fine on Windows, until I added the `UnstructuredEmailLoader`. Since then the tests are going crazy, throwing `Windows fatal exception: access violation` without reason.
-
-    If anyone have the time to fix this silly error, please let me know!
+    Note there are some issues with the `UnstructuredEmailLoader` on Windows. It uses `unstructured`, which uses [`python-magic`](https://pydigger.com/pypi/python-magic) which fails due to a `ctypes` import.
 
 
 ## ⌨️ Use as a command-line interface

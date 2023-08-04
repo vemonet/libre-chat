@@ -72,7 +72,7 @@ doc = [
     "mkdocs-open-in-new-tab",
 ]
 windows = [
-    "python-magic-bin"
+    "python-magic-bin" # Required by magic, used by unstructured for the EmailLoader https://pydigger.com/pypi/python-magic
 ]
 
 
