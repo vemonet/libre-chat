@@ -2,15 +2,6 @@
 
 `libre-chat` is tested on Linux, and MacOS, should work on Windows WSL.
 
-??? Note "Using it on Windows"
-
-    Use WSL or Docker.
-
-    Tests were passing fine on Windows, until I added the `UnstructuredEmailLoader`. Since then the tests are going crazy, throwing `Windows fatal exception: access violation` without reason.
-
-    If anyone have the time to fix this silly error, please let me know!
-
-
 !!! Tip "Production deployment"
 
     When deploying in production it is recommended to use [docker](https://www.docker.com), or directly [gunicorn](https://gunicorn.org), to handle many requests. The CLI is mainly used for local testing and building vectorstores.
@@ -23,6 +14,19 @@ Install from [PyPI](https://pypi.org/project/libre-chat/) with `pipx` or `pip`:
 ```bash
 pip install libre-chat
 ```
+
+??? Note "Installing on Windows"
+
+    Use WSL or Docker.
+
+    ```bash
+    pip install "libre-chat[windows]"
+    ```
+
+    Tests were passing fine on Windows, until I added the `UnstructuredEmailLoader`. Since then the tests are going crazy, throwing `Windows fatal exception: access violation` without reason.
+
+    If anyone have the time to fix this silly error, please let me know!
+
 
 ## ⌨️ Use as a command-line interface
 

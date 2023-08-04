@@ -89,7 +89,6 @@ Source = "https://github.com/vemonet/libre-chat"
 features = [
     "test",
     "doc",
-    "windows",
 ]
 post-install-commands = [
     "pre-commit install",

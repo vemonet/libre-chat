@@ -44,7 +44,7 @@ def test_websocket_prompt_conversation() -> None:
 
 def test_documents_success_upload() -> None:
     files = [
-        ("files", ("test.eml", b"content")),
+        ("files", ("test.txt", b"content")),
     ]
     with open("tests/config/amsterdam.zip", "rb") as zip_file:
         files.append(("files", ("amsterdam.zip", zip_file.read())))
@@ -63,8 +63,8 @@ def test_documents_success_list() -> None:
     resp = response.json()
     assert response.status_code == 200
     assert resp["count"] > 0
-    assert "test.eml" in resp["files"]
-    os.remove("documents/test.eml")
+    assert "test.txt" in resp["files"]
+    os.remove("documents/test.txt")
     os.remove("documents/amsterdam.txt")
 
 
