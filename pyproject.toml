@@ -141,7 +141,7 @@ branch = false
 parallel = true # Append process id to the data file name
 source = [
     "src/libre_chat",
-    "*/libre-chat/src/libre_chat",
+    # "*/libre-chat/src/libre_chat",
 ]
 # source_pkgs = ["libre_chat"]
 # data_file = "coverage/.coverage"
@@ -181,12 +181,13 @@ no_implicit_optional = true
 
 [tool.pytest.ini_options]
 addopts = [
-    "-vvv", # Verbose level 3
+    "-vvv",          # Verbose level 3
+    "--durations=0", # Show all tests durations
     "--cov=src",
     "--color=yes",
     "--cov-report=term-missing",
     "--cov-fail-under=85",
-    # "-n", "4", # run in parallel on 4 processes, requires pytest-xdist
+    # "-n", "4", # should run in parallel on 4 processes, requires pytest-xdist
 ]
 filterwarnings = [
     # "ignore::DeprecationWarning", # Ignore all deprecation warnings
