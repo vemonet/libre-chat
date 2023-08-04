@@ -38,7 +38,7 @@ dependencies = [
     "uvicorn",
     "gunicorn",
     "langchain",
-    "ctransformers >=0.2.5", # To perform inference on CPU
+    "ctransformers >=0.2.17", # To perform inference on CPU
     "faiss-cpu >=1.7.4",     # To generate the vectorstore
     "sentence_transformers", # To produce the embeddings
     "pypdf",                 # Or PDFMiner?

@@ -30,6 +30,8 @@ certifi==2023.7.22
     #   httpcore
     #   httpx
     #   requests
+chardet==5.2.0
+    # via unstructured
 charset-normalizer==3.2.0
     # via
     #   aiohttp
@@ -43,7 +45,7 @@ cmake==3.27.0
     # via triton
 contourpy==1.1.0
     # via matplotlib
-ctransformers==0.2.16
+ctransformers==0.2.18
     # via libre-chat (pyproject.toml)
 cycler==0.11.0
     # via matplotlib
@@ -63,6 +65,8 @@ filelock==3.12.2
     #   torch
     #   transformers
     #   triton
+filetype==1.2.0
+    # via unstructured
 fonttools==4.41.1
     # via matplotlib
 frozenlist==1.4.0
@@ -130,6 +134,8 @@ linkify-it-py==2.0.2
     # via markdown-it-py
 lit==16.0.6
     # via triton
+lxml==4.9.3
+    # via unstructured
 markdown-it-py[linkify]==2.2.0
     # via
     #   gradio
@@ -157,7 +163,9 @@ mypy-extensions==1.0.0
 networkx==3.1
     # via torch
 nltk==3.8.1
-    # via sentence-transformers
+    # via
+    #   sentence-transformers
+    #   unstructured
 numexpr==2.8.4
     # via langchain
 numpy==1.25.1
@@ -243,6 +251,8 @@ python-dateutil==2.8.2
     # via
     #   matplotlib
     #   pandas
+python-magic==0.4.27
+    # via unstructured
 python-multipart==0.0.6
     # via gradio
 pytz==2023.3
@@ -271,6 +281,7 @@ requests==2.31.0
     #   libre-chat (pyproject.toml)
     #   torchvision
     #   transformers
+    #   unstructured
 rpds-py==0.9.2
     # via
     #   jsonschema
@@ -306,6 +317,8 @@ starlette==0.27.0
     # via fastapi
 sympy==1.12
     # via torch
+tabulate==0.9.0
+    # via unstructured
 tenacity==8.2.2
     # via langchain
 threadpoolctl==3.2.0
@@ -351,6 +364,8 @@ tzdata==2023.3
     # via pandas
 uc-micro-py==1.0.2
     # via linkify-it-py
+unstructured==0.9.0
+    # via libre-chat (pyproject.toml)
 urllib3==2.0.4
     # via requests
 uvicorn==0.23.2
