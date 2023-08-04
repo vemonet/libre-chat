@@ -7,8 +7,8 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from libre_chat.chat_conf import ChatConf, default_conf
-from libre_chat.chat_router import ChatRouter
+from libre_chat.conf import ChatConf, default_conf
+from libre_chat.router import ChatRouter
 from libre_chat.ui import gradio_app
 
 __all__ = [
@@ -53,13 +53,13 @@ class ChatEndpoint(FastAPI):
             **kwargs,
         )
 
-        chat_router = ChatRouter(
+        router = ChatRouter(
             llm=self.llm,
             path=self.path,
             conf=self.conf,
             examples=self.examples,
         )
-        self.include_router(chat_router)
+        self.include_router(router)
 
         if cors_enabled:
             self.add_middleware(

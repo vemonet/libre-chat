@@ -1,3 +1,3 @@
 # LLM Endpoint
 
-::: libre_chat.chat_endpoint.ChatEndpoint
+::: libre_chat.endpoint.ChatEndpoint

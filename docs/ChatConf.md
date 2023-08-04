@@ -1,3 +1,3 @@
 # Chat Config
 
-::: libre_chat.chat_conf.ChatConf
+::: libre_chat.conf.ChatConf

@@ -3,8 +3,8 @@ import os
 
 from fastapi.testclient import TestClient
 
-from libre_chat.chat_conf import parse_conf
-from libre_chat.chat_endpoint import ChatEndpoint
+from libre_chat.conf import parse_conf
+from libre_chat.endpoint import ChatEndpoint
 from libre_chat.llm import Llm
 
 conf = parse_conf("tests/config/additional-prop.yml")

@@ -7,7 +7,7 @@ from fastapi import APIRouter, Body, File, HTTPException, Request, UploadFile, W
 from fastapi.responses import JSONResponse
 from langchain.schema.document import Document
 
-from libre_chat.chat_conf import ChatConf, default_conf
+from libre_chat.conf import ChatConf, default_conf
 from libre_chat.utils import Prompt, log
 
 __all__ = [

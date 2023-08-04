@@ -1,7 +1,7 @@
 import logging
 
-from libre_chat.chat_conf import parse_conf
-from libre_chat.chat_endpoint import ChatEndpoint
+from libre_chat.conf import parse_conf
+from libre_chat.endpoint import ChatEndpoint
 from libre_chat.llm import Llm
 
 # STart the API endpoint, used in docker container and tests

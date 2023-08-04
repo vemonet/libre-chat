@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from libre_chat.chat_conf import parse_conf
+from libre_chat.conf import parse_conf
 from libre_chat.llm import Llm
 from libre_chat.utils import download_file
 
