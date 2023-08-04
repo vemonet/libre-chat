@@ -7,6 +7,7 @@ from langchain.document_loaders import (
     JSONLoader,
     PyPDFLoader,
     TextLoader,
+    UnstructuredEmailLoader,
     UnstructuredEPubLoader,
     UnstructuredHTMLLoader,
     UnstructuredMarkdownLoader,
@@ -17,7 +18,7 @@ from langchain.document_loaders import (
 from pydantic import BaseSettings, Extra
 from pydantic_yaml import parse_yaml_raw_as
 
-from libre_chat.utils import BOLD, END, YELLOW, MyEmlLoader, log
+from libre_chat.utils import BOLD, END, YELLOW, log
 
 __all__ = ["ChatConf", "parse_conf"]
 
@@ -75,7 +76,7 @@ class SettingsVector(BaseConf):
         {"glob": "*.odt", "loader_cls": UnstructuredODTLoader},
         {"glob": "*.ppt?x", "loader_cls": UnstructuredPowerPointLoader},
         {"glob": "*.epub", "loader_cls": UnstructuredEPubLoader},
-        {"glob": "*.eml", "loader_cls": MyEmlLoader},
+        {"glob": "*.eml", "loader_cls": UnstructuredEmailLoader},
         {"glob": "*.enex", "loader_cls": EverNoteLoader},
     ]
 

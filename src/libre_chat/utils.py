@@ -7,10 +7,6 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
 import requests
-from langchain.document_loaders import (
-    UnstructuredEmailLoader,
-)
-from langchain.schema.document import Document
 from uvicorn.logging import ColourizedFormatter
 
 __all__ = ["Prompt", "parallel_download", "log"]
@@ -39,23 +35,6 @@ class Prompt:
     temperature: Optional[float] = None
     top_p: Optional[float] = None
     top_k: Optional[int] = None
-
-
-class MyEmlLoader(UnstructuredEmailLoader):
-    """Wrapper to fallback to text/plain when default does not work"""
-
-    def load(self) -> List[Document]:
-        """Wrapper adding fallback for eml without html"""
-        try:
-            try:
-                doc = UnstructuredEmailLoader.load(self)
-            except ValueError:
-                # Try plain text
-                self.unstructured_kwargs["content_source"] = "text/plain"
-                doc = UnstructuredEmailLoader.load(self)
-        except Exception as e:
-            log.warning(f"📩 Error processing the email file {self.file_path}: {e} ")
-        return doc
 
 
 def download_file(url: str, path: str) -> None:
