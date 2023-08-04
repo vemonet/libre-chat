@@ -86,6 +86,7 @@ jobs:
   publish-coverage:
     name: ☂️ Publish coverage
     if: github.event_name != 'pull_request'
+    needs: [coverage-combine]
     runs-on: ubuntu-latest
     permissions:
       statuses: write
