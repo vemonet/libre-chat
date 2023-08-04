@@ -57,10 +57,12 @@ jobs:
         path: .coverage.*
 
 
-  coverage-combine:
-    name: ⚗️ Combine coverage
+  publish-coverage:
+    name: ☂️ Combine and publish coverage
     needs: [ tests ]
     runs-on: ubuntu-latest
+    permissions:
+      statuses: write
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
@@ -71,7 +73,7 @@ jobs:
         with:
           name: coverage
           path: coverage
-      - run: pip install coverage[toml]
+      - run: pip install coverage[toml] smokeshow
       - run: ls -la coverage
       - run: coverage combine coverage
       - run: coverage report
@@ -82,25 +84,7 @@ jobs:
           name: coverage-html
           path: htmlcov
 
-
-  publish-coverage:
-    name: ☂️ Publish coverage
-    if: github.event_name != 'pull_request'
-    needs: [ coverage-combine ]
-    runs-on: ubuntu-latest
-    permissions:
-      statuses: write
-    steps:
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      - run: pip install smokeshow
-      - name: Download coverage-html
-        uses: actions/download-artifact@v3
-        with:
-          name: coverage-html
-
-      - run: smokeshow upload coverage-html
+      - run: smokeshow upload htmlcov
         env:
           SMOKESHOW_GITHUB_STATUS_DESCRIPTION: Coverage {coverage-percentage}
           SMOKESHOW_GITHUB_COVERAGE_THRESHOLD: 90

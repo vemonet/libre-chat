@@ -4,7 +4,7 @@ ARG BASE_IMAGE=python:3.11
 
 FROM ${BASE_IMAGE}
 
-ENV LIBRECHAT_WORKERS=8
+ENV LIBRECHAT_WORKERS=1
 
 RUN pip install --upgrade pip
 

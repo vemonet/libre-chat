@@ -29,7 +29,7 @@ docker run -it -p 8000:8000 ghcr.io/vemonet/libre-chat:main
         ports:
           - 8000:8000
         environment:
-          - LIBRECHAT_WORKERS=8
+          - LIBRECHAT_WORKERS=1
     ```
 
 3. Start your chat web service with:
@@ -37,3 +37,7 @@ docker run -it -p 8000:8000 ghcr.io/vemonet/libre-chat:main
     ```bash
     docker compose up
     ```
+
+??? warning "Using multiple workers"
+
+    Using multiple worker is still experimental and might lead to concurrent downloads or build at startup. When using multiple workers make sure to have pre-downloaded the models, embeddings, and pre-built the vectorstore.
