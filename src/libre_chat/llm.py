@@ -135,7 +135,7 @@ class Llm:
             model_type=self.model_type,
             config={"max_new_tokens": self.max_new_tokens, "temperature": self.temperature},
         )
-        if self.vector_path:
+        if self.vector_path and os.path.exists(self.vector_path):
             log.info(
                 f"💫 Loading vectorstore from {BOLD}{self.vector_path}{END}, with embeddings from {BOLD}{self.embeddings_path}{END}"
             )
@@ -157,7 +157,7 @@ class Llm:
 
     def setup_dbqa(self) -> None:
         """Setup the vectorstore for QA"""
-        if self.vector_path:
+        if self.vector_path and os.path.exists(self.vector_path):
             embeddings = HuggingFaceEmbeddings(
                 model_name=self.embeddings_path, model_kwargs={"device": self.device}
             )
@@ -176,39 +176,43 @@ class Llm:
                 chain_type_kwargs={"prompt": self.prompt},
             )
 
-    def build_vectorstore(self, documents_path: Optional[str] = None) -> FAISS:
+    def build_vectorstore(self, documents_path: Optional[str] = None) -> Optional[FAISS]:
         """Build vectorstore from PDF documents with FAISS."""
         if not documents_path:
             documents_path = self.documents_path
         docs_count = len(os.listdir(documents_path))
         if docs_count < 1:
-            log.warning(f"⚠️ No documents found in {documents_path}")
-        log.info(
-            f"🏗️ Building the vectorstore from the {BOLD}{CYAN}{docs_count}{END} documents found in {BOLD}{documents_path}{END}"
-        )
-        documents: List[Document] = []
-        # Loading all file types provided in the document_loaders object
-        for doc_load in self.document_loaders:
-            loader = DirectoryLoader(
-                documents_path, glob=doc_load["glob"], loader_cls=doc_load["loader_cls"], loader_kwargs=doc_load["loader_kwargs"] if "loader_kwargs" in doc_load else {}  # type: ignore
+            log.warning(
+                f"⚠️ No documents found in {documents_path}, vectorstore will not be built, and a generic chatbot will be used until documents are added"
             )
-            loaded_docs = loader.load()
-            if len(loaded_docs) > 0:
-                log.info(f"🗃️  Loaded {len(loaded_docs)} items from {doc_load['glob']} files")
-            documents.extend(loaded_docs)
+        else:
+            log.info(
+                f"🏗️ Building the vectorstore from the {BOLD}{CYAN}{docs_count}{END} documents found in {BOLD}{documents_path}{END}"
+            )
+            documents: List[Document] = []
+            # Loading all file types provided in the document_loaders object
+            for doc_load in self.document_loaders:
+                loader = DirectoryLoader(
+                    documents_path, glob=doc_load["glob"], loader_cls=doc_load["loader_cls"], loader_kwargs=doc_load["loader_kwargs"] if "loader_kwargs" in doc_load else {}  # type: ignore
+                )
+                loaded_docs = loader.load()
+                if len(loaded_docs) > 0:
+                    log.info(f"🗃️  Loaded {len(loaded_docs)} items from {doc_load['glob']} files")
+                documents.extend(loaded_docs)
 
-        # Split the text up into small, semantically meaningful chunks (often sentences) https://js.langchain.com/docs/modules/data_connection/document_transformers/
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap
-        )
-        splitted_texts = text_splitter.split_documents(documents)
-        embeddings = HuggingFaceEmbeddings(
-            model_name=self.embeddings_path, model_kwargs={"device": self.device}
-        )
-        vectorstore = FAISS.from_documents(splitted_texts, embeddings)
-        if self.vector_path:
-            vectorstore.save_local(self.vector_path)
-        return vectorstore
+            # Split the text up into small, semantically meaningful chunks (often sentences) https://js.langchain.com/docs/modules/data_connection/document_transformers/
+            text_splitter = RecursiveCharacterTextSplitter(
+                chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap
+            )
+            splitted_texts = text_splitter.split_documents(documents)
+            embeddings = HuggingFaceEmbeddings(
+                model_name=self.embeddings_path, model_kwargs={"device": self.device}
+            )
+            vectorstore = FAISS.from_documents(splitted_texts, embeddings)
+            if self.vector_path:
+                vectorstore.save_local(self.vector_path)
+            return vectorstore
+        return None
 
     def query(self, prompt: str, history: Optional[List[Tuple[str, str]]] = None) -> Dict[str, str]:
         """Query the built LLM"""
@@ -217,7 +221,7 @@ class Llm:
             raise ValueError("Provide a prompt")
         # TODO: we might need to check if the vectorstore has changed since the last time it was queried,
         # And rerun self.setup_dbqa() if it has changed. Otherwise uploading file will not be applied to all workers
-        if self.vector_path:
+        if self.vector_path and os.path.exists(self.vector_path):
             # TODO: handle history
             self.setup_dbqa()  # we need to reload the dbqa each time to make sure all workers are up-to-date
             res = self.dbqa({"query": prompt})
@@ -229,6 +233,7 @@ class Llm:
                     "metadata": doc.metadata,
                 }
         else:
+            # TODO: check to get a streaming output
             resp = self.conversation.predict(input=prompt)
             res = {"result": resp}
         return res

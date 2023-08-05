@@ -54,9 +54,10 @@ def test_build_failed_no_docs() -> None:
         conf=parse_conf("config/chat-vectorstore-qa.yml"), documents_path="tests/tmp/nothinghere"
     )
     shutil.rmtree(llm.conf.vector.vector_path)
-    with pytest.raises(ValueError) as exc_info:
-        llm_empt.build_vectorstore()
-    assert "No documents found" in str(exc_info.value)
+    # with pytest.raises(ValueError) as exc_info:
+    llm_empt.build_vectorstore()
+    assert not os.path.exists(llm.conf.vector.vector_path)
+    # assert "No documents found" in str(exc_info.value)
 
 
 def test_similarity_score_threshold() -> None:
