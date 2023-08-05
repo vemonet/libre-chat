@@ -1,13 +1,30 @@
 import logging
+import os
+import shutil
 
 from libre_chat.conf import parse_conf
 from libre_chat.llm import Llm
 
-# Initialize the Llm (pre-download files if not present, build the vectorstore)
+# Initialize the Llm at docker run (pre-download files if not present, build the vectorstore)
 # Runs before the API to avoid running on multiple workers
 
 logging.basicConfig(level=logging.getLevelName("INFO"))
 
+print("🚀 Initializing the Llm: download files if not present, build vectorstore")
+
 # TODO: take conf as arg?
 conf = parse_conf("chat.yml")
+
+default_model = "llama-2-7b-chat.ggmlv3.q3_K_L.bin"
+default_embeddings = "all-MiniLM-L6-v2"
+
+# Put the default 7B model in /data if not present
+if not os.path.exists(conf.llm.model_path) and conf.llm.model_path.endswith(default_model):
+    shutil.move(f"/app/models/{default_model}", conf.llm.model_path)
+
+if not os.path.exists(conf.vector.embeddings_path) and conf.vector.embeddings_path.endswith(
+    default_embeddings
+):
+    shutil.move(f"/app/embeddings/{default_embeddings}", conf.vector.embeddings_path)
+
 llm = Llm(conf=conf)

@@ -9,14 +9,18 @@ ENV LIBRECHAT_WORKERS=1
 RUN pip install --upgrade pip
 
 # Pre-download embeddings in /data
-WORKDIR /data/embeddings
+WORKDIR /app/embeddings
 RUN wget https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/v0.2/all-MiniLM-L6-v2.zip && \
     unzip -d all-MiniLM-L6-v2 all-MiniLM-L6-v2.zip && \
     rm all-MiniLM-L6-v2.zip
 
+WORKDIR /app/models
+RUN wget https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.ggmlv3.q3_K_L.bin
+
 # Install app in /app
 WORKDIR /app
 
+# Pre-install requirements to use cache when re-building
 ADD requirements.txt .
 RUN pip install -r requirements.txt
 
@@ -25,5 +29,7 @@ RUN pip install -e .
 
 # We use /data as workdir for models, embeddings, vectorstore
 WORKDIR /data
+
+VOLUME [ "/data" ]
 
 ENTRYPOINT [ "/app/scripts/start.sh" ]

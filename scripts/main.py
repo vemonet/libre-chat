@@ -4,7 +4,7 @@ from libre_chat.conf import parse_conf
 from libre_chat.endpoint import ChatEndpoint
 from libre_chat.llm import Llm
 
-# STart the API endpoint, used in docker container and tests
+# Start the API endpoint, used in docker container and dev scripts
 
 logging.basicConfig(level=logging.getLevelName("INFO"))
 
