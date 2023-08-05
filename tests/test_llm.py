@@ -56,6 +56,8 @@ def test_build_failed_no_docs() -> None:
     shutil.rmtree(llm.conf.vector.vector_path)
     # with pytest.raises(ValueError) as exc_info:
     llm_empt.build_vectorstore()
+    res = llm.query("anything")
+    assert "vectorstore has not been built" in res["result"]
     assert not os.path.exists(llm.conf.vector.vector_path)
     # assert "No documents found" in str(exc_info.value)
 

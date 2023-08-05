@@ -104,6 +104,9 @@ class Llm:
         # Not sure it's the best place to do this
         os.environ["NUMEXPR_MAX_THREADS"] = str(self.conf.info.workers)
 
+        if len(self.prompt_variables) < 1:
+            raise ValueError("You should provide at least 1 template variable")
+
         # TODO: remove? There is always a default from ChatConf
         if not self.prompt_template or len(self.prompt_template) < 1:
             if self.vector_path:
@@ -112,14 +115,12 @@ class Llm:
             else:
                 self.prompt_template = DEFAULT_CONVERSATION_PROMPT
                 self.prompt_variables = ["input", "history"]
-        if len(self.prompt_variables) < 1:
-            raise ValueError("You should provide at least 1 template variable")
 
         self.prompt = PromptTemplate(
             template=self.prompt_template, input_variables=self.prompt_variables
         )
         self.download_data()
-        if self.vector_path and not os.path.exists(self.vector_path):
+        if self.vector_path and not self.has_vectorstore():
             self.build_vectorstore()
         else:
             log.info(
@@ -135,7 +136,7 @@ class Llm:
             model_type=self.model_type,
             config={"max_new_tokens": self.max_new_tokens, "temperature": self.temperature},
         )
-        if self.vector_path and os.path.exists(self.vector_path):
+        if self.has_vectorstore():
             log.info(
                 f"💫 Loading vectorstore from {BOLD}{self.vector_path}{END}, with embeddings from {BOLD}{self.embeddings_path}{END}"
             )
@@ -155,13 +156,21 @@ class Llm:
         ddl_list.append({"url": self.documents_download, "path": self.documents_path})
         parallel_download(ddl_list, self.conf.info.workers)
 
+    def has_vectorstore(self) -> bool:
+        """Check if vectorstore present"""
+        return bool(self.vector_path and os.path.exists(self.vector_path))
+
+    def get_vectorstore(self) -> str:
+        """Get the vectorstore path"""
+        return self.vector_path if self.vector_path and os.path.exists(self.vector_path) else ""
+
     def setup_dbqa(self) -> None:
         """Setup the vectorstore for QA"""
-        if self.vector_path and os.path.exists(self.vector_path):
+        if self.has_vectorstore():
             embeddings = HuggingFaceEmbeddings(
                 model_name=self.embeddings_path, model_kwargs={"device": self.device}
             )
-            vectorstore = FAISS.load_local(self.vector_path, embeddings)
+            vectorstore = FAISS.load_local(self.get_vectorstore(), embeddings)
 
             search_args: Dict[str, Any] = {"k": self.return_sources_count}
             if self.score_threshold is not None:
@@ -221,7 +230,11 @@ class Llm:
             raise ValueError("Provide a prompt")
         # TODO: we might need to check if the vectorstore has changed since the last time it was queried,
         # And rerun self.setup_dbqa() if it has changed. Otherwise uploading file will not be applied to all workers
-        if self.vector_path and os.path.exists(self.vector_path):
+        if self.vector_path:
+            if not self.has_vectorstore():
+                return {
+                    "result": "The vectorstore has not been built, please go to the [API web UI](/docs) (the green icon at the top right of the page), and upload documents to vectorize."
+                }
             # TODO: handle history
             self.setup_dbqa()  # we need to reload the dbqa each time to make sure all workers are up-to-date
             res = self.dbqa({"query": prompt})
