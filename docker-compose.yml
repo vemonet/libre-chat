@@ -5,7 +5,12 @@ services:
     build: .
     # image: ghcr.io/vemonet/libre-chat:main
     volumes:
-      - ./:/data # Share the current directory with chat.yml, models, vectorstore
+      - ./config/chat-vectorstore-qa.yml:/data/chat.yml
+      - ./data/models:/data/models
+      - ./data/documents:/data/documents
+      - ./data/embeddings:/data/embeddings
+      - ./data/vectorstore:/data/vectorstore
+      # - ./data:/data # Or directly share the data directory with chat.yml, and folders for models, vectorstore, etc
     shm_size: '16g'
     environment:
       - LIBRECHAT_WORKERS=4

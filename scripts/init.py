@@ -17,6 +17,7 @@ conf = parse_conf("chat.yml")
 
 default_model = "llama-2-7b-chat.ggmlv3.q3_K_L.bin"
 default_embeddings = "all-MiniLM-L6-v2"
+default_document = "drug_repositioning_for_alzheimer_disease.pdf"
 
 # Put the default 7B model in /data if not present
 if not os.path.exists(conf.llm.model_path) and conf.llm.model_path.endswith(default_model):
@@ -26,5 +27,9 @@ if not os.path.exists(conf.vector.embeddings_path) and conf.vector.embeddings_pa
     default_embeddings
 ):
     shutil.move(f"/app/embeddings/{default_embeddings}", conf.vector.embeddings_path)
+
+if len(os.listdir(conf.vector.documents_path)) < 1:
+    # If no docs we add a default one to enable building the vectorstore
+    shutil.copy(f"/app/documents/{default_document}", conf.vector.documents_path)
 
 llm = Llm(conf=conf)

@@ -138,7 +138,7 @@ class ChatRouter(APIRouter):
                     detail="The admin pass key provided was wrong",
                 )
             for uploaded in files:
-                if uploaded.filename:
+                if uploaded.filename:  # no cov
                     file_path = os.path.join(self.conf.vector.documents_path, uploaded.filename)
                     with open(file_path, "wb") as file:
                         file.write(uploaded.file.read())
