@@ -7,12 +7,12 @@ from libre_chat.conf import parse_conf
 from libre_chat.endpoint import ChatEndpoint
 from libre_chat.llm import Llm
 
+prompt = {"prompt": "What is the capital of the Netherlands?"}
 conf = parse_conf("tests/config/additional-prop.yml")
 conf.auth.admin_pass = "testpass"
 llm = Llm(conf=conf)
-app = ChatEndpoint(llm=llm, conf=conf)
+app = ChatEndpoint(llm=llm, conf=conf, examples=[prompt["prompt"]])
 client = TestClient(app)
-prompt = {"prompt": "What is the capital of the Netherlands?"}
 
 
 def test_post_prompt_conversation() -> None:
@@ -45,6 +45,7 @@ def test_websocket_prompt_conversation() -> None:
 def test_documents_success_upload() -> None:
     files = [
         ("files", ("test.txt", b"content")),
+        ("files", ("", b"no filename")),
     ]
     with open("tests/config/amsterdam.zip", "rb") as zip_file:
         files.append(("files", ("amsterdam.zip", zip_file.read())))

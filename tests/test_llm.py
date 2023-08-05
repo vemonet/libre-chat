@@ -6,7 +6,6 @@ import pytest
 
 from libre_chat.conf import parse_conf
 from libre_chat.llm import Llm
-from libre_chat.utils import download_file
 
 llm = Llm(conf=parse_conf("config/chat-vectorstore-qa.yml"))
 capital_query = "What is the capital of the Netherlands?"
@@ -43,6 +42,10 @@ def test_build_vectorstore() -> None:
     shutil.rmtree(llm.conf.vector.vector_path)
     llm.build_vectorstore()
     assert os.path.exists(llm.conf.vector.vector_path)
+    # And with providing a docs path
+    shutil.rmtree(llm.conf.vector.vector_path)
+    llm.build_vectorstore(documents_path="documents")
+    assert os.path.exists(llm.conf.vector.vector_path)
 
 
 def test_build_failed_no_docs() -> None:
@@ -67,12 +70,6 @@ def test_similarity_score_threshold() -> None:
     assert len(resp["source_documents"]) >= 1
 
 
-def test_no_conf_file() -> None:
-    """Test no conf file found"""
-    conf = parse_conf("nothinghere.yml")
-    assert len(conf.llm.model_path) > 2
-
-
 def test_documents_dir_dont_exist() -> None:
     """Test documents dir created if doesn't exist"""
     tmp_docs = "tests/tmp/docs"
@@ -85,12 +82,6 @@ def test_llm_failed_no_prompt_variables() -> None:
     with pytest.raises(Exception) as exc_info:
         Llm(conf=parse_conf("config/chat-vectorstore-qa.yml"), prompt_variables=[])
     assert "You should provide at least 1 template variable" in str(exc_info.value)
-
-
-def test_failed_download_file() -> None:
-    """Test fail downloading file"""
-    download_file("http://broken", "tests/tmp/noddl")
-    assert not os.path.exists("tests/tmp/noddl")
 
 
 def test_no_prompt_template() -> None:

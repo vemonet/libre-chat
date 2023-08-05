@@ -1,3 +1,4 @@
+import shutil
 from unittest.mock import MagicMock, patch
 
 from typer.testing import CliRunner
@@ -27,6 +28,18 @@ def test_build() -> None:
             "vectorstore/db_faiss",
             "--documents",
             "documents",
+        ],
+    )
+    assert result.exit_code == 0
+
+
+def test_build_no_args() -> None:
+    shutil.rmtree("vectorstore/db_faiss")
+    result = runner.invoke(
+        cli,
+        [
+            "build",
+            "config/chat-vectorstore-qa.yml",
         ],
     )
     assert result.exit_code == 0

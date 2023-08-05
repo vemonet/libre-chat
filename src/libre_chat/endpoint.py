@@ -28,7 +28,6 @@ class ChatEndpoint(FastAPI):
         path: str = "/prompt",
         conf: Optional[ChatConf] = None,
         examples: Optional[List[str]] = None,
-        cors_enabled: bool = True,
         **kwargs: Any,
     ) -> None:
         """
@@ -61,14 +60,13 @@ class ChatEndpoint(FastAPI):
         )
         self.include_router(router)
 
-        if cors_enabled:
-            self.add_middleware(
-                CORSMiddleware,
-                allow_origins=["*"],
-                allow_credentials=True,
-                allow_methods=["*"],
-                allow_headers=["*"],
-            )
+        self.add_middleware(
+            CORSMiddleware,
+            allow_origins=["*"],
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
 
         @self.middleware("http")
         async def add_process_time_header(request: Request, call_next: Any) -> Response:

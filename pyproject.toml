@@ -140,7 +140,7 @@ exclude = [
 
 # https://coverage.readthedocs.io/en/7.2.2/config.html
 [tool.coverage.run]
-branch = false
+branch = true
 parallel = true # Append process id to the data file name
 source = [ "src/libre_chat" ]
 
