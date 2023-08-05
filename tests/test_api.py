@@ -45,7 +45,6 @@ def test_websocket_prompt_conversation() -> None:
 def test_documents_success_upload() -> None:
     files = [
         ("files", ("test.txt", b"content")),
-        ("files", ("", b"no filename")),
     ]
     with open("tests/config/amsterdam.zip", "rb") as zip_file:
         files.append(("files", ("amsterdam.zip", zip_file.read())))

@@ -94,13 +94,14 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.details
+  - pymdownx.extra
   - abbr
   - pymdownx.snippets:
       auto_append:
         - docs/includes/abbreviations.md
   - attr_list
-  - md_in_html
   - smarty
+  # - md_in_html
 
 
 extra_css:
