@@ -1,4 +1,5 @@
 import logging
+import os
 import shutil
 from typing import Optional
 
@@ -67,7 +68,7 @@ def build(
     log.info(
         f"Vectorizing documents from {BOLD}{documents}{END} as vectorstore in {conf.vector.vector_path}"
     )
-    if conf.vector.vector_path:
+    if conf.vector.vector_path and os.path.exists(conf.vector.vector_path):
         shutil.rmtree(conf.vector.vector_path)
     Llm(conf=conf)
     log.info(f"Documents successfully vectorized in {BOLD}{conf.vector.vector_path}{END}")

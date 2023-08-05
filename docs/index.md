@@ -4,7 +4,7 @@
 <br />
 
 [![Test package](https://github.com/vemonet/libre-chat/actions/workflows/test.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/test.yml) [![Coverage](https://coverage-badge.samuelcolvin.workers.dev/vemonet/libre-chat.svg)](https://coverage-badge.samuelcolvin.workers.dev/redirect/vemonet/libre-chat)
-<br />
+<br /><br />
 
 Easily configure and deploy a **fully self-hosted chatbot web service** based on open source Large Language Models (LLMs), such as [Llama 2](https://ai.meta.com/llama/), without the need for knowledge in machine learning or programmation.
 
