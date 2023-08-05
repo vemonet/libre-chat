@@ -20,11 +20,17 @@ default_embeddings = "all-MiniLM-L6-v2"
 default_document = "drug_repositioning_for_alzheimer_disease.pdf"
 
 # Put the default 7B model in /data if not present
-if not os.path.exists(conf.llm.model_path) and conf.llm.model_path.endswith(default_model):
+if (
+    not os.path.exists(conf.llm.model_path)
+    and os.path.exists(f"/app/models/{default_model}")
+    and conf.llm.model_path.endswith(default_model)
+):
     shutil.move(f"/app/models/{default_model}", conf.llm.model_path)
 
-if not os.path.exists(conf.vector.embeddings_path) and conf.vector.embeddings_path.endswith(
-    default_embeddings
+if (
+    not os.path.exists(conf.vector.embeddings_path)
+    and os.path.exists(f"/app/embeddings/{default_embeddings}")
+    and conf.vector.embeddings_path.endswith(default_embeddings)
 ):
     shutil.move(f"/app/embeddings/{default_embeddings}", conf.vector.embeddings_path)
 

@@ -245,6 +245,10 @@ class Llm:
                     "page_content": doc.page_content,
                     "metadata": doc.metadata,
                 }
+                if "source" in res["source_documents"][i]["metadata"]:
+                    res["source_documents"][i]["metadata"]["filename"] = os.path.basename(
+                        res["source_documents"][i]["metadata"]["source"]
+                    )
         else:
             # TODO: check to get a streaming output
             resp = self.conversation.predict(input=prompt)

@@ -174,7 +174,7 @@
             // "page_content": "Drug repositioning and repurposing for Alzheimer disease\nClive Ballard1,✉, Dag Aarsland2,3, Jeffrey Cummings4, John O’Brien5, Roger Mills2,6, Jose \nLuis Molinuevo7, Tormod Fladby8, Gareth Williams2, Pat Doherty2, Anne Corbett1, Janet \nSultana9\n1College of Medicine and Health, University of Exeter, Exeter, UK.\n2Institute of Psychiatry Psychology and Neuroscience, King’s College London, London, UK.\n3SESAM (Regional Center for Elderly Medicine and Interaction), University Hospital Stavanger,",
             // "metadata": {
             //     "source": "documents/drug_repositioning_for_alzheimer_disease.pdf",
-            //     "page": 0
+            //     "page": 0, "filename": "drug_repositioning_for_alzheimer_disease.pdf"
             // }
 
             // Append a message to the chat
@@ -185,17 +185,28 @@
             function appendMessage(message, sender, source_documents=null) {
                 msgCount += 1
                 const messageElement = document.createElement("div");
+                let sourcesBtnHtml = ""
+                let sourcesCardHtml = ""
                 let sourcesHtml = ""
+                const encounteredFilenames = new Set();
                 if (source_documents && source_documents.length > 0) {
-                    // sourcesHtml += `<article class="prose dark:prose-invert text-sm my-2 max-w-full">Sources:&nbsp;&nbsp;`
                     for (const [i, doc] of source_documents.entries()) {
-                        const sourceId = doc.metadata.source ? doc.metadata.source : (i+1).toString()
-                        // Add sources button
-                        sourcesHtml += `<button id="source-btn-${msgCount}-${i}" class="my-3 px-3 py-1 text-sm bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-800 rounded-lg">${sourceId}</button>&nbsp;&nbsp;`
+                        const sourceId = doc.metadata.filename ? doc.metadata.filename : (i+1).toString()
+                        const pageBit = doc.metadata.hasOwnProperty("page") ? ` [p. ${doc.metadata.page.toString()}]` : ""
+                        sourcesCardHtml += `
+                            <article class="prose dark:prose-invert bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 mx-3">
+                                📖 ${sourceId}${pageBit}<br/>
+                                ${doc.page_content}
+                            </article>`;
+                        // Add button only if different file
+                        if (!encounteredFilenames.has(sourceId)) {
+                            encounteredFilenames.add(sourceId);
+                            // Add sources button once per filename
+                            sourcesBtnHtml += `<button id="source-btn-${msgCount}-${i}" class="my-3 px-3 py-1 text-sm bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-800 rounded-lg">${sourceId}</button>&nbsp;&nbsp;`
+                        }
                     }
-                    // Add display card for this message sources
-                    sourcesHtml += `<article id="source-card-${msgCount}" class="hidden prose dark:prose-invert bg-white dark:bg-gray-800 shadow-md rounded-lg p-4">
-                    </article>`
+                    // Combine all display cards for this message sources
+                    sourcesHtml += `<div id="source-card-${msgCount}" class="hidden flex">${sourcesCardHtml}</div>`
                 }
 
                 const iconHtml = sender === "user" ?
@@ -211,24 +222,32 @@
                             </article>
                         </div>
                     </div>
+                    ${sourcesBtnHtml}
                     ${sourcesHtml}
                 </div>`;
                 chatThread.appendChild(messageElement);
                 chatContainer.scrollTop = chatContainer.scrollHeight;
+                // Add click event on each source document
                 if (source_documents && source_documents.length > 0) {
                     const card = document.getElementById(`source-card-${msgCount}`);
-                    for (const [i, doc] of source_documents.entries()) {
-                        const button = document.getElementById(`source-btn-${msgCount}-${i}`);
-                        const sourceId = doc.metadata.source ? doc.metadata.source : (i+1).toString()
-                        const pageBit = doc.metadata.hasOwnProperty("page") ? `📖 On page ${doc.metadata.page.toString()}:<br/> ` : ""
-                        const sourceContent = doc.page_content.replaceAll('"',"'") // .slice(0, 500)
+                    const sourceButtons = document.querySelectorAll(`[id^='source-btn-${msgCount}-']`);
+                    sourceButtons.forEach(button => {
                         button.addEventListener("click", function() {
-                            card.innerHTML = `${pageBit}${sourceContent}`
-                            card.classList.add("hidden")
-                            button.classList.toggle("dark:bg-gray-800")
-                            button.classList.toggle("bg-gray-400")
+                            if (card.classList.contains("hidden")) {
+                                card.classList.remove("hidden")
+                                sourceButtons.forEach(btn => {
+                                    btn.classList.add("dark:bg-gray-800", "bg-gray-400");
+                                    btn.classList.remove("dark:bg-gray-700", "bg-gray-300");
+                                });
+                            } else {
+                                card.classList.add("hidden")
+                                sourceButtons.forEach(btn => {
+                                    btn.classList.remove("dark:bg-gray-800", "bg-gray-400");
+                                    btn.classList.add("dark:bg-gray-700", "bg-gray-300");
+                                });
+                            }
                         });
-                    }
+                    })
                 }
             }
             appendMessage(welcomeMsg, "bot")
@@ -397,7 +416,7 @@
             [data-tooltip]:before {
                 content: attr(data-tooltip);
                 position: absolute;
-                bottom: -45px;
+                bottom: -50px;
                 left: 50%;
                 transform: translateX(-50%);
                 padding: 0.5rem;
@@ -410,8 +429,9 @@
                 pointer-events: none;
                 transition: opacity 0.2s ease-in-out;
                 white-space: normal;
-                max-width: 100%;
-                width: 30rem;
+                width: max-content;
+                /* max-width: 100%;
+                width: 30rem; */
             }
             [data-tooltip]:hover:before {
                 opacity: 1;

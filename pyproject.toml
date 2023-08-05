@@ -208,7 +208,7 @@ skip-string-normalization = false
 
 # https://github.com/charliermarsh/ruff#supported-rules
 [tool.ruff]
-src = ["src", "tests"]
+src = ["src", "tests", "scripts"]
 target-version = "py38"
 line-length = 120
 select = [
