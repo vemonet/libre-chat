@@ -68,7 +68,7 @@ doc = [
     "mkdocs-material >=8.2.7",
     "mkdocstrings[python] >=0.19.1",
     "mdx-include >=1.4.1",
-    "mkdocs-markdownextradata-plugin >=0.2.5",
+    "mkdocs-markdownextradata-plugin >=0.2.5", # ,<0.3.0
     "mkdocs-open-in-new-tab",
 ]
 windows = [
@@ -114,12 +114,11 @@ test = [
 cov = [
     "fmt",
     "pytest --cov-report html {args}",
-    # "python -c 'import webbrowser; webbrowser.open(\"http://0.0.0.0:3000\")'",
     "cov-start",
 ]
 cov-start = "python -m http.server 3000 --directory ./htmlcov"
-docs = "mkdocs serve -a localhost:8001"
-compile = "pip-compile -o requirements.txt pyproject.toml"
+docs = "mkdocs serve -a localhost:8001 -f docs/mkdocs.yml"
+compile = "pip-compile -o scripts/requirements.txt pyproject.toml"
 release = [
     "hatch build",
     "hatch publish",

@@ -62,7 +62,7 @@ Below is an example of configuration using the Llama 2 7B GGML model, with a Fai
 ```yaml title="chat.yml"
 llm:
   model_type: llama
-  model_path: ./models/llama-2-7b-chat.ggmlv3.q3_K_L.bin # We recommend to predownload the files, but you can provide download URLs that will be used if the files are not present
+  model_path: ./models/llama-2-7b-chat.ggmlv3.q3_K_L.bin # (1)
   model_download: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.ggmlv3.q3_K_L.bin
   temperature: 0.01    # Config how creative (but also potentially wrong) the model can be. 0 is safe, 1 is adventurous
   max_new_tokens: 1024 # Max number of words the LLM can generate
@@ -115,5 +115,7 @@ info:
     url: "https://raw.github.com/vemonet/libre-chat/main/LICENSE.txt"
   workers: 4
 ```
+
+1. We recommend to predownload the files, but you can provide download URLs that will be used if the files are not present
 
 If no files are found at the path provided, e.g. `model_path`, and a download URL has been defined, e.g. `model_download`, Libre Chat will automatically download the file from the provided URL, and unzip it if it is a `.zip` file.

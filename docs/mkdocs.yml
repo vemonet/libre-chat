@@ -32,7 +32,7 @@ theme:
   features:
     - content.code.copy
     - content.code.annotate
-    # - content.code.select # Still experimental
+    - content.code.select # Still experimental
     # - content.tabs.link
     # - header.autohide
     # - navigation.expand
@@ -63,9 +63,9 @@ nav:
       - 🛠️ Development: development.md
   - Code reference:
       - LLM: Llm.md
-      - LLM Endpoint: ChatEndpoint.md
-      - LLM Router: ChatRouter.md
-      - LLM Config: ChatConf.md
+      - Chat Config: ChatConf.md
+      - Chat Endpoint: ChatEndpoint.md
+      - Chat Router: ChatRouter.md
   - Issues: https://github.com/vemonet/libre-chat/issues" target="_blank
 
 plugins:
@@ -81,7 +81,7 @@ plugins:
     # custom_templates: templates
 
 watch:
-  - src
+  - ../src
   - docs
 
 markdown_extensions:

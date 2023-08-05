@@ -21,8 +21,9 @@ RUN wget https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama
 WORKDIR /app
 
 # Pre-install requirements to use cache when re-building
-ADD requirements.txt .
-RUN pip install -r requirements.txt
+ADD scripts/requirements.txt .
+RUN pip install -r requirements.txt && \
+    rm requirements.txt
 
 ADD . .
 RUN pip install -e .
