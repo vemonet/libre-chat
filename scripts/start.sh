@@ -1,19 +1,19 @@
 #!/usr/bin/env sh
 set -e
 
-# Copied from https://github.com/tiangolo/uvicorn-gunicorn-docker/blob/master/docker-images/start.sh
+# Adapted from https://github.com/tiangolo/uvicorn-gunicorn-docker/blob/master/docker-images/start.sh
 
 export BIND=${BIND:-"0.0.0.0:8000"}
 export WORKER_CLASS=${WORKER_CLASS:-"uvicorn.workers.UvicornWorker"}
 
 if [ ! -f "/data/main.py" ]; then
-    cp /app/tests/main.py /data/main.py
+    cp /app/scripts/main.py /data/main.py
 fi
 
 if [ -f /data/main.py ]; then
     DEFAULT_MODULE_NAME=main
-elif [ -f /app/tests/main.py ]; then
-    DEFAULT_MODULE_NAME=tests.main
+elif [ -f /app/scripts/main.py ]; then
+    DEFAULT_MODULE_NAME=scripts.main
 elif [ -f /app/app/main.py ]; then
     DEFAULT_MODULE_NAME=app.main
 elif [ -f /app/main.py ]; then
@@ -31,7 +31,10 @@ if [ -n "$LIBRECHAT_CONF_URL" ]; then
     curl -L -o chat.yml $LIBRECHAT_CONF_URL
 fi
 
-echo "🦄 Starting gunicorn with $LIBRECHAT_WORKERS workers on $BIND for the module $APP_MODULE"
+# Initialize the Llm (ddl files if not present, build vectors) runs before the API to avoid running on multiple workers
+python /app/scripts/init.py
+
+echo "🦄 Starting gunicorn with $LIBRECHAT_WORKERS workers on $BIND for the module $APP_MODULE with a timeout of $TIMEOUT sec"
 exec gunicorn -w "$LIBRECHAT_WORKERS" -k "$WORKER_CLASS" -b "$BIND" --timeout "$TIMEOUT" "$APP_MODULE"
 
 # -w: number of worker processes for handling requests [1]

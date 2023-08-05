@@ -95,7 +95,7 @@ post-install-commands = [
 ]
 
 [tool.hatch.envs.default.scripts]
-dev = "uvicorn tests.main:app --reload {args}"
+dev = "uvicorn scripts.main:app --reload {args}"
 vector = [
     "libre-chat start config/chat-vectorstore-qa.yml",
 ]
@@ -142,10 +142,7 @@ exclude = [
 [tool.coverage.run]
 branch = false
 parallel = true # Append process id to the data file name
-source = [
-    "src/libre_chat",
-    "*/libre-chat/src/libre_chat", # For macos cov combine
-]
+source = [ "src/libre_chat" ]
 
 
 [tool.coverage.report]
@@ -235,12 +232,12 @@ select = [
     "T",
 ]
 ignore = [
-    "B007", # Loop control variable `x` not used within loop body
-    "E501", # line too long
-    "C901", # too complex
+    "B007",   # Loop control variable `x` not used within loop body
+    "E501",   # line too long
+    "C901",   # too complex
     "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
-    "T201", # do not use print
-    "B008", # do not perform function calls in argument defaults
+    "T201",   # do not use print
+    "B008",   # do not perform function calls in argument defaults
 ]
 
 [tool.ruff.per-file-ignores]
