@@ -10,6 +10,7 @@ docker-compose.prod.yml
 /main.py
 documents/*.txt
 documents/*.eml
+docs/dist/
 
 # Python artefacts
 build/

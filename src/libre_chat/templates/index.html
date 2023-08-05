@@ -84,6 +84,9 @@
             <div id="warning-card" class="bg-orange-300 p-2 text-orange-900 text-sm rounded-lg font-semibold mb-2 hidden inline-block"></div>
         </div>
 
+        <!-- List of examples -->
+        <div class="py-2 px-4 justify-center items-center text-xs flex space-x-2" id="example-buttons"></div>
+
         <!-- User input border-t border-slate-400 dark:border-slate-500 -->
         <form class="p-2 flex" id="chat-form">
             <div class="container flex mx-auto max-w-5xl">
@@ -97,8 +100,6 @@
                 </button>
             </div>
         </form>
-        <!-- List of examples -->
-        <div class="py-2 px-4 justify-center items-center text-xs flex space-x-2" id="example-buttons"></div>
     </div>
 
     <script>
@@ -180,18 +181,21 @@
             const chatContainer = document.getElementById("chat-container");
             const chatThread = document.getElementById("chat-thread");
             const chatForm = document.getElementById("chat-form");
+            let msgCount = 0
             function appendMessage(message, sender, source_documents=null) {
+                msgCount += 1
                 const messageElement = document.createElement("div");
                 let sourcesHtml = ""
                 if (source_documents && source_documents.length > 0) {
-                    sourcesHtml += `<article class="prose dark:prose-invert text-sm my-2 max-w-full">Sources:&nbsp;&nbsp;`
+                    // sourcesHtml += `<article class="prose dark:prose-invert text-sm my-2 max-w-full">Sources:&nbsp;&nbsp;`
                     for (const [i, doc] of source_documents.entries()) {
                         const sourceId = doc.metadata.source ? doc.metadata.source : (i+1).toString()
-                        const pageBit = doc.metadata.hasOwnProperty("page") ? `📖 On page ${doc.metadata.page.toString()}:\n ` : ""
-                        const sourceContent = doc.page_content.replaceAll('"',"'") // .slice(0, 500)
-                        sourcesHtml += `<code data-tooltip="${pageBit}${sourceContent}" class="px-3">${sourceId}</code>&nbsp;&nbsp;`
+                        // Add sources button
+                        sourcesHtml += `<button id="source-btn-${msgCount}-${i}" class="my-3 px-3 py-1 text-sm bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-800 rounded-lg">${sourceId}</button>&nbsp;&nbsp;`
                     }
-                    sourcesHtml += "</article>"
+                    // Add display card for this message sources
+                    sourcesHtml += `<article id="source-card-${msgCount}" class="hidden prose dark:prose-invert bg-white dark:bg-gray-800 shadow-md rounded-lg p-4">
+                    </article>`
                 }
 
                 const iconHtml = sender === "user" ?
@@ -211,6 +215,21 @@
                 </div>`;
                 chatThread.appendChild(messageElement);
                 chatContainer.scrollTop = chatContainer.scrollHeight;
+                if (source_documents && source_documents.length > 0) {
+                    const card = document.getElementById(`source-card-${msgCount}`);
+                    for (const [i, doc] of source_documents.entries()) {
+                        const button = document.getElementById(`source-btn-${msgCount}-${i}`);
+                        const sourceId = doc.metadata.source ? doc.metadata.source : (i+1).toString()
+                        const pageBit = doc.metadata.hasOwnProperty("page") ? `📖 On page ${doc.metadata.page.toString()}:<br/> ` : ""
+                        const sourceContent = doc.page_content.replaceAll('"',"'") // .slice(0, 500)
+                        button.addEventListener("click", function() {
+                            card.innerHTML = `${pageBit}${sourceContent}`
+                            card.classList.add("hidden")
+                            button.classList.toggle("dark:bg-gray-800")
+                            button.classList.toggle("bg-gray-400")
+                        });
+                    }
+                }
             }
             appendMessage(welcomeMsg, "bot")
 

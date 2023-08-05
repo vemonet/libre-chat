@@ -27,9 +27,9 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 Checkout the demo at [**chat.semanticscience.org**](https://chat.semanticscience.org)
 
 
-![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/assets/screenshot.png)
+![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/screenshot.png)
 
-![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/assets/screenshot-light.png)
+![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/screenshot-light.png)
 
 > ⚠️ Development on this project has just started, use it with caution
 
