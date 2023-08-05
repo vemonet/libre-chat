@@ -19,9 +19,9 @@ jobs:
           - python-version: "3.11"
             os: ubuntu-latest
           - python-version: "3.11"
-            os: macos-latest  # cf. https://github.com/marella/ctransformers/issues/73
-          - python-version: "3.11"
             os: windows-latest
+          # - python-version: "3.11"
+          #   os: macos-latest  # Consistently 10min+ slower than all other platforms
 
     steps:
     - uses: actions/checkout@v3

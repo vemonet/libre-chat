@@ -28,8 +28,8 @@ if not os.path.exists(conf.vector.embeddings_path) and conf.vector.embeddings_pa
 ):
     shutil.move(f"/app/embeddings/{default_embeddings}", conf.vector.embeddings_path)
 
-if len(os.listdir(conf.vector.documents_path)) < 1:
-    # If no docs we add a default one to enable building the vectorstore
-    shutil.copy(f"/app/documents/{default_document}", conf.vector.documents_path)
+# if len(os.listdir(conf.vector.documents_path)) < 1:
+#     # If no docs we add a default one to enable building the vectorstore
+#     shutil.copy(f"/app/documents/{default_document}", conf.vector.documents_path)
 
 llm = Llm(conf=conf)

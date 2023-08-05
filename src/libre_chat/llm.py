@@ -141,8 +141,8 @@ class Llm:
                 f"💫 Loading vectorstore from {BOLD}{self.vector_path}{END}, with embeddings from {BOLD}{self.embeddings_path}{END}"
             )
             self.setup_dbqa()
-        else:
-            log.info("🦜 No vector database provided, using a generic LLM")
+        if not self.vector_path:
+            log.info("🦜 No vectorstore provided, using a generic LLM")
             self.conversation = ConversationChain(
                 llm=self.llm, prompt=self.prompt, verbose=True, memory=ConversationBufferMemory()
             )
