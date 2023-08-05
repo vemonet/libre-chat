@@ -104,7 +104,7 @@ info:
   - What is the capital of the Netherlands?
   - Which drugs are approved by the FDA to mitigate Alzheimer symptoms?
   - What was the GDP of France in 1998?
-  favicon: https://raw.github.com/vemonet/libre-chat/main/docs/assets/logo.png
+  favicon: https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/logo.png
   repository_url: https://github.com/vemonet/libre-chat
   public_url: https://chat.semanticscience.org
   contact:

@@ -44,7 +44,7 @@ class SettingsInfo(BaseConf):
     description: str = """Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama) [7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)"""
     public_url: str = "https://your-endpoint-url"
     repository_url: str = "https://github.com/vemonet/libre-chat"
-    favicon: str = "https://raw.github.com/vemonet/libre-chat/main/docs/assets/logo.png"
+    favicon: str = "https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/logo.png"
     license_info: Dict[str, str] = {
         "name": "MIT license",
         "url": "https://raw.github.com/vemonet/libre-chat/main/LICENSE",

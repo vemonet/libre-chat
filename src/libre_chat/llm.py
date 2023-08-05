@@ -182,9 +182,7 @@ class Llm:
             documents_path = self.documents_path
         docs_count = len(os.listdir(documents_path))
         if docs_count < 1:
-            raise ValueError(
-                f"⚠️ No documents found in {documents_path}, could not build the vectorstore"
-            )
+            log.warning(f"⚠️ No documents found in {documents_path}")
         log.info(
             f"🏗️ Building the vectorstore from the {BOLD}{CYAN}{docs_count}{END} documents found in {BOLD}{documents_path}{END}"
         )

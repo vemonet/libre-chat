@@ -1,6 +1,7 @@
 import time
 from typing import Any, List, Optional
 
+import pkg_resources
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
@@ -79,8 +80,14 @@ class ChatEndpoint(FastAPI):
             "/gradio",
             gradio_app(self.llm),
         )
-        self.mount("/static", StaticFiles(directory="src/libre_chat/static"), name="static")
-        templates = Jinja2Templates(directory="src/libre_chat/templates")
+        self.mount(
+            "/static",
+            StaticFiles(directory=pkg_resources.resource_filename("libre_chat", "static")),
+            name="static",
+        )
+        templates = Jinja2Templates(
+            directory=pkg_resources.resource_filename("libre_chat", "templates")
+        )
 
         @self.get("/", response_class=HTMLResponse, include_in_schema=False)
         def chat_ui(request: Request) -> Any:

@@ -1,6 +1,6 @@
 <div align="center">
 
-# <span><img height="30" src="https://raw.github.com/vemonet/libre-chat/main/docs/assets/logo.png"></span> Libre Chat
+# <span><img height="30" src="https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/logo.png"></span> Libre Chat
 
 [![Test package](https://github.com/vemonet/libre-chat/actions/workflows/test.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/test.yml) [![Coverage](https://coverage-badge.samuelcolvin.workers.dev/vemonet/libre-chat.svg)](https://coverage-badge.samuelcolvin.workers.dev/redirect/vemonet/libre-chat)
 
@@ -101,7 +101,7 @@ info:
   - What is the capital of the Netherlands?
   - Which drugs are approved by the FDA to mitigate Alzheimer symptoms?
   - How can I create a logger with timestamp using python logging?
-  favicon: https://raw.github.com/vemonet/libre-chat/main/docs/assets/logo.png
+  favicon: https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/logo.png
   repository_url: https://github.com/vemonet/libre-chat
   public_url: https://chat.semanticscience.org
   contact:
