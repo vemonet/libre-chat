@@ -1,13 +1,25 @@
 import os
 
+import pytest
+
 from libre_chat.conf import parse_conf
-from libre_chat.utils import download_file, parallel_download
+from libre_chat.utils import ChatResponse, download_file, parallel_download
 
 
 def test_no_conf_file() -> None:
     """Test no conf file found"""
     conf = parse_conf("nothinghere.yml")
     assert len(conf.llm.model_path) > 2
+
+
+def test_chat_response() -> None:
+    """Test ChatResponse schema"""
+    with pytest.raises(ValueError) as exc_info:
+        ChatResponse(message="toast", sender="wrong")
+    assert "sender must be bot or user" in str(exc_info.value)
+    with pytest.raises(ValueError) as exc_info:
+        ChatResponse(message="toast", type="wrong")
+    assert "type must be start, stream or end" in str(exc_info.value)
 
 
 def test_download_file_fail() -> None:
@@ -30,6 +42,3 @@ def test_parallel_download_success() -> None:
     ]
     parallel_download(ddl_test)
     assert os.path.exists("tests/tmp/amsterdam.txt")
-
-
-# https://raw.githubusercontent.com/vemonet/libre-chat/main/README.md

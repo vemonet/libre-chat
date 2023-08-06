@@ -24,16 +24,22 @@ if (
     and os.path.exists(f"/app/models/{default_model}")
     and conf.llm.model_path.endswith(default_model)
 ):
-    log.info("Initializing default model from docker image")
-    shutil.move(f"/app/models/{default_model}", conf.llm.model_path)
+    try:
+        log.info("Initializing default model from docker image")
+        shutil.move(f"/app/models/{default_model}", conf.llm.model_path)
+    except Exception as e:
+        log.info(f"Error initializing models from docker image: {e}")
 
 if (
     not os.path.exists(conf.vector.embeddings_path)
     and os.path.exists(f"/app/embeddings/{default_embeddings}")
     and conf.vector.embeddings_path.endswith(default_embeddings)
 ):
-    log.info("Initializing default embeddings from docker image")
-    shutil.move(f"/app/embeddings/{default_embeddings}", conf.vector.embeddings_path)
+    try:
+        log.info("Initializing default embeddings from docker image")
+        shutil.move(f"/app/embeddings/{default_embeddings}", conf.vector.embeddings_path)
+    except Exception as e:
+        log.info(f"Error initializing embeddings from docker image: {e}")
 
 # if len(os.listdir(conf.vector.documents_path)) < 1:
 #     # If no docs we add a default one to enable building the vectorstore

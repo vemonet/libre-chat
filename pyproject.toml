@@ -56,6 +56,7 @@ libre-chat = "libre_chat.__main__:cli"
 test = [
     "pytest >=7.4.0",
     "pytest-cov >=3.0.0",
+    "pytest-asyncio",
     "pre-commit",
     "mypy >=1.4.1",
     "httpx",

@@ -37,6 +37,14 @@ def test_failed_empty_query() -> None:
     assert str(exc_info.value) == "Provide a prompt"
 
 
+@pytest.mark.asyncio
+async def test_failed_empty_aquery() -> None:
+    """Test failed empty query to LLM"""
+    with pytest.raises(ValueError) as exc_info:
+        await llm.aquery("")
+    assert str(exc_info.value) == "Provide a prompt"
+
+
 def test_build_vectorstore() -> None:
     """Test building the vectorstore"""
     shutil.rmtree(llm.conf.vector.vector_path)
