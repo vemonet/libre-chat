@@ -6,24 +6,25 @@ When starting the service Libre Chat will automatically check if the `vectorstor
 
 Once the web service is up you can easily upload more documents through the API UI (green icon at the top right of the chatbot web UI). Zip files will be automatically unzipped, and the vectorstore will be automatically rebuilt with all the files uploaded to the server. You will also find a call to get the list of all the documents uploaded to the server. You can prevent unwanted users to add files by adding a pass key using the environment variable `LIBRECHAT_ADMIN_KEY`
 
-!!! abstract "File types supported"
+??? abstract "File types supported"
 
     Libre Chat will automatically vectorize the file types below. Let us know if you need anything else in the [issues](https://github.com/vemonet/libre-chat/issues).
 
-    | File type                  | Pattern       |
-    | -------------------------- | ------------- |
-    | PDF                        | `*.pdf`       |
-    | CSV                        | `*.[c|t|p]sv` |
-    | JSON                       | `*.json*`     |
-    | HTML                       | `.?xhtm?l`    |
-    | Markdown                   | `*.md*`       |
-    | Text                       | `*.txt`       |
-    | Open Document Format (ODT) | `*.odt`       |
-    | Word documents             | `*.doc?x`     |
-    | PowerPoint                 | `*.ppt?x`     |
-    | ePub                       | `*.epub`      |
-    | Email                      | `*.eml`       |
-    | EverNote                   | `*.enex`      |
+    | File type                  | Pattern                 |
+    | -------------------------- | ----------------------- |
+    | PDF                        | `*.pdf`                 |
+    | CSV/TSV/PSV                | `*.csv`/`*.tsv`/`*.psv` |
+    | JSON                       | `*.json*`               |
+    | HTML                       | `.?xhtm?l`              |
+    | Markdown                   | `*.md*`                 |
+    | Text                       | `*.txt`                 |
+    | Open Document Format (ODT) | `*.odt`                 |
+    | Word documents             | `*.doc?x`               |
+    | Excel                      | `*.xls?x`               |
+    | PowerPoint                 | `*.ppt?x`               |
+    | ePub                       | `*.epub`                |
+    | Email                      | `*.eml`                 |
+    | EverNote                   | `*.enex`                |
 
 ??? example "Use custom document loaders"
 
@@ -32,21 +33,38 @@ Once the web service is up you can easily upload more documents through the API 
     ```python
     from langchain.document_loaders import (
         CSVLoader,
+        EverNoteLoader,
         JSONLoader,
         PyPDFLoader,
         TextLoader,
+        UnstructuredEmailLoader,
+        UnstructuredEPubLoader,
         UnstructuredHTMLLoader,
         UnstructuredMarkdownLoader,
+        UnstructuredODTLoader,
+        UnstructuredPowerPointLoader,
+        UnstructuredWordDocumentLoader,
+        UnstructuredExcelLoader,
     )
-    from libre_chat import Llm, parse_config
+    from libre_chat import Llm, parse_conf
 
     loaders = [
         {"glob": "*.pdf", "loader_cls": PyPDFLoader},
-        {"glob": "*.[c|t|p]sv", "loader_cls": CSVLoader},
+        {"glob": "*.csv", "loader_cls": CSVLoader, "loader_kwargs": {"encoding": "utf8"}},
+        {"glob": "*.tsv", "loader_cls": CSVLoader, "loader_kwargs": {"encoding": "utf8", "delimiter": "\t"}},
+        {"glob": "*.psv", "loader_cls": CSVLoader, "loader_kwargs": {"encoding": "utf8", "delimiter": "\\p"}},
+        {"glob": "*.xls?x", "loader_cls": UnstructuredExcelLoader},
         {"glob": "*.?xhtm?l", "loader_cls": UnstructuredHTMLLoader},
+        {"glob": "*.xml", "loader_cls": UnstructuredHTMLLoader},
         {"glob": "*.json*", "loader_cls": JSONLoader},
         {"glob": "*.md*", "loader_cls": UnstructuredMarkdownLoader},
-        {"glob": "*.txt", "loader_cls": TextLoader},
+        {"glob": "*.txt", "loader_cls": TextLoader, "loader_kwargs": {"encoding": "utf8"}},
+        {"glob": "*.doc?x", "loader_cls": UnstructuredWordDocumentLoader},
+        {"glob": "*.odt", "loader_cls": UnstructuredODTLoader},
+        {"glob": "*.ppt?x", "loader_cls": UnstructuredPowerPointLoader},
+        {"glob": "*.epub", "loader_cls": UnstructuredEPubLoader},
+        {"glob": "*.eml", "loader_cls": UnstructuredEmailLoader},
+        {"glob": "*.enex", "loader_cls": EverNoteLoader},
     ]
 
     llm = Llm(
@@ -80,20 +98,17 @@ prompt:
     Helpful answer:
 
 vector:
-  vector_path: ./vectorstore/db_faiss            # Path to the vectorstore to do QA retrieval
+  vector_path: ./vectorstore/db_faiss # Path to the vectorstore to do QA retrieval
   vector_download: null
-  embeddings_path: ./embeddings/all-MiniLM-L6-v2 # Embeddings used to generate the vectors
-  # You can also directly use embeddings model from HuggingFace:
-  # embeddings_path: sentence-transformers/all-MiniLM-L6-v2
+  embeddings_path: ./embeddings/all-MiniLM-L6-v2 # (2)
   embeddings_download: https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/v0.2/all-MiniLM-L6-v2.zip
-  documents_path: ./documents # Path to documents to vectorize
-  # When vectorizing we split the text up into small, semantically meaningful chunks (often sentences):
+  documents_path: ./documents # Path to documents to vectorize (3)
   chunk_size: 500             # Maximum size of chunks, in terms of number of characters
   chunk_overlap: 50           # Overlap in characters between chunks
-  chain_type: stuff           # Or: map_reduce, reduce, map_rerank. More details: https://docs.langchain.com/docs/components/chains/index_related_chains
-  search_type: similarity     # Or: similarity_score_threshold, mmr. More details: https://python.langchain.com/docs/modules/data_connection/retrievers/vectorstore
+  chain_type: stuff           # (4)
+  search_type: similarity     # (5)
   return_sources_count: 2     # Number of sources to return when generating an answer
-  score_threshold: null       # If using the similarity_score_threshold search type. Between 0 and 1
+  score_threshold: null       # If using the similarity_score_threshold search_type. Between 0 and 1
 
 info:
   title: "Libre Chat"
@@ -117,5 +132,13 @@ info:
 ```
 
 1. We recommend to predownload the files, but you can provide download URLs that will be used if the files are not present
+2. Embeddings used to generate the vectorstore.<br/>You can also directly use embeddings model from HuggingFace:
+    ```yaml
+    embeddings_path: sentence-transformers/all-MiniLM-L6-v2
+    ```
+3. When vectorizing we split the text up into small, semantically meaningful chunks (often sentences)
+4. Also available: `map_reduce`, `reduce`, `map_rerank`.<br/>More details at [https://docs.langchain.com/docs/components/chains/index_related_chains](https://docs.langchain.com/docs/components/chains/index_related_chains)
+5. Also available: `similarity_score_threshold`, `mmr`.<br/>More details: [https://python.langchain.com/docs/modules/data_connection/retrievers/vectorstore](https://python.langchain.com/docs/modules/data_connection/retrievers/vectorstore)
+
 
 If no files are found at the path provided, e.g. `model_path`, and a download URL has been defined, e.g. `model_download`, Libre Chat will automatically download the file from the provided URL, and unzip it if it is a `.zip` file.

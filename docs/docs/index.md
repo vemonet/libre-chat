@@ -56,6 +56,8 @@ Seasoned developers can also manipulate LLM models, and deploy the API in python
 
 * Llama 2 GPTQ: [7B](https://huggingface.co/TheBloke/Llama-2-7B-chat-GPTQ) | [13B](https://huggingface.co/TheBloke/Llama-2-13B-chat-GPTQ) | [70B](https://huggingface.co/TheBloke/Llama-2-70B-chat-GPTQ)
 
+- [All models supported](https://github.com/marella/ctransformers#supported-models) by [`ctransformers`](https://github.com/marella/ctransformers) should work
+
 !!! Question "Supporting other models"
 
     Let us know if you managed to run other models with Libre Chat, or if you would like to see a specific model supported.

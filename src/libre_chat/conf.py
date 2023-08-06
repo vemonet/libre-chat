@@ -9,6 +9,7 @@ from langchain.document_loaders import (
     TextLoader,
     UnstructuredEmailLoader,
     UnstructuredEPubLoader,
+    UnstructuredExcelLoader,
     UnstructuredHTMLLoader,
     UnstructuredMarkdownLoader,
     UnstructuredODTLoader,
@@ -66,7 +67,18 @@ class SettingsVector(BaseConf):
     documents_download: Optional[str] = None
     document_loaders: List[Dict[str, Union[Union[str, Any]]]] = [
         {"glob": "*.pdf", "loader_cls": PyPDFLoader},
-        {"glob": "*.[c|t|p]sv", "loader_cls": CSVLoader, "loader_kwargs": {"encoding": "utf8"}},
+        {"glob": "*.csv", "loader_cls": CSVLoader, "loader_kwargs": {"encoding": "utf8"}},
+        {
+            "glob": "*.tsv",
+            "loader_cls": CSVLoader,
+            "loader_kwargs": {"encoding": "utf8", "delimiter": "\t"},
+        },
+        {
+            "glob": "*.psv",
+            "loader_cls": CSVLoader,
+            "loader_kwargs": {"encoding": "utf8", "delimiter": "\\p"},
+        },
+        {"glob": "*.xls?x", "loader_cls": UnstructuredExcelLoader},
         {"glob": "*.?xhtm?l", "loader_cls": UnstructuredHTMLLoader},
         {"glob": "*.xml", "loader_cls": UnstructuredHTMLLoader},
         {"glob": "*.json*", "loader_cls": JSONLoader},
