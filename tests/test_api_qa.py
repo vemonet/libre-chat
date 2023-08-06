@@ -9,6 +9,7 @@ from libre_chat.llm import Llm
 
 prompt = {"prompt": "What is the capital of the Netherlands?"}
 conf = parse_conf("config/chat-vectorstore-qa.yml")
+conf.auth.admin_pass = "adminpass"
 llm = Llm(conf=conf)
 app = ChatEndpoint(llm=llm, conf=conf)
 client = TestClient(app)
