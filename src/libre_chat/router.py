@@ -5,10 +5,11 @@ from typing import Any, Dict, List, Optional, Union
 
 from fastapi import APIRouter, Body, File, HTTPException, Request, UploadFile, WebSocket
 from fastapi.responses import JSONResponse
+from langchain.callbacks.base import AsyncCallbackHandler
 from langchain.schema.document import Document
 
 from libre_chat.conf import ChatConf, default_conf
-from libre_chat.utils import Prompt, log
+from libre_chat.utils import ChatResponse, Prompt, log
 
 __all__ = [
     "ChatRouter",
@@ -102,23 +103,6 @@ class ChatRouter(APIRouter):
             """
             return JSONResponse(self.llm.query(prompt.prompt))
 
-        @self.websocket("/ws")
-        async def websocket_endpoint(websocket: WebSocket) -> None:
-            await websocket.accept()
-            self.connected_clients.append(websocket)
-            log.info(
-                f"🔌 New websocket connection: {len(self.connected_clients)} clients are connected"
-            )
-            try:
-                # Loop to receive messages from the WebSocket client
-                while True:
-                    data = await websocket.receive_json()
-                    await websocket.send_json(self.llm.query(data["prompt"]))
-            except Exception as e:
-                log.error(f"WebSocket error: {e}")
-            finally:
-                self.connected_clients.remove(websocket)
-
         @self.post(
             "/documents",
             description="""Upload documents to be added to the vectorstore, you can provide a zip file that will be automatically unzipped.""",
@@ -174,3 +158,55 @@ class ChatRouter(APIRouter):
                 )
             file_list = os.listdir(self.conf.vector.documents_path)
             return JSONResponse({"count": len(file_list), "files": file_list})
+
+        @self.websocket("/chat")
+        async def websocket_endpoint(websocket: WebSocket) -> None:
+            await websocket.accept()
+            self.connected_clients.append(websocket)
+            log.info(
+                f"🔌 New websocket connection: {len(self.connected_clients)} clients are connected"
+            )
+            try:
+                # Loop to receive messages from the WebSocket client
+                while True:
+                    data = await websocket.receive_json()
+
+                    start_resp = ChatResponse(sender="bot", message="", type="start")
+                    await websocket.send_json(start_resp.dict())
+
+                    resp = await self.llm.aquery(
+                        data["prompt"], callbacks=[StreamWebsocketCallback(websocket)]
+                    )
+                    # chat_history.append((question, resp["result"]))
+
+                    end_resp = ChatResponse(
+                        sender="bot",
+                        message=resp["result"],
+                        type="end",
+                        sources=resp["source_documents"] if "source_documents" in resp else None,
+                    )
+                    await websocket.send_json(end_resp.dict())
+            except Exception as e:
+                log.error(f"WebSocket error: {e}")
+            finally:
+                self.connected_clients.remove(websocket)
+
+
+# https://github.com/langchain-ai/chat-langchain/blob/master/main.py
+# class StreamingWebsocketCallbackHandler(AsyncCallbackHandler):
+class StreamWebsocketCallback(AsyncCallbackHandler):
+    """Callback handler for streaming to websocket.
+    Only works with LLMs that support streaming."""
+
+    def __init__(
+        self,
+        websocket: WebSocket,
+    ) -> None:
+        """Initialize callback handler."""
+        super().__init__()
+        self.websocket = websocket
+
+    async def on_llm_new_token(self, token: str, **kwargs: Any) -> None:
+        """Run on new LLM token. Only available when streaming is enabled."""
+        resp = ChatResponse(message=token, sender="bot", type="stream")
+        await self.websocket.send_json(resp.dict())

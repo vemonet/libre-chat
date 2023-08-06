@@ -171,20 +171,36 @@
                 exampleButtons.appendChild(button);
             });
 
-            // "page_content": "Drug repositioning and repurposing for Alzheimer disease\nClive Ballard1,✉, Dag Aarsland2,3, Jeffrey Cummings4, John O’Brien5, Roger Mills2,6, Jose \nLuis Molinuevo7, Tormod Fladby8, Gareth Williams2, Pat Doherty2, Anne Corbett1, Janet \nSultana9\n1College of Medicine and Health, University of Exeter, Exeter, UK.\n2Institute of Psychiatry Psychology and Neuroscience, King’s College London, London, UK.\n3SESAM (Regional Center for Elderly Medicine and Interaction), University Hospital Stavanger,",
-            // "metadata": {
-            //     "source": "documents/drug_repositioning_for_alzheimer_disease.pdf",
-            //     "page": 0, "filename": "drug_repositioning_for_alzheimer_disease.pdf"
-            // }
-
             // Append a message to the chat
             const chatContainer = document.getElementById("chat-container");
             const chatThread = document.getElementById("chat-thread");
             const chatForm = document.getElementById("chat-form");
             let msgCount = 0
-            function appendMessage(message, sender, source_documents=null) {
+            function appendMessage(message, sender) {
                 msgCount += 1
                 const messageElement = document.createElement("div");
+                const iconHtml = sender === "user" ?
+                    '<i class="fas fa-user-astronaut text-xl mr-4"></i>' : // fa-comment fa-user-secret fa-user-astronaut
+                    '<i class="fas fa-robot text-xl mr-4"></i>';
+                messageElement.className = `border-b border-slate-400 ${sender === "user" ? "bg-gray-100 dark:bg-gray-700" : "bg-gray-200 dark:bg-gray-600 hidden"}`;
+                messageElement.innerHTML = `<div class="px-2 py-8 mx-auto max-w-5xl">
+                    <div class="container flex items-center">
+                        ${iconHtml}
+                        <div>
+                            <article class="prose dark:prose-invert max-w-full">
+                                ${marked(message)}
+                            </article>
+                        </div>
+                    </div>
+                </div>`;
+                chatThread.appendChild(messageElement);
+                return messageElement
+            }
+            appendMessage(welcomeMsg, "bot").classList.remove("hidden")
+
+            // Append sources documents in QA
+            function appendSources(source_documents) {
+                const messageElement = chatThread.lastElementChild;
                 let sourcesBtnHtml = ""
                 let sourcesCardHtml = ""
                 let sourcesHtml = ""
@@ -208,25 +224,8 @@
                     // Combine all display cards for this message sources
                     sourcesHtml += `<div id="source-card-${msgCount}" class="hidden flex">${sourcesCardHtml}</div>`
                 }
-
-                const iconHtml = sender === "user" ?
-                    '<i class="fas fa-user-astronaut text-xl mr-4"></i>' : // fa-comment fa-user-secret fa-user-astronaut
-                    '<i class="fas fa-robot text-xl mr-4"></i>';
-                messageElement.className = `border-b border-slate-400 ${sender === "user" ? "bg-gray-100 dark:bg-gray-700" : "bg-gray-200 dark:bg-gray-600"}`;
-                messageElement.innerHTML = `<div class="px-2 py-8 mx-auto max-w-5xl">
-                    <div class="container flex items-center">
-                        ${iconHtml}
-                        <div >
-                            <article class="prose dark:prose-invert max-w-full">
-                                ${marked(message)}
-                            </article>
-                        </div>
-                    </div>
-                    ${sourcesBtnHtml}
-                    ${sourcesHtml}
-                </div>`;
-                chatThread.appendChild(messageElement);
-                chatContainer.scrollTop = chatContainer.scrollHeight;
+                messageElement.lastElementChild.innerHTML += sourcesBtnHtml;
+                messageElement.lastElementChild.innerHTML += sourcesHtml;
                 // Add click event on each source document
                 if (source_documents && source_documents.length > 0) {
                     const card = document.getElementById(`source-card-${msgCount}`);
@@ -250,7 +249,6 @@
                     })
                 }
             }
-            appendMessage(welcomeMsg, "bot")
 
             // Function to show the tooltip content on click
             function showTooltipContent(event) {
@@ -281,7 +279,7 @@
             // Create a new WebSocket connection
             const currentLocation = window.location;
             const protocol = currentLocation.protocol === "https:" ? "wss:" : "ws:";
-            const websocketUrl = `${protocol}//${currentLocation.host}/ws`;
+            const websocketUrl = `${protocol}//${currentLocation.host}/chat`;
             let socket;
             function createWebSocket() {
                 socket = new WebSocket(websocketUrl);
@@ -307,11 +305,19 @@
                 // Receive response from the websocket
                 socket.onmessage = (event) => {
                     const data = JSON.parse(event.data);
-                    console.log(data)
-                    appendMessage(data.result, "bot", data.source_documents);
-                    chatContainer.scrollTop = chatContainer.scrollHeight
-                    disableLoading();
-                    hideWarning();
+                    if (data.type === "start") {
+                        appendMessage("", "bot");
+                    } else if (data.type === "stream") {
+                        const lastMsg = chatThread.lastElementChild
+                        if (lastMsg.classList.contains("hidden")) chatThread.lastElementChild.classList.remove("hidden")
+                        const p = lastMsg.lastElementChild.lastElementChild.lastElementChild;
+                        p.innerHTML += data.message;
+                    } else if (data.type === "end") {
+                        if (data.sources) appendSources(data.sources)
+                        disableLoading();
+                        hideWarning();
+                        chatContainer.scrollTop = chatContainer.scrollHeight
+                    }
                 };
             }
             createWebSocket()
@@ -323,7 +329,6 @@
                     return
                 }
                 const prompt = userInput.innerText;
-
                 if (prompt.trim() !== "") {
                     appendMessage(prompt, "user");
                     userInput.innerText = "";

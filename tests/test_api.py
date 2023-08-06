@@ -1,5 +1,5 @@
+"""Test a generic conversational chatbot without vectorstore"""
 import json
-import os
 
 from fastapi.testclient import TestClient
 
@@ -36,59 +36,16 @@ def test_get_prompt_conversation() -> None:
 
 
 def test_websocket_prompt_conversation() -> None:
-    with client.websocket_connect("/ws") as websocket:
+    with client.websocket_connect("/chat") as websocket:
         websocket.send_json(prompt)
-        resp = websocket.receive_json()
-        assert "amsterdam" in resp["result"].lower()
-
-
-def test_documents_success_upload() -> None:
-    files = [
-        ("files", ("test.txt", b"content")),
-    ]
-    with open("tests/config/amsterdam.zip", "rb") as zip_file:
-        files.append(("files", ("amsterdam.zip", zip_file.read())))
-
-    response = client.post(
-        "/documents",
-        files=files,
-        params={"admin_pass": conf.auth.admin_pass},
-    )
-    assert response.status_code == 200
-    assert "Documents uploaded" in response.json()["message"]
-
-
-def test_documents_success_list() -> None:
-    response = client.get("/documents", params={"admin_pass": conf.auth.admin_pass})
-    resp = response.json()
-    assert response.status_code == 200
-    assert resp["count"] > 0
-    assert "test.txt" in resp["files"]
-    os.remove("documents/test.txt")
-    os.remove("documents/amsterdam.txt")
-
-
-def test_documents_wrong_pass() -> None:
-    files = [
-        ("files", ("test.txt", b"content")),
-    ]
-    resp_upload = client.post(
-        "/documents",
-        files=files,
-        data={"admin_pass": ""},
-    )
-    assert resp_upload.status_code == 403
-    resp_list = client.get("/documents", params={"admin_pass": ""})
-    assert resp_list.status_code == 403
-
-
-def test_documents_empty_files() -> None:
-    resp = client.post(
-        "/documents",
-        files=[],
-        data={"admin_pass": conf.auth.admin_pass},
-    )
-    assert resp.status_code == 422
+        while True:
+            resp = websocket.receive_json()
+            if resp["type"] == "end":
+                assert resp["sender"] == "bot"
+                assert "amsterdam" in resp["message"].lower()
+                break
+            else:
+                pass  # wait for the end
 
 
 def test_get_ui() -> None:

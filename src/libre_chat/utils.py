@@ -4,9 +4,10 @@ import shutil
 import zipfile
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import requests
+from pydantic import BaseModel, validator
 from uvicorn.logging import ColourizedFormatter
 
 __all__ = ["Prompt", "parallel_download", "log"]
@@ -26,15 +27,39 @@ YELLOW = "\033[33m"
 CYAN = "\033[36m"
 
 
+class ChatResponse(BaseModel):
+    """Chat response schema."""
+
+    message: str
+    type: str = "stream"  # noqa
+    sender: str = "bot"
+    sources: Optional[List[Dict[str, Any]]] = None
+
+    @validator("sender", allow_reuse=True)
+    def sender_must_be_bot_or_you(cls, v: str) -> str:  # noqa
+        if v not in ["bot", "user"]:
+            raise ValueError("sender must be bot or user")
+        return v
+
+    @validator("type", allow_reuse=True)
+    def validate_message_type(cls, v: str) -> str:  # noqa
+        if v not in ["start", "stream", "end", "error", "info"]:
+            raise ValueError("type must be start, stream or end")
+        return v
+
+
+# https://github.com/lm-sys/FastChat/blob/main/docs/openai_api.md
+# https://github.com/lm-sys/FastChat/blob/main/fastchat/protocol/openai_api_protocol.py
 @dataclass
 class Prompt:
     prompt: str
-    history_with_input: List[Tuple[str, str]] = field(default_factory=lambda: [])
     system_prompt: Optional[str] = None
-    max_new_tokens: Optional[int] = None
+    max_tokens: Optional[int] = None
     temperature: Optional[float] = None
     top_p: Optional[float] = None
     top_k: Optional[int] = None
+    history_with_input: List[Tuple[str, str]] = field(default_factory=lambda: [])
+    # model: str
 
 
 def download_file(url: str, path: str) -> None:

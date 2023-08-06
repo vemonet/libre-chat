@@ -104,7 +104,7 @@ class SettingsLlm(BaseConf):
     model_type: str = "llama"
     model_path: str = "models/llama-2-7b-chat.ggmlv3.q3_K_L.bin"
     model_download: Optional[str] = None
-    max_new_tokens: int = 256
+    max_new_tokens: int = 1024
     temperature: float = 0.01
 
 

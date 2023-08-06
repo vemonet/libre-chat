@@ -134,7 +134,11 @@ class Llm:
             model=self.model_path,
             # model_file=self.model_path,
             model_type=self.model_type,
-            config={"max_new_tokens": self.max_new_tokens, "temperature": self.temperature},
+            config={
+                "max_new_tokens": self.max_new_tokens,
+                "temperature": self.temperature,
+                "stream": True,
+            },
         )
         if self.has_vectorstore():
             log.info(
@@ -223,8 +227,45 @@ class Llm:
             return vectorstore
         return None
 
-    def query(self, prompt: str, history: Optional[List[Tuple[str, str]]] = None) -> Dict[str, str]:
+    def query(
+        self,
+        prompt: str,
+        history: Optional[List[Tuple[str, str]]] = None,
+        callbacks: Optional[List[Any]] = None,
+    ) -> Dict[str, str]:
         """Query the built LLM"""
+        log.info(f"💬 Querying the LLM with prompt: {prompt}")
+        if len(prompt) < 1:
+            raise ValueError("Provide a prompt")
+        if self.vector_path:
+            if not self.has_vectorstore():
+                return {
+                    "result": "The vectorstore has not been built, please go to the [API web UI](/docs) (the green icon at the top right of the page), and upload documents to vectorize."
+                }
+            self.setup_dbqa()  # we need to reload the dbqa each time to make sure all workers are up-to-date
+            res = self.dbqa({"query": prompt})
+            log.debug(f"💭 Complete response from the LLM: {res}")
+            for i, doc in enumerate(res["source_documents"]):
+                res["source_documents"][i] = {
+                    "page_content": doc.page_content,
+                    "metadata": doc.metadata,
+                }
+                if "source" in res["source_documents"][i]["metadata"]:
+                    res["source_documents"][i]["metadata"]["filename"] = os.path.basename(
+                        res["source_documents"][i]["metadata"]["source"]
+                    )
+        else:
+            resp = self.conversation.predict(input=prompt, callbacks=callbacks)
+            res = {"result": resp}
+        return res
+
+    async def aquery(
+        self,
+        prompt: str,
+        history: Optional[List[Tuple[str, str]]] = None,
+        callbacks: Optional[List[Any]] = None,
+    ) -> Dict[str, str]:
+        """Async query the built LLM"""
         log.info(f"💬 Querying the LLM with prompt: {prompt}")
         if len(prompt) < 1:
             raise ValueError("Provide a prompt")
@@ -237,8 +278,8 @@ class Llm:
                 }
             # TODO: handle history
             self.setup_dbqa()  # we need to reload the dbqa each time to make sure all workers are up-to-date
-            res = self.dbqa({"query": prompt})
-            log.info(f"💭 Complete response from the LLM: {res}")
+            res = await self.dbqa.acall({"query": prompt}, callbacks=callbacks)
+            log.debug(f"💭 Complete response from the LLM: {res}")
             for i, doc in enumerate(res["source_documents"]):
                 # doc.to_json() not implemented yet
                 res["source_documents"][i] = {
@@ -250,10 +291,15 @@ class Llm:
                         res["source_documents"][i]["metadata"]["source"]
                     )
         else:
-            # TODO: check to get a streaming output
-            resp = self.conversation.predict(input=prompt)
+            # Not using vectostore, generic conversation
+            resp = await self.conversation.apredict(input=prompt, callbacks=callbacks)
             res = {"result": resp}
         return res
+
+
+# "page_content": "Drug repositioning and repurposing for Alzheimer disease\nClive Ballard1",
+# "metadata": { "source": "documents/drug_repositioning_for_alzheimer_disease.pdf",
+#     "page": 0, "filename": "drug_repositioning_for_alzheimer_disease.pdf" }
 
 
 DEFAULT_CONVERSATION_PROMPT = """Assistant is a large language model trained by everyone.

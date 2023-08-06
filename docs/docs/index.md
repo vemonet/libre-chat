@@ -67,7 +67,7 @@ Seasoned developers can also manipulate LLM models, and deploy the API in python
 The web service is deployed using a [**⚡ FastAPI**](https://fastapi.tiangolo.com) endpoint. It has 4 routes, plus its [OpenAPI](https://www.openapis.org/) documentation available on `/docs`:
 
 - 📮 `GET` and `POST` on `/prompt` to query the model
-- 🔌 Websocket on `/ws` to open a connection with the API, and query the model
+- 🔌 Websocket on `/chat` to open a connection with the API, and query the model
 - 🖥️ Chatbot web UI served on the root URL `/`
     - The web UI is contained within a single HTML file templated using [Jinja2](https://jinja.palletsprojects.com), written in vanilla JS, using [Tailwind](https://tailwindcss.com) CSS for styling, and [marked](https://marked.js.org/) for markdown rendering
 
