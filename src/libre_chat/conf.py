@@ -1,21 +1,6 @@
 import os
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional
 
-from langchain.document_loaders import (
-    CSVLoader,
-    EverNoteLoader,
-    JSONLoader,
-    PyPDFLoader,
-    TextLoader,
-    UnstructuredEmailLoader,
-    UnstructuredEPubLoader,
-    UnstructuredExcelLoader,
-    UnstructuredHTMLLoader,
-    UnstructuredMarkdownLoader,
-    UnstructuredODTLoader,
-    UnstructuredPowerPointLoader,
-    UnstructuredWordDocumentLoader,
-)
 from pydantic import BaseSettings, Extra
 from pydantic_yaml import parse_yaml_raw_as
 
@@ -65,32 +50,6 @@ class SettingsVector(BaseConf):
     vector_download: Optional[str] = None
     documents_path: str = "documents/"
     documents_download: Optional[str] = None
-    document_loaders: List[Dict[str, Union[Union[str, Any]]]] = [
-        {"glob": "*.pdf", "loader_cls": PyPDFLoader},
-        {"glob": "*.csv", "loader_cls": CSVLoader, "loader_kwargs": {"encoding": "utf8"}},
-        {
-            "glob": "*.tsv",
-            "loader_cls": CSVLoader,
-            "loader_kwargs": {"encoding": "utf8", "delimiter": "\t"},
-        },
-        {
-            "glob": "*.psv",
-            "loader_cls": CSVLoader,
-            "loader_kwargs": {"encoding": "utf8", "delimiter": "\\p"},
-        },
-        {"glob": "*.xls?x", "loader_cls": UnstructuredExcelLoader},
-        {"glob": "*.?xhtm?l", "loader_cls": UnstructuredHTMLLoader},
-        {"glob": "*.xml", "loader_cls": UnstructuredHTMLLoader},
-        {"glob": "*.json*", "loader_cls": JSONLoader},
-        {"glob": "*.md*", "loader_cls": UnstructuredMarkdownLoader},
-        {"glob": "*.txt", "loader_cls": TextLoader, "loader_kwargs": {"encoding": "utf8"}},
-        {"glob": "*.doc?x", "loader_cls": UnstructuredWordDocumentLoader},
-        {"glob": "*.odt", "loader_cls": UnstructuredODTLoader},
-        {"glob": "*.ppt?x", "loader_cls": UnstructuredPowerPointLoader},
-        {"glob": "*.epub", "loader_cls": UnstructuredEPubLoader},
-        {"glob": "*.eml", "loader_cls": UnstructuredEmailLoader},
-        {"glob": "*.enex", "loader_cls": EverNoteLoader},
-    ]
 
     chunk_size: int = 500
     chunk_overlap: int = 50

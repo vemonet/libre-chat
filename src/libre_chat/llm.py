@@ -1,11 +1,26 @@
 """Module: Open-source LLM setup"""
 import os
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import torch
 from langchain import PromptTemplate
 from langchain.chains import ConversationChain, RetrievalQA
-from langchain.document_loaders import DirectoryLoader
+from langchain.document_loaders import (
+    CSVLoader,
+    DirectoryLoader,
+    EverNoteLoader,
+    JSONLoader,
+    PyPDFLoader,
+    TextLoader,
+    UnstructuredEmailLoader,
+    UnstructuredEPubLoader,
+    UnstructuredExcelLoader,
+    UnstructuredHTMLLoader,
+    UnstructuredMarkdownLoader,
+    UnstructuredODTLoader,
+    UnstructuredPowerPointLoader,
+    UnstructuredWordDocumentLoader,
+)
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.llms import CTransformers
 from langchain.memory import ConversationBufferMemory
@@ -73,9 +88,7 @@ class Llm:
         self.documents_download = (
             documents_download if documents_download else self.conf.vector.documents_download
         )
-        self.document_loaders = (
-            document_loaders if document_loaders else self.conf.vector.document_loaders
-        )
+        self.document_loaders = document_loaders if document_loaders else DEFAULT_DOCUMENT_LOADERS
         self.return_sources_count = (
             return_sources_count if return_sources_count else self.conf.vector.return_sources_count
         )
@@ -323,3 +336,30 @@ Question: {question}
 Only return the helpful answer below and nothing else.
 Helpful answer:
 """
+
+DEFAULT_DOCUMENT_LOADERS: List[Dict[str, Union[Union[str, Any]]]] = [
+    {"glob": "*.pdf", "loader_cls": PyPDFLoader},
+    {"glob": "*.csv", "loader_cls": CSVLoader, "loader_kwargs": {"encoding": "utf8"}},
+    {
+        "glob": "*.tsv",
+        "loader_cls": CSVLoader,
+        "loader_kwargs": {"encoding": "utf8", "delimiter": "\t"},
+    },
+    {
+        "glob": "*.psv",
+        "loader_cls": CSVLoader,
+        "loader_kwargs": {"encoding": "utf8", "delimiter": "\\p"},
+    },
+    {"glob": "*.xls?x", "loader_cls": UnstructuredExcelLoader},
+    {"glob": "*.?xhtm?l", "loader_cls": UnstructuredHTMLLoader},
+    {"glob": "*.xml", "loader_cls": UnstructuredHTMLLoader},
+    {"glob": "*.json*", "loader_cls": JSONLoader},
+    {"glob": "*.md*", "loader_cls": UnstructuredMarkdownLoader},
+    {"glob": "*.txt", "loader_cls": TextLoader, "loader_kwargs": {"encoding": "utf8"}},
+    {"glob": "*.doc?x", "loader_cls": UnstructuredWordDocumentLoader},
+    {"glob": "*.odt", "loader_cls": UnstructuredODTLoader},
+    {"glob": "*.ppt?x", "loader_cls": UnstructuredPowerPointLoader},
+    {"glob": "*.epub", "loader_cls": UnstructuredEPubLoader},
+    {"glob": "*.eml", "loader_cls": UnstructuredEmailLoader},
+    {"glob": "*.enex", "loader_cls": EverNoteLoader},
+]

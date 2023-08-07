@@ -159,6 +159,48 @@ class ChatRouter(APIRouter):
             file_list = os.listdir(self.conf.vector.documents_path)
             return JSONResponse({"count": len(file_list), "files": file_list})
 
+        @self.get(
+            "/config",
+            name="Get Chat configuration",
+            description="""Get the Chat web service configuration.""",
+            response_description="Chat configuration",
+            response_model=ChatConf,
+            tags=["configuration"],
+        )
+        def get_config(
+            admin_pass: Optional[str] = None,
+        ) -> JSONResponse:
+            """Get the Chat web service configuration."""
+            if self.conf.auth.admin_pass and admin_pass != self.conf.auth.admin_pass:
+                raise HTTPException(
+                    status_code=403,
+                    detail="The admin pass key provided was wrong",
+                )
+            return JSONResponse(self.conf.dict())
+
+        @self.post(
+            "/config",
+            name="Edit Chat configuration",
+            description="""Edit the Chat web service configuration.""",
+            response_description="Chat configuration",
+            response_model=ChatConf,
+            tags=["configuration"],
+        )
+        def post_config(
+            request: Request,
+            config: ChatConf = Body(..., example=self.conf),
+            admin_pass: Optional[str] = None,
+        ) -> JSONResponse:
+            """Edit the Chat web service configuration."""
+            if self.conf.auth.admin_pass and admin_pass != self.conf.auth.admin_pass:
+                raise HTTPException(
+                    status_code=403,
+                    detail="The admin pass key provided was wrong",
+                )
+            self.conf = config
+            # TODO: save new config to disk, and make sure all workers reload the new config
+            return JSONResponse(self.conf.dict())
+
         @self.websocket("/chat")
         async def websocket_endpoint(websocket: WebSocket) -> None:
             await websocket.accept()

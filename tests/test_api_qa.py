@@ -39,7 +39,7 @@ def test_documents_success_upload() -> None:
     response = client.post(
         "/documents",
         files=files,
-        params={"admin_pass": conf.auth.admin_pass},
+        data={"admin_pass": conf.auth.admin_pass},
     )
     assert response.status_code == 200
     assert "Documents uploaded" in response.json()["message"]
@@ -55,24 +55,46 @@ def test_documents_success_list() -> None:
     os.remove("documents/amsterdam.txt")
 
 
-def test_documents_wrong_pass() -> None:
+def test_wrong_pass() -> None:
     files = [
         ("files", ("test.txt", b"content")),
     ]
-    resp_upload = client.post(
+    resp = client.post(
         "/documents",
         files=files,
-        data={"admin_pass": ""},
+        params={"admin_pass": ""},
     )
-    assert resp_upload.status_code == 403
-    resp_list = client.get("/documents", params={"admin_pass": ""})
-    assert resp_list.status_code == 403
+    assert resp.status_code == 403
+    resp = client.get("/documents", params={"admin_pass": ""})
+    assert resp.status_code == 403
+    resp = client.get("/config", params={"admin_pass": ""})
+    assert resp.status_code == 403
+    resp = client.post("/config", json=conf.dict(), params={"admin_pass": ""})
+    assert resp.status_code == 403
 
 
 def test_documents_empty_files() -> None:
     resp = client.post(
         "/documents",
         files=[],
-        data={"admin_pass": conf.auth.admin_pass},
+        params={"admin_pass": conf.auth.admin_pass},
     )
     assert resp.status_code == 422
+
+
+def test_get_config() -> None:
+    response = client.get("/config", params={"admin_pass": conf.auth.admin_pass})
+    resp = response.json()
+    assert response.status_code == 200
+    assert resp["llm"]["model_path"] == conf.llm.model_path
+
+
+def test_post_config() -> None:
+    conf_test = conf
+    conf_test.llm.model_path = "changedmodel"
+    response = client.post(
+        "/config", json=conf_test.dict(), params={"admin_pass": conf.auth.admin_pass}
+    )
+    resp = response.json()
+    assert response.status_code == 200
+    assert resp["llm"]["model_path"] == "changedmodel"
