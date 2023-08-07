@@ -186,9 +186,10 @@ Inspired by:
 
 ## 📋 To do
 
-- [X] Add support for returning sources in UI when using documents-based QA
-- [X] Stream response for the websocket to show words one by one: LangChain only implemented it for OpenAI at the moment
-- [ ] Kubernetes deployment
-- [ ] Try with 70B model
-- [ ] Speed up inference, better use of GPUs
+- [x] Add support for returning sources in UI when using documents-based QA
+- [X] Stream response to the websocket to show words as they are generated
+- [ ] Kubernetes deployment (Helm chart?)
+- [ ] Try with 70B model and Vicuna
+- [ ] Speed up inference, better use of GPUs, especially when doing QA
 - [ ] Add authentication mechanisms (OAuth/OpenID Connect)
+- [ ] Add an admin dashboard web UI to enable users to upload/inspect/delete documents for QA, see/edit the config of the chatbot. Migrate to svelte with config retrieved from API?

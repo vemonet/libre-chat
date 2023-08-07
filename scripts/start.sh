@@ -32,7 +32,6 @@ if [ -n "$LIBRECHAT_CONF_URL" ]; then
 fi
 
 # Initialize the Llm (ddl files if not present, build vectors) runs before the API to avoid running on multiple workers
-echo "🚀 Initializing the Llm: download files if not present, build vectorstore"
 python /app/scripts/init.py
 
 echo "🦄 Starting gunicorn with $LIBRECHAT_WORKERS workers on $BIND for the module $APP_MODULE with a timeout of $TIMEOUT sec"
