@@ -39,7 +39,7 @@ def test_documents_success_upload() -> None:
     response = client.post(
         "/documents",
         files=files,
-        data={"admin_pass": conf.auth.admin_pass},
+        params={"admin_pass": conf.auth.admin_pass},
     )
     assert response.status_code == 200
     assert "Documents uploaded" in response.json()["message"]
