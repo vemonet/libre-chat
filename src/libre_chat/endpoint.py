@@ -80,19 +80,48 @@ class ChatEndpoint(FastAPI):
             "/gradio",
             gradio_app(self.llm),
         )
+        # Mount web wroker asset:
         self.mount(
             "/static",
             StaticFiles(directory=pkg_resources.resource_filename("libre_chat", "static")),
             name="static",
         )
+
+        # TODO: Try with svelte https://github.com/OriginalStefikO/fastapi-svelte-starter/blob/main/main.py
+        # self.mount("/assets", StaticFiles(directory=pkg_resources.resource_filename("libre_chat", "assets")), name="static")
+        # templates = Jinja2Templates(
+        #     directory=pkg_resources.resource_filename("libre_chat", "webapp")
+        # )
+        self.mount(
+            "/",
+            StaticFiles(
+                directory=pkg_resources.resource_filename("libre_chat", "webapp"), html=True
+            ),
+            name="static",
+        )
+
         templates = Jinja2Templates(
             directory=pkg_resources.resource_filename("libre_chat", "templates")
         )
+        # @self.get("/", response_class=HTMLResponse, include_in_schema=False)
+        # def chat_ui(request: Request) -> Any:
+        #     return templates.TemplateResponse(
+        #         "index.html",
+        #         {
+        #             "request": request,
+        #             "title": self.conf.info.title,
+        #             "description": self.conf.info.description,
+        #             "short_description": self.conf.info.description.split("\n")[0].replace('"', ""),
+        #             "repository_url": self.conf.info.repository_url,
+        #             "examples": self.conf.info.examples,
+        #             "favicon": self.conf.info.favicon,
+        #         },
+        #     )
 
-        @self.get("/", response_class=HTMLResponse, include_in_schema=False)
-        def chat_ui(request: Request) -> Any:
+        @self.get("/admin", response_class=HTMLResponse, include_in_schema=False)
+        def admin_ui(request: Request) -> Any:
             return templates.TemplateResponse(
-                "index.html",
+                "admin.html",
                 {
                     "request": request,
                     "title": self.conf.info.title,
