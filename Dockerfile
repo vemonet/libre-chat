@@ -26,7 +26,7 @@ RUN pip install -r requirements.txt && \
     rm requirements.txt
 
 ADD . .
-RUN pip install -e .
+RUN pip install -e .[gpu]
 
 # We use /data as workdir for models, embeddings, vectorstore
 WORKDIR /data

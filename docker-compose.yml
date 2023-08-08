@@ -13,7 +13,7 @@ services:
       # - ./data:/data # Or directly share the data directory with chat.yml, and folders for models, vectorstore, etc
     shm_size: '16g'
     environment:
-      - LIBRECHAT_WORKERS=4
+      - LIBRECHAT_WORKERS=1
       # For deployment with nginx-proxy https://github.com/nginx-proxy/nginx-proxy
       - VIRTUAL_HOST=chat.semanticscience.org
       - LETSENCRYPT_HOST=chat.semanticscience.org

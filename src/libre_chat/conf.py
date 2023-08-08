@@ -65,6 +65,7 @@ class SettingsLlm(BaseConf):
     model_download: Optional[str] = None
     max_new_tokens: int = 1024
     temperature: float = 0.01
+    gpu_layers: int = 100  # Number of layers to run on the GPU (if detected)
 
 
 class SettingsAuth(BaseConf):

@@ -76,6 +76,10 @@ doc = [
 windows = [
     "python-magic-bin" # Required by magic, used by unstructured for the EmailLoader https://pydigger.com/pypi/python-magic
 ]
+gpu = [
+    "faiss-gpu",
+    "ctransformers[cuda]",
+]
 
 
 [project.urls]

@@ -1,5 +1,6 @@
 """Module: Open-source LLM setup"""
 import os
+from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import torch
@@ -151,6 +152,7 @@ class Llm:
                 "max_new_tokens": self.max_new_tokens,
                 "temperature": self.temperature,
                 "stream": True,
+                "gpu_layers": self.conf.llm.gpu_layers if self.device.type != "cpu" else 0,
             },
         )
         if self.has_vectorstore():
@@ -187,6 +189,7 @@ class Llm:
             embeddings = HuggingFaceEmbeddings(
                 model_name=self.embeddings_path, model_kwargs={"device": self.device}
             )
+            # FAISS should automatically use GPU?
             vectorstore = FAISS.load_local(self.get_vectorstore(), embeddings)
 
             search_args: Dict[str, Any] = {"k": self.return_sources_count}
@@ -204,6 +207,7 @@ class Llm:
 
     def build_vectorstore(self, documents_path: Optional[str] = None) -> Optional[FAISS]:
         """Build vectorstore from PDF documents with FAISS."""
+        time_start = datetime.now()
         if not documents_path:
             documents_path = self.documents_path
         docs_count = len(os.listdir(documents_path))
@@ -237,6 +241,7 @@ class Llm:
             vectorstore = FAISS.from_documents(splitted_texts, embeddings)
             if self.vector_path:
                 vectorstore.save_local(self.vector_path)
+            log.info(f"✅ Vectorstore built in {datetime.now() - time_start}")
             return vectorstore
         return None
 
