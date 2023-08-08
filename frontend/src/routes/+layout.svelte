@@ -1,21 +1,22 @@
 <script>
-	import Header from './Header.svelte';
+	// import Header from './Header.svelte';
 	import './styles.css';
+	import './../../node_modules/@fortawesome/fontawesome-free/css/all.min.css';
 </script>
 
 <div class="app">
-	<Header />
+	<!-- <Header /> -->
 
 	<main>
 		<slot />
 	</main>
 
-	<footer>
+	<!-- <footer>
 		<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
-	</footer>
+	</footer> -->
 </div>
 
-<style>
+<!-- <style>
 	.app {
 		display: flex;
 		flex-direction: column;
@@ -50,4 +51,4 @@
 			padding: 12px 0;
 		}
 	}
-</style>
+</style> -->
