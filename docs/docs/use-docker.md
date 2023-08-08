@@ -25,7 +25,12 @@ docker run -it -p 8000:8000 ghcr.io/vemonet/libre-chat:main
       libre-chat:
         image: ghcr.io/vemonet/libre-chat:main
         volumes:
-          - ./:/data # Share the current directory with your chat.yml, models, vectorstore
+          # ⚠️ Share files from the current directory to the /data dir in the container
+          - ./chat.yml:/data/chat.yml
+          - ./models:/data/models
+          - ./documents:/data/documents
+          - ./embeddings:/data/embeddings
+          - ./vectorstore:/data/vectorstore
         ports:
           - 8000:8000
         environment:

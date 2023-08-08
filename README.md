@@ -16,26 +16,38 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 - 🏡 Fully self-hosted, not tied to any service, and offline capable. Forget about API keys! Models and embeddings can be pre-downloaded, and the training and inference processes can run off-line if necessary.
 - 🚀 Easy to setup, no need to program, just configure the service with a [YAML](https://yaml.org/) file, and start it with 1 command
 - 📦 Available as a `pip` package 🐍, or `docker` image 🐳
-- ⚡ No need for GPU, this will work even on your laptop CPU (but can take up to 1min to answer on recent laptops, works better on a server)
+- 🐌 No need for GPU, this will work even on your laptop CPU! That said, running on CPUs can be quite slow (up to 1min to answer a documents-base question on recent laptops), so we are working on making a better use of GPU when available
 - 🦜 Powered by [`LangChain`](https://python.langchain.com) to support performant open source models inference: **Llama 2 GGML** ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) | [13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf) | [70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf)), **Llama 2 GPTQ** ([7B](https://huggingface.co/TheBloke/Llama-2-7B-chat-GPTQ) | [13B](https://huggingface.co/TheBloke/Llama-2-13B-chat-GPTQ) | [70B](https://huggingface.co/TheBloke/Llama-2-70B-chat-GPTQ))
 - 🤖 Various types of agents can be deployed:
   - **💬 Generic conversation**: do not need any additional training, just configure settings such as the template prompt
   - **📚 Documents-based question answering**: automatically build similarity vectors from documents uploaded through the API UI, the chatbot will use them to answer your question, and return which documents were used to generate the answer (PDF, CSV, HTML, JSON, markdown, and more supported).
 - 🔍 Readable logs to understand what is going on
-- 🪶 Modern and lightweight chat web interface, working well on desktop and mobile, with support for light/dark theme
+- 🪶 Modern and lightweight chat web interface, working well on desktop and mobile, with support for light/dark theme, streaming response, and markdown rendering.
 
 Checkout the demo at [**chat.semanticscience.org**](https://chat.semanticscience.org)
+
+## 📖 Documentation
+
+For more details on how to use Libre Chat check the documentation at **[vemonet.github.io/libre-chat](http://vemonet.github.io/libre-chat)**
+
+## 🏗️ Work in progress
+
+⚠️ Development on this project has just started, use it with caution
+
+Those checkpoints are features we plan to work on in the future, feel free to let us know in the issues if you have any comment or request.
+
+- [x] Add support for returning sources in UI when using documents-based QA
+- [x] Stream response to the websocket to show words as they are generated
+- [ ] Speed up inference, better use of GPUs, especially when doing QA. Use HF `transformers` library?
+- [ ] Kubernetes deployment (Helm chart?)
+- [ ] Try with Vicuna model
+- [ ] Add authentication mechanisms (OAuth/OpenID Connect)
+- [ ] Add an admin dashboard web UI to enable users to upload/inspect/delete documents for QA, see/edit the config of the chatbot. Migrate to svelte with config retrieved from API?
 
 
 ![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/screenshot.png)
 
 ![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/screenshot-light.png)
-
-> ⚠️ Development on this project has just started, use it with caution
-
-## 📖 Documentation
-
-For more details on how to use Libre Chat check the documentation at **[vemonet.github.io/libre-chat](http://vemonet.github.io/libre-chat)**
 
 ## 🐳 Deploy with docker
 
@@ -53,7 +65,12 @@ services:
   libre-chat:
     image: ghcr.io/vemonet/libre-chat:main
     volumes:
-    - ./:/data # Share the whole directory with your chat.yml, models, vectorstore
+      # ⚠️ Share folders from the current directory to the /data dir in the container
+      - ./chat.yml:/data/chat.yml
+      - ./models:/data/models
+      - ./documents:/data/documents
+      - ./embeddings:/data/embeddings
+      - ./vectorstore:/data/vectorstore
     ports:
       - 8000:8000
 ```
@@ -180,16 +197,7 @@ uvicorn.run(app)
 Inspired by:
 
 - https://github.com/kennethleungty/Llama-2-Open-Source-LLM-CPU-Inference
+- https://github.com/lm-sys/FastChat
 - https://github.com/liltom-eth/llama2-webui
 
 <a href="https://www.flaticon.com/free-icons/llama" title="llama icons">Llama icons created by Freepik - Flaticon</a>
-
-## 📋 To do
-
-- [x] Add support for returning sources in UI when using documents-based QA
-- [X] Stream response to the websocket to show words as they are generated
-- [ ] Kubernetes deployment (Helm chart?)
-- [ ] Try with 70B model and Vicuna
-- [ ] Speed up inference, better use of GPUs, especially when doing QA
-- [ ] Add authentication mechanisms (OAuth/OpenID Connect)
-- [ ] Add an admin dashboard web UI to enable users to upload/inspect/delete documents for QA, see/edit the config of the chatbot. Migrate to svelte with config retrieved from API?

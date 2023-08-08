@@ -14,7 +14,7 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 - 🏡 Fully self-hosted, not tied to any service, and offline capable. Forget about API keys! Models and embeddings can be pre-downloaded, and the training and inference processes can run off-line if necessary.
 - 🚀 Easy to setup, no need to program, just configure the service with a [YAML](https://yaml.org/) file, and start the chat web service with 1 command
 - 📦 Available as a `pip` package 🐍, or `docker` image 🐳
-- ⚡ No need for GPU, this will work even on your laptop CPU (but can take up to 1min to answer on recent laptops, works better on a server)
+- 🐌 No need for GPU, this will work even on your laptop CPU! That said, running on CPUs can be quite slow (up to 1min to answer a documents-base question on recent laptops), so we are working on making a better use of GPU when available
 - 🦜 Powered by [`LangChain`](https://python.langchain.com) to support performant open source models inference: **Llama 2 GGML** ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) | [13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf) | [70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf)), **Llama 2 GPTQ** ([7B](https://huggingface.co/TheBloke/Llama-2-7B-chat-GPTQ) | [13B](https://huggingface.co/TheBloke/Llama-2-13B-chat-GPTQ) | [70B](https://huggingface.co/TheBloke/Llama-2-70B-chat-GPTQ))
 - 🤖 Various types of agents can be deployed:
     - **💬 Generic conversation**: do not need any additional training, just configure settings such as the template prompt
@@ -22,7 +22,7 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 
 - 🔍 Readable logs to understand what is going on
 
-- 🪶 Modern and lightweight chat web interface, working well on desktop and mobile, with support for light/dark theme
+- 🪶 Modern and lightweight chat web interface, working well on desktop and mobile, with support for light/dark theme, streaming response, and markdown rendering.
 
 Checkout the demo at [**chat.semanticscience.org**](https://chat.semanticscience.org)
 
