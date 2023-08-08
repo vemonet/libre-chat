@@ -1,4 +1,81 @@
-@import '@fontsource/fira-mono';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+a {
+	color: #007BFF;
+}
+a:hover {
+	color: #0056b3;
+}
+/* Add placeholder in text input */
+[placeholder]:empty:before {
+	content: attr(placeholder);
+	opacity: 0.6;
+	pointer-events: none;
+}
+
+/* Add tooltip for top nav on desktop */
+@media (min-width: 640px) {
+	[data-tooltip] {
+		position: relative;
+		cursor: pointer;
+		white-space: nowrap;
+	}
+	[data-tooltip]:before {
+		content: attr(data-tooltip);
+		position: absolute;
+		bottom: -50px;
+		left: 50%;
+		transform: translateX(-50%);
+		padding: 0.5rem;
+		background-color: #333;
+		color: white;
+		font-size: 0.9rem;
+		font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto;
+		border-radius: 4px;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.2s ease-in-out;
+		white-space: normal;
+		width: max-content;
+		/* max-width: 100%;
+		width: 30rem; */
+	}
+	[data-tooltip]:hover:before {
+		opacity: 1;
+	}
+}
+
+/* Menu for mobile navigation */
+.nav-btns-mobile {
+	display: none;
+}
+@media (max-width: 640px) {
+	.nav-btns-desktop {
+		display: none;
+	}
+	.nav-btns-mobile {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+	#nav-btns-mobile {
+		position: absolute;
+		top: 48px;
+		right: 0;
+		z-index: 10;
+		background-color: rgb(71 85 105);
+		border: 1px solid #ccc;
+		border-radius: 4px;
+	}
+	.nav-btns-mobile.show {
+		display: flex;
+	}
+}
+
+
+/* @import '@fontsource/fira-mono';
 
 :root {
 	--font-body: Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
@@ -104,4 +181,4 @@ button:focus:not(:focus-visible) {
 	position: absolute;
 	width: 1px;
 	white-space: nowrap;
-}
+} */
