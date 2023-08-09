@@ -14,4 +14,9 @@ cd ..
 mkdir -p models
 cd models
 wget -N https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.ggmlv3.q3_K_L.bin
+
+# Largest 70B in 2 files:
+# wget -N https://huggingface.co/TheBloke/Llama-2-70B-Chat-GGML/resolve/main/llama-2-70b-chat.ggmlv3.q6_K.z01
+# wget -N https://huggingface.co/TheBloke/Llama-2-70B-Chat-GGML/resolve/main/llama-2-70b-chat.ggmlv3.q6_K.zip
+# unzip -d llama-2-70b-chat.ggmlv3.q6_K.zip
 cd ..

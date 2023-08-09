@@ -45,4 +45,4 @@ docker run -it -p 8000:8000 ghcr.io/vemonet/libre-chat:main
 
 ??? warning "Using multiple workers"
 
-    Using multiple worker is still experimental and might lead to concurrent downloads or build at startup. When using multiple workers make sure to have pre-downloaded the models, embeddings, and pre-built the vectorstore.
+    Using multiple worker is still experimental. When using a documents-based QA chatbot you will need to restart the API after adding new documents to make sure all workers reload the newly built vectorstore.

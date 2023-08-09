@@ -155,9 +155,7 @@ class Llm:
             },
         )
         if self.has_vectorstore():
-            log.info(
-                f"💫 Loading vectorstore from {BOLD}{self.vector_path}{END}, with embeddings from {BOLD}{self.embeddings_path}{END}"
-            )
+            log.info(f"💫 Loading vectorstore from {BOLD}{self.vector_path}{END}")
             self.setup_dbqa()
         if not self.vector_path:
             log.info("🦜 No vectorstore provided, using a generic LLM")
@@ -216,7 +214,7 @@ class Llm:
             )
         else:
             log.info(
-                f"🏗️ Building the vectorstore from the {BOLD}{CYAN}{docs_count}{END} documents found in {BOLD}{documents_path}{END}"
+                f"🏗️ Building the vectorstore from the {BOLD}{CYAN}{docs_count}{END} documents found in {BOLD}{documents_path}{END}, using embeddings from {BOLD}{self.embeddings_path}{END}"
             )
             documents: List[Document] = []
             # Loading all file types provided in the document_loaders object
@@ -259,7 +257,7 @@ class Llm:
                 return {
                     "result": "The vectorstore has not been built, please go to the [API web UI](/docs) (the green icon at the top right of the page), and upload documents to vectorize."
                 }
-            self.setup_dbqa()  # we need to reload the dbqa each time to make sure all workers are up-to-date
+            # self.setup_dbqa()  # we need to reload the dbqa each time to make sure all workers are up-to-date
             res = self.dbqa({"query": prompt})
             log.debug(f"💭 Complete response from the LLM: {res}")
             for i, doc in enumerate(res["source_documents"]):
@@ -294,7 +292,7 @@ class Llm:
                     "result": "The vectorstore has not been built, please go to the [API web UI](/docs) (the green icon at the top right of the page), and upload documents to vectorize."
                 }
             # TODO: handle history
-            self.setup_dbqa()  # we need to reload the dbqa each time to make sure all workers are up-to-date
+            # self.setup_dbqa()  # we need to reload the dbqa each time to make sure all workers are up-to-date
             res = await self.dbqa.acall({"query": prompt}, callbacks=callbacks)
             log.debug(f"💭 Complete response from the LLM: {res}")
             for i, doc in enumerate(res["source_documents"]):
