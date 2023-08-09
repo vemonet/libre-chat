@@ -1,8 +1,8 @@
 ARG BASE_IMAGE=python:3.11
-# ARG BASE_IMAGE=nvcr.io/nvidia/pytorch:23.06-py3
-# 8.5GB cf. https://ngc.nvidia.com/catalog/containers/nvidia:pytorch
 # ARG BASE_IMAGE=nvcr.io/nvidia/cuda:12.2.0-devel-ubuntu20.04
 # 2.7GB cf. https://ngc.nvidia.com/catalog/containers/nvidia:cuda
+# ARG BASE_IMAGE=nvcr.io/nvidia/pytorch:23.06-py3
+# 8.5GB cf. https://ngc.nvidia.com/catalog/containers/nvidia:pytorch
 
 FROM ${BASE_IMAGE}
 
