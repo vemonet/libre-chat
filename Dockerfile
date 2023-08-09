@@ -9,7 +9,11 @@ FROM ${BASE_IMAGE}
 ARG GPU_ENABLED=false
 ENV LIBRECHAT_WORKERS=1
 
-RUN pip install --upgrade pip
+# CUDA image required to install python
+RUN apt-get update && \
+    apt-get install -y python3-pip python3-dev \
+    ln -s /usr/bin/python3 /usr/bin/python \
+    pip install --upgrade pip
 
 # Pre-download embeddings in /data
 WORKDIR /app/embeddings
