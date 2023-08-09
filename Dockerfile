@@ -11,8 +11,8 @@ ENV LIBRECHAT_WORKERS=1
 
 # CUDA image required to install python
 RUN apt-get update && \
-    apt-get install -y python3-pip python3-dev \
-    ln -s /usr/bin/python3 /usr/bin/python \
+    apt-get install -y python3-pip python3-dev && \
+    ln -s /usr/bin/python3 /usr/bin/python && \
     pip install --upgrade pip
 
 # Pre-download embeddings in /data
