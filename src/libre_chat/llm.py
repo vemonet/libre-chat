@@ -143,7 +143,6 @@ class Llm:
 
         log.info(f"🤖 Loading CTransformers model from {BOLD}{self.model_path}{END}")
         # Instantiate local CTransformers model https://github.com/marella/ctransformers#config
-        # NOTE: streaming not implemented yet on the LLM class (only available for OpenAI API)
         self.llm = CTransformers(  # type: ignore
             model=self.model_path,
             # model_file=self.model_path,

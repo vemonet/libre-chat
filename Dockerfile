@@ -4,6 +4,7 @@ ARG BASE_IMAGE=python:3.11
 
 FROM ${BASE_IMAGE}
 
+ARG GPU_ENABLED=false
 ENV LIBRECHAT_WORKERS=1
 
 RUN pip install --upgrade pip
@@ -26,7 +27,7 @@ RUN pip install -r requirements.txt && \
     rm requirements.txt
 
 ADD . .
-RUN pip install -e .[gpu]
+RUN bash -c "if [ $GPU_ENABLED == 'true' ] ; then pip install .[gpu] ; else pip install . ; fi"
 
 # We use /data as workdir for models, embeddings, vectorstore
 WORKDIR /data
