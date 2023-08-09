@@ -38,10 +38,10 @@ dependencies = [
     "uvicorn",
     "gunicorn",
     "langchain",
-    "ctransformers >=0.2.17", # To perform inference on CPU
+    "ctransformers >=0.2.17", # To perform inference on LLM
     "faiss-cpu >=1.7.4",     # To generate the vectorstore
     "sentence_transformers", # To produce the embeddings
-    "pypdf",                 # Or PDFMiner?
+    "pypdf",                 # For PDFloader, or use PDFMiner?
     "unstructured",          # For the email loader
     # "redis",               # To add a shared store for all workers
     # "pydantic <2.0.0",

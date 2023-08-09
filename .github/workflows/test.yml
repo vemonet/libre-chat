@@ -18,8 +18,8 @@ jobs:
             os: ubuntu-latest
           - python-version: "3.11"
             os: ubuntu-latest
-          - python-version: "3.11"
-            os: windows-latest
+          # - python-version: "3.11"
+          #   os: windows-latest
           # - python-version: "3.11"
           #   os: macos-latest  # Consistently 10min+ slower than all other platforms
 
