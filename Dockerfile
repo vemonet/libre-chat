@@ -6,13 +6,16 @@ ARG BASE_IMAGE=python:3.11
 
 FROM ${BASE_IMAGE}
 
+ARG DEBIAN_FRONTEND=noninteractive
 ARG GPU_ENABLED=false
 ENV LIBRECHAT_WORKERS=1
 
 # CUDA image required to install python
 RUN apt-get update && \
-    apt-get install -y python3-pip python3-dev wget unzip && \
-    ln -s /usr/bin/python3 /usr/bin/python && \
+    apt-get install -y software-properties-common wget unzip && \
+    add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get install -y python3.11 python3-pip && \
+    ln -s /usr/bin/python3.11 /usr/bin/python && \
     pip install --upgrade pip
 
 # Pre-download embeddings in /data
