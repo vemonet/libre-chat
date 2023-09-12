@@ -14,6 +14,9 @@ def gradio_app(llm: Llm) -> Any:
         # gradio auto add the response at the top of the list instead of the bottom
         # history.append((res, None)) # history.insert(0, (None, res))
         return res["result"]
+        # for i in range(len(message)):
+        #     time.sleep(0.3)
+        #     yield "You typed: " + message[: i+1]
 
     # https://www.gradio.app/guides/creating-a-chatbot-fast
     # https://www.gradio.app/guides/creating-a-custom-chatbot-with-blocks
@@ -26,8 +29,8 @@ def gradio_app(llm: Llm) -> Any:
         theme="soft",
         examples=llm.conf.info.examples,
         cache_examples=False,  # Error in GitHub action tests when enabled
-        retry_btn=None,
-        undo_btn="Delete Previous",
+        # retry_btn=None,
+        # undo_btn="Delete Previous",
         clear_btn="Clear",
     )
     return gr.routes.App.create_app(chat)
