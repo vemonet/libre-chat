@@ -11,7 +11,9 @@ __all__ = ["ChatConf", "parse_conf"]
 
 
 class BaseConf(BaseSettings):
-    model_config = SettingsConfigDict(env_prefix="librechat_", extra=Extra.allow)
+    model_config = SettingsConfigDict(
+        env_prefix="librechat_", extra=Extra.allow, protected_namespaces=("settings_",)
+    )
 
 
 class SettingsPrompt(BaseConf):

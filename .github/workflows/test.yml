@@ -257,8 +257,10 @@ jobs:
         with:
           context: .
           build-args: |
-            BASE_IMAGE=nvcr.io/nvidia/cuda:12.2.0-devel-ubuntu20.04
+            BASE_IMAGE=nvcr.io/nvidia/pytorch:23.06-py3
             GPU_ENABLED=true
+          # BASE_IMAGE=nvcr.io/nvidia/pytorch:23.06-py3
+          # BASE_IMAGE=nvcr.io/nvidia/cuda:12.2.0-devel-ubuntu20.04
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

@@ -13,12 +13,12 @@ ENV LIBRECHAT_WORKERS=1
 # CUDA image required to install python
 RUN apt-get update && \
     apt-get install -y software-properties-common wget unzip && \
-    add-apt-repository ppa:deadsnakes/ppa && \
-    apt-get install -y python3.11 && \
-    ln -s /usr/bin/python3.11 /usr/bin/python && \
-    wget https://bootstrap.pypa.io/get-pip.py && \
-    python get-pip.py && \
-    rm get-pip.py && \
+    # add-apt-repository ppa:deadsnakes/ppa && \
+    # apt-get install -y python3.11 && \
+    # ln -s /usr/bin/python3.11 /usr/bin/python && \
+    # wget https://bootstrap.pypa.io/get-pip.py && \
+    # python get-pip.py && \
+    # rm get-pip.py && \
     pip install --upgrade pip
 
 
