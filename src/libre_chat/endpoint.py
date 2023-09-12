@@ -77,9 +77,10 @@ class ChatEndpoint(FastAPI):
             return response
 
         self.mount(
-            "/gradio",
+            "/",
             gradio_app(self.llm),
         )
+
         # Mount web wroker asset:
         self.mount(
             "/static",

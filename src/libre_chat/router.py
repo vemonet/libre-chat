@@ -220,6 +220,8 @@ class ChatRouter(APIRouter):
                         data["prompt"], callbacks=[StreamWebsocketCallback(websocket)]
                     )
                     # chat_history.append((question, resp["result"]))
+                    # log.warning("RESULTS!")
+                    # log.warning(resp["result"])
 
                     end_resp = ChatResponse(
                         sender="bot",
@@ -227,7 +229,7 @@ class ChatRouter(APIRouter):
                         type="end",
                         sources=resp["source_documents"] if "source_documents" in resp else None,
                     )
-                    await websocket.send_json(end_resp.dict())
+                    await websocket.send_json(end_resp.model_dump())
             except Exception as e:
                 log.error(f"WebSocket error: {e}")
             finally:
@@ -250,5 +252,6 @@ class StreamWebsocketCallback(AsyncCallbackHandler):
 
     async def on_llm_new_token(self, token: str, **kwargs: Any) -> None:
         """Run on new LLM token. Only available when streaming is enabled."""
+        log.info(token)
         resp = ChatResponse(message=token, sender="bot", type="stream")
-        await self.websocket.send_json(resp.dict())
+        await self.websocket.send_json(resp.model_dump())

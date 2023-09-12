@@ -1,5 +1,6 @@
 """Module: Open-source LLM setup"""
 import os
+from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import torch
@@ -142,7 +143,6 @@ class Llm:
 
         log.info(f"🤖 Loading CTransformers model from {BOLD}{self.model_path}{END}")
         # Instantiate local CTransformers model https://github.com/marella/ctransformers#config
-        # NOTE: streaming not implemented yet on the LLM class (only available for OpenAI API)
         self.llm = CTransformers(  # type: ignore
             model=self.model_path,
             # model_file=self.model_path,
@@ -151,15 +151,15 @@ class Llm:
                 "max_new_tokens": self.max_new_tokens,
                 "temperature": self.temperature,
                 "stream": True,
+                "gpu_layers": self.conf.llm.gpu_layers if self.device.type != "cpu" else 0,
             },
         )
         if self.has_vectorstore():
-            log.info(
-                f"💫 Loading vectorstore from {BOLD}{self.vector_path}{END}, with embeddings from {BOLD}{self.embeddings_path}{END}"
-            )
+            log.info(f"💫 Loading vectorstore from {BOLD}{self.vector_path}{END}")
             self.setup_dbqa()
         if not self.vector_path:
             log.info("🦜 No vectorstore provided, using a generic LLM")
+            log.info(self.prompt)
             self.conversation = ConversationChain(
                 llm=self.llm, prompt=self.prompt, verbose=True, memory=ConversationBufferMemory()
             )
@@ -187,6 +187,7 @@ class Llm:
             embeddings = HuggingFaceEmbeddings(
                 model_name=self.embeddings_path, model_kwargs={"device": self.device}
             )
+            # FAISS should automatically use GPU?
             vectorstore = FAISS.load_local(self.get_vectorstore(), embeddings)
 
             search_args: Dict[str, Any] = {"k": self.return_sources_count}
@@ -204,6 +205,7 @@ class Llm:
 
     def build_vectorstore(self, documents_path: Optional[str] = None) -> Optional[FAISS]:
         """Build vectorstore from PDF documents with FAISS."""
+        time_start = datetime.now()
         if not documents_path:
             documents_path = self.documents_path
         docs_count = len(os.listdir(documents_path))
@@ -213,7 +215,7 @@ class Llm:
             )
         else:
             log.info(
-                f"🏗️ Building the vectorstore from the {BOLD}{CYAN}{docs_count}{END} documents found in {BOLD}{documents_path}{END}"
+                f"🏗️ Building the vectorstore from the {BOLD}{CYAN}{docs_count}{END} documents found in {BOLD}{documents_path}{END}, using embeddings from {BOLD}{self.embeddings_path}{END}"
             )
             documents: List[Document] = []
             # Loading all file types provided in the document_loaders object
@@ -237,6 +239,7 @@ class Llm:
             vectorstore = FAISS.from_documents(splitted_texts, embeddings)
             if self.vector_path:
                 vectorstore.save_local(self.vector_path)
+            log.info(f"✅ Vectorstore built in {datetime.now() - time_start}")
             return vectorstore
         return None
 
@@ -255,7 +258,7 @@ class Llm:
                 return {
                     "result": "The vectorstore has not been built, please go to the [API web UI](/docs) (the green icon at the top right of the page), and upload documents to vectorize."
                 }
-            self.setup_dbqa()  # we need to reload the dbqa each time to make sure all workers are up-to-date
+            # self.setup_dbqa()  # we need to reload the dbqa each time to make sure all workers are up-to-date
             res = self.dbqa({"query": prompt})
             log.debug(f"💭 Complete response from the LLM: {res}")
             for i, doc in enumerate(res["source_documents"]):
@@ -290,7 +293,7 @@ class Llm:
                     "result": "The vectorstore has not been built, please go to the [API web UI](/docs) (the green icon at the top right of the page), and upload documents to vectorize."
                 }
             # TODO: handle history
-            self.setup_dbqa()  # we need to reload the dbqa each time to make sure all workers are up-to-date
+            # self.setup_dbqa()  # we need to reload the dbqa each time to make sure all workers are up-to-date
             res = await self.dbqa.acall({"query": prompt}, callbacks=callbacks)
             log.debug(f"💭 Complete response from the LLM: {res}")
             for i, doc in enumerate(res["source_documents"]):

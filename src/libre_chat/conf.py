@@ -1,7 +1,8 @@
 import os
 from typing import Dict, List, Optional
 
-from pydantic import BaseSettings, Extra
+from pydantic import Extra
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic_yaml import parse_yaml_raw_as
 
 from libre_chat.utils import BOLD, END, YELLOW, log
@@ -10,9 +11,9 @@ __all__ = ["ChatConf", "parse_conf"]
 
 
 class BaseConf(BaseSettings):
-    class Config:
-        env_prefix = "librechat_"
-        extra = Extra.allow
+    model_config = SettingsConfigDict(
+        env_prefix="librechat_", extra=Extra.allow, protected_namespaces=("settings_",)
+    )
 
 
 class SettingsPrompt(BaseConf):
@@ -65,6 +66,7 @@ class SettingsLlm(BaseConf):
     model_download: Optional[str] = None
     max_new_tokens: int = 1024
     temperature: float = 0.01
+    gpu_layers: int = 100  # Number of layers to run on the GPU (if detected)
 
 
 class SettingsAuth(BaseConf):
