@@ -14,9 +14,14 @@ ENV LIBRECHAT_WORKERS=1
 RUN apt-get update && \
     apt-get install -y software-properties-common wget unzip && \
     add-apt-repository ppa:deadsnakes/ppa && \
-    apt-get install -y python3.11 python3-pip && \
+    apt-get install -y python3.11 && \
     ln -s /usr/bin/python3.11 /usr/bin/python && \
+    wget https://bootstrap.pypa.io/get-pip.py && \
+    python get-pip.py && \
+    rm get-pip.py && \
     pip install --upgrade pip
+
+
 
 # Pre-download embeddings in /data
 WORKDIR /app/embeddings
@@ -24,8 +29,8 @@ RUN wget https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transfor
     unzip -d all-MiniLM-L6-v2 all-MiniLM-L6-v2.zip && \
     rm all-MiniLM-L6-v2.zip
 
-WORKDIR /app/models
-RUN wget https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.ggmlv3.q3_K_L.bin
+# WORKDIR /app/models
+# RUN wget https://huggingface.co/TheBloke/LLaMa-7B-GGML/resolve/main/llama-7b.ggmlv3.q3_K_L.bin
 
 # Install app in /app
 WORKDIR /app

@@ -1,7 +1,8 @@
 import os
 from typing import Dict, List, Optional
 
-from pydantic import BaseSettings, Extra
+from pydantic import Extra
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic_yaml import parse_yaml_raw_as
 
 from libre_chat.utils import BOLD, END, YELLOW, log
@@ -10,9 +11,7 @@ __all__ = ["ChatConf", "parse_conf"]
 
 
 class BaseConf(BaseSettings):
-    class Config:
-        env_prefix = "librechat_"
-        extra = Extra.allow
+    model_config = SettingsConfigDict(env_prefix="librechat_", extra=Extra.allow)
 
 
 class SettingsPrompt(BaseConf):

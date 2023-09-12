@@ -44,7 +44,8 @@ dependencies = [
     "pypdf",                 # For PDFloader, or use PDFMiner?
     "unstructured",          # For the email loader
     # "redis",               # To add a shared store for all workers
-    # "pydantic <2.0.0",
+    "pydantic",
+    "pydantic-settings",
 ]
 
 

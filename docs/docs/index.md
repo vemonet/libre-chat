@@ -72,3 +72,12 @@ The web service is deployed using a [**⚡ FastAPI**](https://fastapi.tiangolo.c
     - The web UI is contained within a single HTML file templated using [Jinja2](https://jinja.palletsprojects.com), written in vanilla JS, using [Tailwind](https://tailwindcss.com) CSS for styling, and [marked](https://marked.js.org/) for markdown rendering
 
 All files required for querying the model are stored and accessed locally using [**🦜🔗 LangChain**](https://python.langchain.com): the main model binary, the embeddings and documents to create the vectors, and the [vectorstore](https://python.langchain.com/docs/modules/data_connection/vectorstores/).
+
+## 🗺️ Other projects
+
+If you are looking for more mature tools to use LLMs locally we recommend to look into those really good projects:
+
+* [ChatDocs](https://github.com/marella/chatdocs): UI to Chat with your documents offline.
+* [text-generation-webui](https://github.com/oobabooga/text-generation-webui): A Gradio web UI for Large Language Models
+* [llm](https://github.com/simonw/llm): Python library for interacting with Large Language Models, both via remote APIs and models that can be installed and run on your own  machine
+* [localGPT](https://github.com/PromtEngineer/localGPT): Chat with your documents on your local device using GPT models
