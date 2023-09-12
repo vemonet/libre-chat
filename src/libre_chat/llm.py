@@ -159,6 +159,7 @@ class Llm:
             self.setup_dbqa()
         if not self.vector_path:
             log.info("🦜 No vectorstore provided, using a generic LLM")
+            log.info(self.prompt)
             self.conversation = ConversationChain(
                 llm=self.llm, prompt=self.prompt, verbose=True, memory=ConversationBufferMemory()
             )

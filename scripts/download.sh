@@ -13,7 +13,7 @@ cd ..
 # https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML
 mkdir -p models
 cd models
-wget -N https://huggingface.co/TheBloke/LLaMa-7B-GGML/resolve/main/llama-7b.ggmlv3.q3_K_L.bin
+wget -N https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.ggmlv3.q3_K_L.bin
 
 # 3rd largest 70B q5:
 # wget -N https://huggingface.co/TheBloke/Llama-2-70B-Chat-GGML/resolve/main/llama-2-70b-chat.ggmlv3.q5_K_M.bin
