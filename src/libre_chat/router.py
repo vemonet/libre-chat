@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Optional, Union
 from fastapi import APIRouter, Body, File, HTTPException, Request, UploadFile, WebSocket
 from fastapi.responses import JSONResponse
 from langchain.callbacks.base import AsyncCallbackHandler
+from langchain.memory import ConversationBufferMemory
 from langchain.schema.document import Document
 
 from libre_chat.conf import ChatConf, default_conf
@@ -208,6 +209,7 @@ class ChatRouter(APIRouter):
             log.info(
                 f"🔌 New websocket connection: {len(self.connected_clients)} clients are connected"
             )
+            memory = ConversationBufferMemory(ai_prefix="AI Assistant")
             try:
                 # Loop to receive messages from the WebSocket client
                 while True:
@@ -217,7 +219,9 @@ class ChatRouter(APIRouter):
                     await websocket.send_json(start_resp.dict())
 
                     resp = await self.llm.aquery(
-                        data["prompt"], callbacks=[StreamWebsocketCallback(websocket)]
+                        data["prompt"],
+                        memory=memory,
+                        callbacks=[StreamWebsocketCallback(websocket)],
                     )
                     # chat_history.append((question, resp["result"]))
                     # log.warning("RESULTS!")
@@ -252,6 +256,5 @@ class StreamWebsocketCallback(AsyncCallbackHandler):
 
     async def on_llm_new_token(self, token: str, **kwargs: Any) -> None:
         """Run on new LLM token. Only available when streaming is enabled."""
-        log.info(token)
         resp = ChatResponse(message=token, sender="bot", type="stream")
         await self.websocket.send_json(resp.model_dump())

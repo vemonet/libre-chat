@@ -116,7 +116,7 @@
 
 	onMount(() => {
 		// TODO: for prod use: createWebSocket(window.location)
-		const baseUrl = new URL("http://localhost:8000/chat")
+		const baseUrl = new URL("http://127.0.0.1:8000/chat")
 		createWebSocket(baseUrl)
 		// const protocol = baseUrl.protocol === "https:" ? "wss:" : "ws:";
 		// const websocketUrl = `${protocol}//${baseUrl.host}/chat`;

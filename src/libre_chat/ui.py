@@ -6,14 +6,21 @@ from typing import Any
 
 import gradio as gr
 from langchain.callbacks.base import BaseCallbackHandler
+from langchain.memory import ConversationBufferMemory
 
 from libre_chat.llm import Llm
 
 RETRY_COMMAND = "/retry"
 USER_NAME = "User"
 BOT_NAME = "Assistant"
+CSS = """.contain { display: flex; flex-direction: column; }
+#component-0 { height: 100%; flex-grow: 1; }
+#chatbot { flex-grow: 1; }
+"""
 
 
+# https://www.gradio.app/guides/creating-a-custom-chatbot-with-blocks
+# https://github.com/hwchase17/conversation-qa-gradio
 # https://github.com/gradio-app/gradio/issues/5345
 # https://huggingface.co/spaces/HuggingFaceH4/falcon-chat-demo-for-blog/blob/main/app.py
 # https://huggingface.co/spaces/HuggingFaceH4/falcon-chat-demo-for-blog
@@ -38,7 +45,9 @@ def gradio_app(llm: Llm) -> Any:
             )
         return temperature, max_new_tokens
 
-    def stream(input_text, history, instructions, temperature, max_new_tokens) -> Generator:
+    sources_list = []
+
+    def stream(input_text, memory, instructions, temperature, max_new_tokens) -> Generator:
         # Create a Queue
         q = Queue()
         job_done = object()
@@ -49,13 +58,15 @@ def gradio_app(llm: Llm) -> Any:
                 "temperature": temperature,
                 "max_new_tokens": max_new_tokens,
             }
-            llm.query(
+            res = llm.query(
                 input_text,
-                history,
+                memory,
                 callbacks=[StreamGradioCallback(q)],
                 config=config,
                 instructions=instructions,
             )
+            if "source_documents" in res:
+                sources_list.append(res["source_documents"])
             q.put(job_done)
 
         # Create a thread and start the function
@@ -74,14 +85,34 @@ def gradio_app(llm: Llm) -> Any:
                 continue
 
     def vote(data: gr.LikeData):
-        # TODO: save vote in a db
+        # TODO: save votes somewhere
         if data.liked:
             print("You upvoted this response: " + data.value)
         else:
             print("You downvoted this response: " + data.value)
 
-    with gr.Blocks() as chat:
-        chatbot = gr.Chatbot(elem_id="chatbot", show_copy_button=True)
+    def on_select(evt: gr.SelectData):
+        msg_index = evt.index[0]
+        if msg_index < len(sources_list):
+            sources_str = f"## 🗃️ Sources\nFor message n°{msg_index}\n"
+            for source in sources_list[msg_index]:
+                sources_str += (
+                    f'### 📄 {source["metadata"]["filename"]}\n{source["page_content"]}\n\n'
+                )
+            return sources_str
+        # return f"You selected 【{evt.value}】 at 【{evt.index}】 from 【{evt.target}】"
+
+    # gray https://www.gradio.app/guides/theming-guide#core-colors
+    theme = gr.themes.Soft(primary_hue="cyan")
+    # theme = 'ParityError/LimeFace',
+    # theme = 'bethecloud/storj_theme'
+    # .set(slider_color="#FF0000")
+
+    with gr.Blocks(
+        theme=theme, css=CSS, analytics_enabled=False, title=llm.conf.info.title
+    ) as chat:
+        gr.Markdown(f"# {llm.conf.info.title}\n\n{llm.conf.info.description}")
+        chatbot = gr.Chatbot(elem_id="chatbot", show_copy_button=True, show_label=False)
         inputs = gr.Textbox(
             placeholder="Ask me anything",
             label="Type a question and press Enter",
@@ -89,9 +120,10 @@ def gradio_app(llm: Llm) -> Any:
         )
 
         with gr.Row():
+            submit_button = gr.Button("📩 Submit question", variant="primary")
             retry_button = gr.Button("♻️ Retry last turn")
             delete_turn_button = gr.Button("🧽 Delete last turn")
-            clear_chat_button = gr.Button("🧹 Delete all history")
+            clear_chat_button = gr.Button("🧹 Delete all history", variant="stop")
             # clear = gr.ClearButton([msg, chatbot])
 
         gr.Examples(
@@ -107,12 +139,16 @@ def gradio_app(llm: Llm) -> Any:
                 instructions = gr.Textbox(
                     placeholder="LLM instructions",
                     value=llm.conf.prompt.template,
-                    lines=10,
+                    lines=6,
                     interactive=True,
                     label="Instructions",
                     max_lines=16,
                     show_label=False,
                 )
+
+        sources = gr.Markdown("")
+
+        memory = ConversationBufferMemory(ai_prefix="AI Assistant")
 
         def run_chat(
             message: str, chat_history, instructions: str, temperature: float, max_new_tokens: float
@@ -128,13 +164,16 @@ def gradio_app(llm: Llm) -> Any:
                 # TODO: the chat history in the gradio app is properly cleaned, but the LLM built-in memory is not cleaned
 
             # prompt = format_chat_prompt(message, chat_history, instructions)
-            chat_history = [*chat_history, [message, "Processing your question ⏳"]]
+            chat_history = [*chat_history, [message, "⏳ Processing your question"]]
+            # memory.chat_memory.add_user_message(message)
             yield chat_history
             for next_token, content in stream(
-                message, chat_history, instructions, temperature, max_new_tokens
+                message, memory, instructions, temperature, max_new_tokens
             ):
                 chat_history[-1][1] = content
                 yield chat_history
+            # memory.chat_memory.add_ai_message(chat_history[-1][1])
+            # print(memory.chat_memory.messages)
 
         def delete_last_turn(chat_history):
             if chat_history:
@@ -149,55 +188,40 @@ def gradio_app(llm: Llm) -> Any:
             )
 
         def clear_chat():
+            ConversationBufferMemory(ai_prefix="AI Assistant")
             return []
 
         inputs.submit(
             run_chat,
             [inputs, chatbot, instructions, temperature, max_new_tokens],
             outputs=[chatbot],
-            show_progress=False,
+            queue=True,
+            show_progress="hidden",
         )
-        # inputs.submit(lambda: "", inputs=None, outputs=inputs)
-        delete_turn_button.click(delete_last_turn, inputs=[chatbot], outputs=[chatbot])
+        inputs.submit(
+            lambda: "", inputs=None, outputs=inputs, queue=False, show_progress="hidden"
+        )  # Clear inputs on submit
+        submit_button.click(
+            run_chat,
+            [inputs, chatbot, instructions, temperature, max_new_tokens],
+            outputs=[chatbot],
+            queue=True,
+            show_progress="hidden",
+        )
+        submit_button.click(
+            lambda: "", inputs=None, outputs=inputs, queue=False, show_progress="hidden"
+        )
+        delete_turn_button.click(delete_last_turn, inputs=[chatbot], outputs=[chatbot], queue=False)
         retry_button.click(
             run_retry,
             [inputs, chatbot, instructions, temperature, max_new_tokens],
             outputs=[chatbot],
-            show_progress=False,
+            queue=False,
         )
-        clear_chat_button.click(clear_chat, [], chatbot)
+        clear_chat_button.click(clear_chat, [], chatbot, queue=False)
 
-        chatbot.like(vote, None, None)
-
-        # def user(user_message, history):
-        #     return "", [*history, [user_message, None]]
-
-        # def bot(history):
-        #     print("history!!", history)
-        #     history[-1][1] = ""
-        #     for next_token, content in stream(history[-1][0], history):
-        #         history[-1][1] = content
-        #         yield history
-
-        # inputs.submit(user, [inputs, chatbot], [inputs, chatbot], queue=False).then(bot, chatbot, chatbot)
-        # chatbot.like(vote, None, None)
-
-        # # def clear_interaction():
-        # #     # Reset the chat history and input text when retry is clicked
-        # #     chatbot.history = []
-        # #     msg.update("")
-
-        # def retry_interaction():
-        #     history = inputs.history
-        #     print(history)
-        #     print(chat.history)
-        #     # Reset the chat history and input text when retry is clicked
-        #     history[-1][1] = ""
-        #     inputs.submit(user, [history[-1][0], chatbot], [chatbot.history[-1][0], chatbot], queue=False).then(bot, chatbot, chatbot)
-        #     # msg.update("")
-
-        # # clear.click(clear_interaction, None, chatbot, queue=False)
-        # # retry.click(retry_interaction, None, chatbot, queue=False)
+        chatbot.like(vote, None, None, queue=False)
+        chatbot.select(on_select, None, sources, queue=False, show_progress="hidden")
 
     return chat.queue()
 
@@ -213,26 +237,3 @@ class StreamGradioCallback(BaseCallbackHandler):
 
     def on_llm_end(self, *args, **kwargs: Any) -> None:
         return self.q.empty()
-
-    # https://www.gradio.app/guides/creating-a-chatbot-fast
-    # https://www.gradio.app/guides/creating-a-custom-chatbot-with-blocks
-    # chat = gr.ChatInterface(
-    #     get_chatbot_resp,
-    #     chatbot=gr.Chatbot(height=600),
-    #     textbox=gr.Textbox(placeholder="Ask me anything", container=False, scale=7),
-    #     title=llm.conf.info.title,
-    #     description=llm.conf.info.description,
-    #     theme="soft",
-    #     examples=llm.conf.info.examples,
-    #     cache_examples=False,  # Error in GitHub action tests when enabled
-    # )
-
-
-# def format_chat_prompt(message: str, chat_history, instructions: str) -> str:
-#     instructions = instructions.strip(" ").strip("\n")
-#     prompt = instructions
-#     for turn in chat_history:
-#         user_message, bot_message = turn
-#         prompt = f"{prompt}\n{USER_NAME}: {user_message}\n{BOT_NAME}: {bot_message}"
-#     prompt = f"{prompt}\n{USER_NAME}: {message}\n{BOT_NAME}:"
-#     return prompt

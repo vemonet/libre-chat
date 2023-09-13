@@ -1,7 +1,7 @@
 """Module: Open-source LLM setup"""
 import os
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Union
 
 import torch
 from langchain import PromptTemplate
@@ -142,26 +142,11 @@ class Llm:
             )
 
         log.info(f"🤖 Loading CTransformers model from {BOLD}{self.model_path}{END}")
-        # Instantiate local CTransformers model https://github.com/marella/ctransformers#config
-        # self.llm = CTransformers(  # type: ignore
-        #     model=self.model_path,
-        #     model_type=self.model_type,
-        #     config={
-        #         "max_new_tokens": self.max_new_tokens,
-        #         "temperature": self.temperature,
-        #         "stream": True,
-        #         "gpu_layers": self.conf.llm.gpu_layers if self.device.type != "cpu" else 0,
-        #     },
-        # )
         if self.has_vectorstore():
             log.info(f"💫 Loading vectorstore from {BOLD}{self.vector_path}{END}")
             self.setup_dbqa()
         if not self.vector_path:
             log.info("🦜 No vectorstore provided, using a generic LLM")
-        #     log.info(self.prompt)
-        #     self.conversation = ConversationChain(
-        #         llm=self.llm, prompt=self.prompt, verbose=True, memory=ConversationBufferMemory(ai_prefix="AI Assistant")
-        #     )
 
     def download_data(self) -> None:
         """Download data"""
@@ -262,7 +247,7 @@ class Llm:
     def query(
         self,
         prompt: str,
-        history: Optional[List[Tuple[str, str]]] = None,
+        memory: Any = None,
         config: Optional[Dict[str, Any]] = None,
         instructions: Optional[str] = None,
         callbacks: Optional[List[Any]] = None,
@@ -277,7 +262,7 @@ class Llm:
                     "result": "The vectorstore has not been built, please go to the [API web UI](/docs) (the green icon at the top right of the page), and upload documents to vectorize."
                 }
             # self.setup_dbqa()  # we need to reload the dbqa each time to make sure all workers are up-to-date
-            res = self.dbqa({"query": prompt})
+            res = self.dbqa({"query": prompt}, callbacks=callbacks)
             log.debug(f"💭 Complete response from the LLM: {res}")
             for i, doc in enumerate(res["source_documents"]):
                 res["source_documents"][i] = {
@@ -289,16 +274,17 @@ class Llm:
                         res["source_documents"][i]["metadata"]["source"]
                     )
         else:
-            # log.info(self.prompt)
+            # NOTE: initializing the LLM at every call to prevent the conversation to take up lot of memory after some time
+            # And enable to customize the instructions prompt and temperature for each query
+            # Memory is handled at the gradio level
+            if not memory:
+                memory = (ConversationBufferMemory(ai_prefix="AI Assistant"),)
             template = instructions if instructions else self.prompt_template
             prompt_template = PromptTemplate(
                 template=template, input_variables=self.prompt_variables
             )
             conversation = ConversationChain(
-                llm=self.get_llm(config),
-                prompt=prompt_template,
-                verbose=True,
-                memory=ConversationBufferMemory(ai_prefix="AI Assistant"),
+                llm=self.get_llm(config), prompt=prompt_template, verbose=True, memory=memory
             )
             resp = conversation.predict(input=prompt, callbacks=callbacks)
             res = {"result": resp}
@@ -307,7 +293,7 @@ class Llm:
     async def aquery(
         self,
         prompt: str,
-        history: Optional[List[Tuple[str, str]]] = None,
+        memory: Any = None,
         config: Optional[Dict[str, Any]] = None,
         instructions: Optional[str] = None,
         callbacks: Optional[List[Any]] = None,
@@ -339,14 +325,15 @@ class Llm:
                     )
         else:
             # Not using vectostore, generic conversation
-            # if "instructions" in config:
+            if not memory:
+                memory = (ConversationBufferMemory(ai_prefix="AI Assistant"),)
             template = instructions if instructions else self.prompt_template
             PromptTemplate(template=template, input_variables=self.prompt_variables)
             conversation = ConversationChain(
                 llm=self.get_llm(config),
                 prompt=self.prompt,
                 verbose=True,
-                memory=ConversationBufferMemory(ai_prefix="AI Assistant"),
+                memory=memory,
             )
             resp = await conversation.apredict(input=prompt, callbacks=callbacks)
             res = {"result": resp}
@@ -367,7 +354,7 @@ Assistant is constantly learning and improving, and its capabilities are constan
 Overall, Assistant is a powerful tool that can help with a wide range of tasks and provide valuable insights and information on a wide range of topics. Whether you need help with a specific question or just want to have a conversation about a particular topic, Assistant is here to assist.
 
 {history}
-Human: {input}
+User: {input}
 Assistant:"""
 
 DEFAULT_QA_PROMPT = """Use the following pieces of information to answer the user's question.
