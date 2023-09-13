@@ -1,6 +1,7 @@
 import time
 from typing import Any, List, Optional
 
+import gradio as gr
 import pkg_resources
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -76,10 +77,11 @@ class ChatEndpoint(FastAPI):
             response.headers["X-Process-Time"] = str(time.time() - start_time)
             return response
 
-        self.mount(
-            "/",
-            gradio_app(self.llm),
-        )
+        # self.mount(
+        #     "/gradio",
+        #     gradio_app(self.llm),
+        # )
+        self = gr.mount_gradio_app(self, gradio_app(self.llm), path="/gradio")
 
         # Mount web wroker asset:
         self.mount(
