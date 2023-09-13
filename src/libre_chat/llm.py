@@ -143,26 +143,25 @@ class Llm:
 
         log.info(f"🤖 Loading CTransformers model from {BOLD}{self.model_path}{END}")
         # Instantiate local CTransformers model https://github.com/marella/ctransformers#config
-        self.llm = CTransformers(  # type: ignore
-            model=self.model_path,
-            # model_file=self.model_path,
-            model_type=self.model_type,
-            config={
-                "max_new_tokens": self.max_new_tokens,
-                "temperature": self.temperature,
-                "stream": True,
-                "gpu_layers": self.conf.llm.gpu_layers if self.device.type != "cpu" else 0,
-            },
-        )
+        # self.llm = CTransformers(  # type: ignore
+        #     model=self.model_path,
+        #     model_type=self.model_type,
+        #     config={
+        #         "max_new_tokens": self.max_new_tokens,
+        #         "temperature": self.temperature,
+        #         "stream": True,
+        #         "gpu_layers": self.conf.llm.gpu_layers if self.device.type != "cpu" else 0,
+        #     },
+        # )
         if self.has_vectorstore():
             log.info(f"💫 Loading vectorstore from {BOLD}{self.vector_path}{END}")
             self.setup_dbqa()
         if not self.vector_path:
             log.info("🦜 No vectorstore provided, using a generic LLM")
-            log.info(self.prompt)
-            self.conversation = ConversationChain(
-                llm=self.llm, prompt=self.prompt, verbose=True, memory=ConversationBufferMemory()
-            )
+        #     log.info(self.prompt)
+        #     self.conversation = ConversationChain(
+        #         llm=self.llm, prompt=self.prompt, verbose=True, memory=ConversationBufferMemory(ai_prefix="AI Assistant")
+        #     )
 
     def download_data(self) -> None:
         """Download data"""
@@ -181,6 +180,23 @@ class Llm:
         """Get the vectorstore path"""
         return self.vector_path if self.vector_path and os.path.exists(self.vector_path) else ""
 
+    def get_llm(self, config: Optional[Dict[str, Any]] = None) -> CTransformers:
+        if not config:
+            config = {}
+        if "temperature" not in config:
+            config["temperature"] = self.temperature
+        if "max_new_tokens" not in config:
+            config["max_new_tokens"] = self.max_new_tokens
+        if "stream" not in config:
+            config["stream"] = True
+        if "gpu_layers" not in config:
+            config["gpu_layers"] = self.conf.llm.gpu_layers if self.device.type != "cpu" else 0
+        return CTransformers(  # type: ignore
+            model=self.model_path,
+            model_type=self.model_type,
+            config=config,
+        )
+
     def setup_dbqa(self) -> None:
         """Setup the vectorstore for QA"""
         if self.has_vectorstore():
@@ -194,7 +210,7 @@ class Llm:
             if self.score_threshold is not None:
                 search_args["score_threshold"] = self.score_threshold
             self.dbqa = RetrievalQA.from_chain_type(
-                llm=self.llm,
+                llm=self.get_llm(),
                 chain_type=self.chain_type,
                 retriever=vectorstore.as_retriever(
                     search_type=self.search_type, search_kwargs=search_args
@@ -247,6 +263,8 @@ class Llm:
         self,
         prompt: str,
         history: Optional[List[Tuple[str, str]]] = None,
+        config: Optional[Dict[str, Any]] = None,
+        instructions: Optional[str] = None,
         callbacks: Optional[List[Any]] = None,
     ) -> Dict[str, str]:
         """Query the built LLM"""
@@ -271,7 +289,18 @@ class Llm:
                         res["source_documents"][i]["metadata"]["source"]
                     )
         else:
-            resp = self.conversation.predict(input=prompt, callbacks=callbacks)
+            # log.info(self.prompt)
+            template = instructions if instructions else self.prompt_template
+            prompt_template = PromptTemplate(
+                template=template, input_variables=self.prompt_variables
+            )
+            conversation = ConversationChain(
+                llm=self.get_llm(config),
+                prompt=prompt_template,
+                verbose=True,
+                memory=ConversationBufferMemory(ai_prefix="AI Assistant"),
+            )
+            resp = conversation.predict(input=prompt, callbacks=callbacks)
             res = {"result": resp}
         return res
 
@@ -279,6 +308,8 @@ class Llm:
         self,
         prompt: str,
         history: Optional[List[Tuple[str, str]]] = None,
+        config: Optional[Dict[str, Any]] = None,
+        instructions: Optional[str] = None,
         callbacks: Optional[List[Any]] = None,
     ) -> Dict[str, str]:
         """Async query the built LLM"""
@@ -308,7 +339,16 @@ class Llm:
                     )
         else:
             # Not using vectostore, generic conversation
-            resp = await self.conversation.apredict(input=prompt, callbacks=callbacks)
+            # if "instructions" in config:
+            template = instructions if instructions else self.prompt_template
+            PromptTemplate(template=template, input_variables=self.prompt_variables)
+            conversation = ConversationChain(
+                llm=self.get_llm(config),
+                prompt=self.prompt,
+                verbose=True,
+                memory=ConversationBufferMemory(ai_prefix="AI Assistant"),
+            )
+            resp = await conversation.apredict(input=prompt, callbacks=callbacks)
             res = {"result": resp}
         return res
 

@@ -13,8 +13,8 @@ prompt:
     Your are an assistant, please help me
 
     {history}
-    Human: {input}
-    Assistant:
+    User: {input}
+    AI Assistant:
 
 vector:
   vector_path: null # Path to the vectorstore to do QA retrieval, e.g. ./vectorstore/db_faiss

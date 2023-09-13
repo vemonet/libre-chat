@@ -17,8 +17,8 @@ prompt:
     Your are an assistant, please help me
 
     {history}
-    Human: {input}
-    Assistant:
+    User: {input}
+    AI Assistant:
 
 info:
   title: "Libre Chat"
