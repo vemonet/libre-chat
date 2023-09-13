@@ -84,15 +84,6 @@ class ChatEndpoint(FastAPI):
             name="static",
         )
 
-        # TODO: Try with svelte https://github.com/OriginalStefikO/fastapi-svelte-starter/blob/main/main.py
-        # self.mount(
-        #     "/",
-        #     StaticFiles(
-        #         directory=pkg_resources.resource_filename("libre_chat", "webapp"), html=True
-        #     ),
-        #     name="static",
-        # )
-
         # TODO: not found when used after installing from pip, cf. https://github.com/vemonet/libre-chat/issues/2
         templates = Jinja2Templates(
             directory=pkg_resources.resource_filename("libre_chat", "templates")
@@ -131,3 +122,12 @@ class ChatEndpoint(FastAPI):
             )
 
         self = gr.mount_gradio_app(self, gradio_app(self.llm), path="/")
+
+        # TODO: Try with svelte https://github.com/OriginalStefikO/fastapi-svelte-starter/blob/main/main.py
+        # self.mount(
+        #     "/",
+        #     StaticFiles(
+        #         directory=pkg_resources.resource_filename("libre_chat", "webapp"), html=True
+        #     ),
+        #     name="static",
+        # )

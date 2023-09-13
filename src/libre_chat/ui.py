@@ -1,8 +1,8 @@
 """Module: Gradio web UI for LangChain chatbot"""
-from collections.abc import Generator
+from collections.abc import Iterator
 from queue import Empty, Queue
 from threading import Thread
-from typing import Any
+from typing import Any, List, Tuple
 
 import gradio as gr
 from langchain.callbacks.base import BaseCallbackHandler
@@ -25,7 +25,7 @@ CSS = """.contain { display: flex; flex-direction: column; }
 # https://huggingface.co/spaces/HuggingFaceH4/falcon-chat-demo-for-blog/blob/main/app.py
 # https://huggingface.co/spaces/HuggingFaceH4/falcon-chat-demo-for-blog
 def gradio_app(llm: Llm) -> Any:
-    def chat_accordion():
+    def chat_accordion() -> Tuple[float, int]:
         with gr.Accordion("Parameters", open=False):
             temperature = gr.Slider(
                 minimum=0,
@@ -47,9 +47,11 @@ def gradio_app(llm: Llm) -> Any:
 
     sources_list = []
 
-    def stream(input_text, memory, instructions, temperature, max_new_tokens) -> Generator:
+    def stream(
+        input_text: str, memory: Any, instructions: str, temperature: float, max_new_tokens: int
+    ) -> Iterator[Tuple[object, str]]:
         # Create a Queue
-        q = Queue()
+        q: Queue[object] = Queue()
         job_done = object()
 
         # Create a function to call - this will run in a thread
@@ -79,19 +81,19 @@ def gradio_app(llm: Llm) -> Any:
                 next_token = q.get(True, timeout=1)
                 if next_token is job_done:
                     break
-                content += next_token
+                content += str(next_token)
                 yield next_token, content
             except Empty:
                 continue
 
-    def vote(data: gr.LikeData):
+    def vote(data: gr.LikeData) -> None:
         # TODO: save votes somewhere
         if data.liked:
             print("You upvoted this response: " + data.value)
         else:
             print("You downvoted this response: " + data.value)
 
-    def on_select(evt: gr.SelectData):
+    def on_select(evt: gr.SelectData) -> str:
         msg_index = evt.index[0]
         if msg_index < len(sources_list):
             sources_str = f"## 🗃️ Sources\nFor message n°{msg_index}\n"
@@ -100,6 +102,7 @@ def gradio_app(llm: Llm) -> Any:
                     f'### 📄 {source["metadata"]["filename"]}\n{source["page_content"]}\n\n'
                 )
             return sources_str
+        return ""
         # return f"You selected 【{evt.value}】 at 【{evt.index}】 from 【{evt.target}】"
 
     # gray https://www.gradio.app/guides/theming-guide#core-colors
@@ -121,9 +124,9 @@ def gradio_app(llm: Llm) -> Any:
 
         with gr.Row():
             submit_button = gr.Button("📩 Submit question", variant="primary")
-            retry_button = gr.Button("♻️ Retry last turn")
-            delete_turn_button = gr.Button("🧽 Delete last turn")
-            clear_chat_button = gr.Button("🧹 Delete all history", variant="stop")
+            retry_button = gr.Button("♻️ Retry last question")
+            delete_turn_button = gr.Button("🧽 Delete last question")
+            clear_chat_button = gr.Button("🧹 Delete history", variant="stop")
             # clear = gr.ClearButton([msg, chatbot])
 
         gr.Examples(
@@ -151,8 +154,12 @@ def gradio_app(llm: Llm) -> Any:
         memory = ConversationBufferMemory(ai_prefix="AI Assistant")
 
         def run_chat(
-            message: str, chat_history, instructions: str, temperature: float, max_new_tokens: float
-        ):
+            message: str,
+            chat_history: List[List[str]],
+            instructions: str,
+            temperature: float,
+            max_new_tokens: int,
+        ) -> Iterator[List[List[str]]]:
             if not message or (message == RETRY_COMMAND and len(chat_history) == 0):
                 yield chat_history
                 return
@@ -175,19 +182,23 @@ def gradio_app(llm: Llm) -> Any:
             # memory.chat_memory.add_ai_message(chat_history[-1][1])
             # print(memory.chat_memory.messages)
 
-        def delete_last_turn(chat_history):
+        def delete_last_turn(chat_history: List[List[str]]) -> Any:
             if chat_history:
                 chat_history.pop(-1)
             return {chatbot: gr.update(value=chat_history)}
 
         def run_retry(
-            message: str, chat_history, instructions: str, temperature: float, max_new_tokens: float
-        ):
+            message: str,
+            chat_history: List[List[str]],
+            instructions: str,
+            temperature: float,
+            max_new_tokens: int,
+        ) -> Iterator[List[List[str]]]:
             yield from run_chat(
                 RETRY_COMMAND, chat_history, instructions, temperature, max_new_tokens
             )
 
-        def clear_chat():
+        def clear_chat() -> List[str]:
             ConversationBufferMemory(ai_prefix="AI Assistant")
             return []
 
@@ -229,11 +240,11 @@ def gradio_app(llm: Llm) -> Any:
 class StreamGradioCallback(BaseCallbackHandler):
     """Callback handler for streaming LLM responses to a queue."""
 
-    def __init__(self, q):
+    def __init__(self, q: Queue[object]):
         self.q = q
 
     def on_llm_new_token(self, token: str, **kwargs: Any) -> None:
         self.q.put(token)
 
-    def on_llm_end(self, *args, **kwargs: Any) -> None:
+    def on_llm_end(self, *args: Any, **kwargs: Any) -> bool:
         return self.q.empty()

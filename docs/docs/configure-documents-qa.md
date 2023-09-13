@@ -115,6 +115,8 @@ info:
   version: "0.1.0"
   description: |
     Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama) [7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)
+
+    See also: [📡 API](/docs) | [🖥️ Alternative UI](/ui)
   examples:
   - What is the capital of the Netherlands?
   - Which drugs are approved by the FDA to mitigate Alzheimer symptoms?

@@ -274,7 +274,8 @@ class Llm:
                         res["source_documents"][i]["metadata"]["source"]
                     )
         else:
-            # NOTE: initializing the LLM at every call to prevent the conversation to take up lot of memory after some time
+            # Not using vectostore, generic conversation
+            # NOTE: initializing the LLM and conversation at every call to prevent the conversation to take up lot of memory after some time
             # And enable to customize the instructions prompt and temperature for each query
             # Memory is handled at the gradio level
             if not memory:

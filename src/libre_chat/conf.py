@@ -28,7 +28,9 @@ class SettingsInfo(BaseConf):
     ]
     title: str = "Libre Chat"
     version: str = "0.1.0"
-    description: str = """Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama) [7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)"""
+    description: str = """Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama) [7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)
+
+    See also: [📡 API](/docs) | [🖥️ Alternative UI](/ui)"""
     public_url: str = "https://your-endpoint-url"
     repository_url: str = "https://github.com/vemonet/libre-chat"
     favicon: str = "https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/logo.png"
