@@ -51,7 +51,7 @@ def gradio_app(llm: Llm) -> Any:
         input_text: str, memory: Any, instructions: str, temperature: float, max_new_tokens: int
     ) -> Iterator[Tuple[Any, str]]:
         # Create a Queue
-        q: Queue[Any] = Queue()
+        q: "Queue[Any]" = Queue()
         job_done = object()
 
         # Create a function to call - this will run in a thread
@@ -240,7 +240,7 @@ def gradio_app(llm: Llm) -> Any:
 class StreamGradioCallback(BaseCallbackHandler):
     """Callback handler for streaming LLM responses to a queue."""
 
-    def __init__(self, q: Queue[Any]):
+    def __init__(self, q: "Queue[Any]"):
         self.q = q
 
     def on_llm_new_token(self, token: str, **kwargs: Any) -> None:

@@ -1,8 +1,10 @@
 ARG BASE_IMAGE=python:3.11
-# ARG BASE_IMAGE=nvcr.io/nvidia/cuda:12.2.0-devel-ubuntu20.04
+# ARG BASE_IMAGE=nvcr.io/nvidia/cuda:12.2.0-devel-ubuntu22.04
 # 2.7GB cf. https://ngc.nvidia.com/catalog/containers/nvidia:cuda
 # ARG BASE_IMAGE=nvcr.io/nvidia/pytorch:23.06-py3
 # 8.5GB cf. https://ngc.nvidia.com/catalog/containers/nvidia:pytorch
+
+# CUDA image: https://github.com/oobabooga/text-generation-webui/blob/main/docker/Dockerfile
 
 FROM ${BASE_IMAGE}
 
@@ -12,14 +14,14 @@ ENV LIBRECHAT_WORKERS=1
 
 # CUDA image required to install python
 RUN apt-get update && \
-    apt-get install -y software-properties-common wget unzip && \
+    apt-get install -y software-properties-common git vim build-essential python3-dev wget unzip && \
     # add-apt-repository ppa:deadsnakes/ppa && \
     # apt-get install -y python3.11 && \
     # ln -s /usr/bin/python3.11 /usr/bin/python && \
     # wget https://bootstrap.pypa.io/get-pip.py && \
     # python get-pip.py && \
     # rm get-pip.py && \
-    pip install --upgrade pip
+    pip3 install --upgrade pip
 
 
 
@@ -37,7 +39,7 @@ WORKDIR /app
 
 # Pre-install requirements to use cache when re-building
 ADD scripts/requirements.txt .
-RUN pip install -r requirements.txt && \
+RUN pip3 install -r requirements.txt && \
     rm requirements.txt
 
 ADD . .
