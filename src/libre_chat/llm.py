@@ -279,7 +279,7 @@ class Llm:
             # And enable to customize the instructions prompt and temperature for each query
             # Memory is handled at the gradio level
             if not memory:
-                memory = (ConversationBufferMemory(ai_prefix="AI Assistant"),)
+                memory = ConversationBufferMemory(ai_prefix="AI Assistant")
             template = instructions if instructions else self.prompt_template
             prompt_template = PromptTemplate(
                 template=template, input_variables=self.prompt_variables
@@ -327,7 +327,7 @@ class Llm:
         else:
             # Not using vectostore, generic conversation
             if not memory:
-                memory = (ConversationBufferMemory(ai_prefix="AI Assistant"),)
+                memory = ConversationBufferMemory(ai_prefix="AI Assistant")
             template = instructions if instructions else self.prompt_template
             PromptTemplate(template=template, input_variables=self.prompt_variables)
             conversation = ConversationChain(
