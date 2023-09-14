@@ -49,7 +49,7 @@ def gradio_app(llm: Llm) -> Any:
 
     def stream(
         input_text: str, memory: Any, instructions: str, temperature: float, max_new_tokens: int
-    ) -> Iterator[Tuple[Any, str]]:
+    ) -> "Iterator[Tuple[Any, str]]":
         # Create a Queue
         q: "Queue[Any]" = Queue()
         job_done = object()
@@ -159,7 +159,7 @@ def gradio_app(llm: Llm) -> Any:
             instructions: str,
             temperature: float,
             max_new_tokens: int,
-        ) -> Iterator[List[List[str]]]:
+        ) -> "Iterator[List[List[str]]]":
             if not message or (message == RETRY_COMMAND and len(chat_history) == 0):
                 yield chat_history
                 return
@@ -193,7 +193,7 @@ def gradio_app(llm: Llm) -> Any:
             instructions: str,
             temperature: float,
             max_new_tokens: int,
-        ) -> Iterator[List[List[str]]]:
+        ) -> "Iterator[List[List[str]]]":
             yield from run_chat(
                 RETRY_COMMAND, chat_history, instructions, temperature, max_new_tokens
             )

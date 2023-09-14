@@ -48,7 +48,13 @@ def test_websocket_prompt_conversation() -> None:
                 pass  # wait for the end
 
 
-def test_get_ui() -> None:
-    """Test get UI"""
+def test_get_gradio_ui() -> None:
+    """Test get gradio UI"""
     response = client.get("/")
+    assert response.status_code == 200
+
+
+def test_get_alternative_ui() -> None:
+    """Test get alternative UI"""
+    response = client.get("/ui")
     assert response.status_code == 200
