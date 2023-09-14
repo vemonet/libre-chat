@@ -39,6 +39,7 @@ Those checkpoints are features we plan to work on in the future, feel free to le
 - [x] Add support for returning sources in UI when using documents-based QA
 - [x] Stream response to the websocket to show words as they are generated
 - [x] Speed up inference, better use of GPUs, especially when doing QA.
+- [ ] Look into using [MLC](https://mlc.ai/mlc-llm/) to run inference (instead of ctransformers)
 - [ ] Add button to let the user stop the chatbot generation (for when it goes wild)
 - [ ] Kubernetes deployment (Helm chart?)
 - [ ] Try with Vicuna model
