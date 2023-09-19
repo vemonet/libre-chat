@@ -44,6 +44,8 @@ jobs:
             type=ref,event=branch,suffix=-gpu
             type=semver,pattern={{version}},suffix=-gpu
 
+      - run: df -h
+
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@v4
