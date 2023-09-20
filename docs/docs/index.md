@@ -82,3 +82,4 @@ If you are looking for more mature tools to play with LLMs locally we recommend 
 * [ChatDocs](https://github.com/marella/chatdocs): UI to Chat with your documents offline, by the developer of [ctransformers](https://github.com/marella/ctransformers)
 * [localGPT](https://github.com/PromtEngineer/localGPT): Chat with your documents on your local device using GPT models
 * [text-generation-webui](https://github.com/oobabooga/text-generation-webui): A Gradio web UI for Large Language Models
+* [ollama](https://github.com/jmorganca/ollama): Get up and running with Llama 2 and other large language models locally
