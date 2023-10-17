@@ -77,10 +77,11 @@ All files required for querying the model are stored and accessed locally using 
 
 If you are looking for more mature tools to play with LLMs locally we recommend to look into those really good projects:
 
+* [chat-langchain](https://github.com/langchain-ai/chat-langchain): chat UI for LangChain
+* [ollama](https://github.com/jmorganca/ollama): Get up and running with Llama 2 and other large language models locally
 * [GPT4All](https://gpt4all.io): open-source LLM chatbots that you can run anywhere
 * [llm](https://github.com/simonw/llm): Python library for interacting with Large Language Models, both via remote APIs and models that can be installed and run on your own machine, by Simon Willison (checkout their blog [simonwillison.net](https://simonwillison.net), for a lot of really well written articles about LLMs)
 * [vLLM](https://github.com/vllm-project/vllm): A high-throughput and memory-efficient inference and serving engine for LLMs (includes OpenAI-compatible server, requires GPU)
 * [ChatDocs](https://github.com/marella/chatdocs): UI to Chat with your documents offline, by the developer of [ctransformers](https://github.com/marella/ctransformers)
 * [localGPT](https://github.com/PromtEngineer/localGPT): Chat with your documents on your local device using GPT models
 * [text-generation-webui](https://github.com/oobabooga/text-generation-webui): A Gradio web UI for Large Language Models
-* [ollama](https://github.com/jmorganca/ollama): Get up and running with Llama 2 and other large language models locally
