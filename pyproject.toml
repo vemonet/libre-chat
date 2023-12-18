@@ -138,6 +138,9 @@ python = ["3.8", "3.9", "3.10", "3.11"]
 
 
 ## TOOLS
+[tool.hatch.build]
+packages = ["src/libre_chat"]
+
 [tool.hatch.version]
 path = "src/libre_chat/__init__.py"
 
