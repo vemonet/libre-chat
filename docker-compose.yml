@@ -7,7 +7,8 @@ services:
       dockerfile: Dockerfile.gpu
     # image: ghcr.io/vemonet/libre-chat:main
     volumes:
-      - ./config/chat-vectorstore-qa.yml:/data/chat.yml
+      # - ./config/chat-vectorstore-qa.yml:/data/chat.yml
+      - ./chat.yml:/data/chat.yml
       - ./data/models:/data/models
       - ./data/documents:/data/documents
       - ./data/embeddings:/data/embeddings
@@ -24,13 +25,13 @@ services:
     # ports:
     #   - 8000:8000
     # entrypoint: uvicorn scripts.main:app --reload
-    # deploy:  # Enable GPU in the container
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: 1
-    #           capabilities: [gpu]
+    deploy:  # Enable GPU in the container
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 3
+              capabilities: [gpu]
 
     # networks:
     #   - no-internet

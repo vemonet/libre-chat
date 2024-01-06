@@ -32,7 +32,7 @@ if [ -n "$LIBRECHAT_CONF_URL" ]; then
 fi
 
 # Initialize the Llm (ddl files if not present, build vectors) runs before the API to avoid running on multiple workers
-python /app/scripts/init.py
+python3 /app/scripts/init.py
 
 echo "🦄 Starting gunicorn with $LIBRECHAT_WORKERS workers on $BIND for the module $APP_MODULE with a timeout of $TIMEOUT sec"
 exec gunicorn -w "$LIBRECHAT_WORKERS" -k "$WORKER_CLASS" -b "$BIND" --timeout "$TIMEOUT" "$APP_MODULE"
