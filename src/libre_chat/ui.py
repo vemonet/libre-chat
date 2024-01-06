@@ -86,7 +86,8 @@ def gradio_app(llm: Llm) -> Any:
             except Empty:
                 continue
 
-    def vote(data: gr.LikeData) -> None:
+    # def vote(data: gr.LikeData) -> None:
+    def vote(data: Any) -> None:
         # TODO: save votes somewhere
         if data.liked:
             print("You upvoted this response: " + data.value)

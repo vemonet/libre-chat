@@ -232,7 +232,10 @@ class Llm:
             # Loading all file types provided in the document_loaders object
             for doc_load in self.document_loaders:
                 loader = DirectoryLoader(
-                    documents_path, glob=doc_load["glob"], loader_cls=doc_load["loader_cls"], loader_kwargs=doc_load["loader_kwargs"] if "loader_kwargs" in doc_load else {}  # type: ignore
+                    documents_path,
+                    glob=doc_load["glob"],
+                    loader_cls=doc_load["loader_cls"],
+                    loader_kwargs=doc_load["loader_kwargs"] if "loader_kwargs" in doc_load else {},
                 )
                 loaded_docs = loader.load()
                 if len(loaded_docs) > 0:
@@ -261,7 +264,7 @@ class Llm:
         config: Optional[Dict[str, Any]] = None,
         instructions: Optional[str] = None,
         callbacks: Optional[List[Any]] = None,
-    ) -> Dict[str, str]:
+    ) -> Dict[str, Any]:
         """Query the built LLM"""
         log.info(f"💬 Querying the LLM with prompt: {prompt}")
         if len(prompt) < 1:
@@ -323,7 +326,7 @@ class Llm:
         config: Optional[Dict[str, Any]] = None,
         instructions: Optional[str] = None,
         callbacks: Optional[List[Any]] = None,
-    ) -> Dict[str, str]:
+    ) -> Dict[str, Any]:
         """Async query the built LLM"""
         log.info(f"💬 Querying the LLM with prompt: {prompt}")
         if len(prompt) < 1:
