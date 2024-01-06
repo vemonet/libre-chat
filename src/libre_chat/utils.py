@@ -66,6 +66,7 @@ class Prompt:
 def download_file(url: str, path: str) -> None:
     ddl_path = f"{path}-ddl" if not url.endswith(".zip") else f"{path}.zip"
     log.info(f"📥 Downloading {url} to {ddl_path}")
+    progress_bar: Optional[tqdm] = None
     try:
         with requests.get(url, stream=True, timeout=10800) as response:  # 3h timeout
             response.raise_for_status()
