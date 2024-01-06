@@ -6,7 +6,7 @@
 [![Test package](https://github.com/vemonet/libre-chat/actions/workflows/test.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/test.yml) [![Coverage](https://coverage-badge.samuelcolvin.workers.dev/vemonet/libre-chat.svg)](https://coverage-badge.samuelcolvin.workers.dev/redirect/vemonet/libre-chat)
 <br /><br />
 
-Easily configure and deploy a **fully self-hosted chatbot web service** based on open source Large Language Models (LLMs), such as [Llama 2](https://ai.meta.com/llama/), without the need for knowledge in machine learning or programmation.
+Easily configure and deploy a **fully self-hosted chatbot web service** based on open source Large Language Models (LLMs), such as [Mistral](https://mistral.ai/news/mixtral-of-experts) or [Llama 2](https://ai.meta.com/llama/), without the need for knowledge in machine learning.
 
 </div>
 
@@ -15,17 +15,14 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 - 🚀 Easy to setup, no need to program, just configure the service with a [YAML](https://yaml.org/) file, and start the chat web service with 1 command
 - 📦 Available as a `pip` package 🐍, or `docker` image 🐳
 - 🐌 No need for GPU, this will work even on your laptop CPU! That said, running on CPUs can be quite slow (up to 1min to answer a documents-base question on recent laptops), so we are working on making a better use of GPU when available
-- 🦜 Powered by [`LangChain`](https://python.langchain.com) to support performant open source models inference: **Llama 2 GGML** ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) | [13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf) | [70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf)), **Llama 2 GPTQ** ([7B](https://huggingface.co/TheBloke/Llama-2-7B-chat-GPTQ) | [13B](https://huggingface.co/TheBloke/Llama-2-13B-chat-GPTQ) | [70B](https://huggingface.co/TheBloke/Llama-2-70B-chat-GPTQ))
+- 🦜 Powered by [`LangChain`](https://python.langchain.com) and [llama.cpp](https://github.com/ggerganov/llama.cpp) to perform inference locally.
 - 🤖 Various types of agents can be deployed:
     - **💬 Generic conversation**: do not need any additional training, just configure settings such as the template prompt
-    - **📚 Documents-based question answering**: automatically build similarity vectors from documents uploaded through the API UI, the chatbot will use them to answer your question, and return which documents were used to generate the answer (PDF, CSV, HTML, JSON, markdown, and more supported).
+    - **📚 Documents-based question answering** (experimental): automatically build similarity vectors from documents uploaded through the API UI, the chatbot will use them to answer your question, and return which documents were used to generate the answer (PDF, CSV, HTML, JSON, markdown, and more supported).
 
 - 🔍 Readable logs to understand what is going on
 
 - 🪶 Modern and lightweight chat web interface, working well on desktop and mobile, with support for light/dark theme, streaming response, and markdown rendering.
-
-Checkout the demo at [**chat.semanticscience.org**](https://chat.semanticscience.org)
-
 
 ![UI screenshot](/libre-chat/assets/screenshot.png)
 
@@ -52,11 +49,11 @@ Seasoned developers can also manipulate LLM models, and deploy the API in python
 
 ## 📥 Download supported models
 
-* Llama 2 GGML: [7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) | [13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf) | [70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf)
+All models supported in GGUF format by [`llama.cpp`](https://github.com/ggerganov/llama.cpp) should work. Preferably search for the `Instruct` version of a model (fine-tuned to better follow instructions), e.g.:
 
-* Llama 2 GPTQ: [7B](https://huggingface.co/TheBloke/Llama-2-7B-chat-GPTQ) | [13B](https://huggingface.co/TheBloke/Llama-2-13B-chat-GPTQ) | [70B](https://huggingface.co/TheBloke/Llama-2-70B-chat-GPTQ)
+* [Mixtral](https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF)
+* [Llama 2](https://huggingface.co/TheBloke/Llama-2-7B-32K-Instruct-GGUF)
 
-- [All models supported](https://github.com/marella/ctransformers#supported-models) by [`ctransformers`](https://github.com/marella/ctransformers) should work
 
 !!! Question "Supporting other models"
 

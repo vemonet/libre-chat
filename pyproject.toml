@@ -33,14 +33,16 @@ dependencies = [
     "fastapi",
     "pydantic-yaml",
     "requests",
+    "tqdm",
     "jinja2",
     "gradio",
     "uvicorn",
     "gunicorn",
     "langchain",
-    "ctransformers >=0.2.17", # To perform inference on LLM
+    "llama-cpp-python",      # To perform LLM inference
     "faiss-cpu >=1.7.4",     # To generate the vectorstore
     "sentence_transformers", # To produce the embeddings
+    # TODO: replace with fastembed?
     "pypdf",                 # For PDFloader, or use PDFMiner?
     "unstructured",          # For the email loader
     # "redis",               # To add a shared store for all workers
@@ -79,7 +81,7 @@ windows = [
 ]
 gpu = [
     "faiss-gpu",
-    "ctransformers[cuda]",
+    # "ctransformers[cuda]",
 ]
 
 
@@ -116,7 +118,7 @@ fmt = [
 ]
 test = [
     "fmt",
-    "coverage run -m pytest {args}",
+    "pytest {args}",
 ]
 cov = [
     "fmt",
@@ -155,7 +157,7 @@ exclude = [
 [tool.coverage.run]
 branch = true
 parallel = true # Append process id to the data file name
-source = [ "libre_chat" ]
+source = [ "src/libre_chat" ]
 
 [tool.coverage.paths]
 libre_chat = ["src/libre_chat", "*/src/libre_chat", "*\\src\\libre_chat"]

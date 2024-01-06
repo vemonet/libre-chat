@@ -24,7 +24,7 @@ jobs:
           #   os: macos-latest  # Consistently 10min+ slower than all other platforms
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: ♻️ Cache models
       # if: ${{ matrix.python-version != '3.10' }}
@@ -64,7 +64,7 @@ jobs:
     permissions:
       statuses: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
           python-version: '3.11'
@@ -108,7 +108,7 @@ jobs:
       cancel-in-progress: false
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -150,7 +150,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Enabling the cache causes the build to go out of storage space
       # - name: ♻️ Cache models
@@ -223,7 +223,7 @@ jobs:
 
   #   steps:
   #     - name: Checkout repository
-  #       uses: actions/checkout@v3
+  #       uses: actions/checkout@v4
 
   #     - name: Install cosign
   #       if: github.event_name != 'pull_request'
@@ -286,7 +286,7 @@ jobs:
   #     contents: read
   #   steps:
   #     - name: Checkout repository
-  #       uses: actions/checkout@v3
+  #       uses: actions/checkout@v4
   #     - name: Initialize CodeQL
   #       uses: github/codeql-action/init@v2
   #       with:

@@ -21,17 +21,6 @@ RUN apt-get update && \
     rm get-pip.py && \
     pip3 install --upgrade pip
 
-
-
-# Pre-download embeddings in /data
-# WORKDIR /app/embeddings
-# RUN wget https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/v0.2/all-MiniLM-L6-v2.zip && \
-#     unzip -d all-MiniLM-L6-v2 all-MiniLM-L6-v2.zip && \
-#     rm all-MiniLM-L6-v2.zip
-
-# WORKDIR /app/models
-# RUN wget https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.ggmlv3.q3_K_L.bin
-
 # Install app in /app
 WORKDIR /app
 

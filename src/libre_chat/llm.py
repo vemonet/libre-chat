@@ -23,11 +23,11 @@ from langchain.document_loaders import (
     UnstructuredWordDocumentLoader,
 )
 from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.llms import CTransformers
 from langchain.memory import ConversationBufferMemory
 from langchain.schema.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
+from langchain_community.llms import LlamaCpp
 
 from libre_chat.conf import ChatConf, default_conf
 from libre_chat.utils import BOLD, CYAN, END, log, parallel_download
@@ -141,7 +141,7 @@ class Llm:
                 f"♻️  Reusing existing vectorstore at {BOLD}{self.vector_path}{END}, skip building the vectorstore"
             )
 
-        log.info(f"🤖 Loading CTransformers model from {BOLD}{self.model_path}{END}")
+        log.info(f"🤖 Loading model from {BOLD}{self.model_path}{END}")
         if self.has_vectorstore():
             log.info(f"💫 Loading vectorstore from {BOLD}{self.vector_path}{END}")
             self.setup_dbqa()
@@ -165,7 +165,7 @@ class Llm:
         """Get the vectorstore path"""
         return self.vector_path if self.vector_path and os.path.exists(self.vector_path) else ""
 
-    def get_llm(self, config: Optional[Dict[str, Any]] = None) -> CTransformers:
+    def get_llm(self, config: Optional[Dict[str, Any]] = None) -> LlamaCpp:
         if not config:
             config = {}
         if "temperature" not in config:
@@ -174,12 +174,22 @@ class Llm:
             config["max_new_tokens"] = self.max_new_tokens
         if "stream" not in config:
             config["stream"] = True
-        if "gpu_layers" not in config:
-            config["gpu_layers"] = self.conf.llm.gpu_layers if self.device.type != "cpu" else 0
-        return CTransformers(  # type: ignore
-            model=self.model_path,
-            model_type=self.model_type,
+        # if "gpu_layers" not in config:
+        #     config["gpu_layers"] = self.conf.llm.gpu_layers if self.device.type != "cpu" else 0
+        if self.device.type != "cpu":
+            config["n_gpu_layers"] = 40
+            config["n_batch"] = 512
+        return LlamaCpp(
+            model_path=self.model_path,
             config=config,
+            top_p=1,
+            # model_type=self.model_type,
+            # n_gpu_layers=40,  # Change this value based on your model and your GPU VRAM pool.
+            # n_batch=512,  # Should be between 1 and n_ctx, consider the amount of VRAM in your GPU.
+            # temperature=0.01,
+            # max_tokens=2000,
+            # callback_manager=callback_manager,
+            # verbose=True,  # Verbose is required to pass to the callback manager
         )
 
     def setup_dbqa(self) -> None:
@@ -279,7 +289,7 @@ class Llm:
             # And enable to customize the instructions prompt and temperature for each query
             # Memory is handled at the gradio level
             if not memory:
-                memory = ConversationBufferMemory(ai_prefix="AI Assistant")
+                memory = ConversationBufferMemory(ai_prefix="AI Assistant", memory_key="history")
             template = instructions if instructions else self.prompt_template
             prompt_template = PromptTemplate(
                 template=template, input_variables=self.prompt_variables
@@ -288,6 +298,21 @@ class Llm:
                 llm=self.get_llm(config), prompt=prompt_template, verbose=True, memory=memory
             )
             resp = conversation.predict(input=prompt, callbacks=callbacks)
+
+            # NOTE: LCEL does not support callbacks handler yet https://github.com/langchain-ai/langchain/issues/14241
+            # chat_prompt = ChatPromptTemplate.from_template(template)
+            # chat_prompt = ChatPromptTemplate.from_messages(
+            #     [
+            #         ("system", "You're an assistant who's good at {ability}"),
+            #         MessagesPlaceholder(variable_name="history"),
+            #         ("human", "{question}"),
+            #     ]
+            # )
+            # model = self.get_llm(config)
+            # output_parser = StrOutputParser()
+            # chain = chat_prompt | model | output_parser
+            # resp = chain.invoke({"input": prompt}, callbacks=callbacks)
+
             res = {"result": resp}
         return res
 
@@ -368,7 +393,7 @@ Only return the helpful answer below and nothing else.
 Helpful answer:
 """
 
-DEFAULT_DOCUMENT_LOADERS: List[Dict[str, Union[Union[str, Any]]]] = [
+DEFAULT_DOCUMENT_LOADERS: List[Dict[str, Union[str, Any]]] = [
     {"glob": "*.pdf", "loader_cls": PyPDFLoader},
     {"glob": "*.csv", "loader_cls": CSVLoader, "loader_kwargs": {"encoding": "utf8"}},
     {

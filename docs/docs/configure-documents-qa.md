@@ -114,7 +114,7 @@ info:
   title: "Libre Chat"
   version: "0.1.0"
   description: |
-    Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama) [7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)
+    Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [llama.cpp](https://github.com/ggerganov/llama.cpp)
 
     See also: [📡 API](/docs) | [🖥️ Alternative UI](/ui)
   examples:

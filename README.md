@@ -8,7 +8,7 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/libre-chat.svg?logo=python&label=Python&logoColor=silver)](https://pypi.org/project/libre-chat/)
 [![License](https://img.shields.io/pypi/l/libre-chat)](https://github.com/vemonet/libre-chat/blob/main/LICENSE.txt) [![Pull requests welcome](https://img.shields.io/badge/pull%20requests-welcome-brightgreen)](https://github.com/vemonet/libre-chat/fork)
 
-Easily configure and deploy a **fully self-hosted chatbot web service** based on open source Large Language Models (LLMs), such as [Llama 2](https://ai.meta.com/llama/), without the need for knowledge in machine learning or programmation.
+Easily configure and deploy a **fully self-hosted chatbot web service** based on open source Large Language Models (LLMs), such as [Mistral](https://mistral.ai/news/mixtral-of-experts) or [Llama 2](https://ai.meta.com/llama/), without the need for knowledge in machine learning.
 
 </div>
 
@@ -17,14 +17,12 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 - 🚀 Easy to setup, no need to program, just configure the service with a [YAML](https://yaml.org/) file, and start it with 1 command
 - 📦 Available as a `pip` package 🐍, or `docker` image 🐳
 - 🐌 No need for GPU, this will work even on your laptop CPU! That said, running on CPUs can be quite slow (up to 1min to answer a documents-base question on recent laptops), so we are working on making a better use of GPU when available
-- 🦜 Powered by [`LangChain`](https://python.langchain.com) to support performant open source models inference: **Llama 2 GGML** ([7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML) | [13B](https://huggingface.co/llamaste/Llama-2-13b-chat-hf) | [70B](https://huggingface.co/llamaste/Llama-2-70b-chat-hf)), **Llama 2 GPTQ** ([7B](https://huggingface.co/TheBloke/Llama-2-7B-chat-GPTQ) | [13B](https://huggingface.co/TheBloke/Llama-2-13B-chat-GPTQ) | [70B](https://huggingface.co/TheBloke/Llama-2-70B-chat-GPTQ))
+- 🦜 Powered by [`LangChain`](https://python.langchain.com) and [llama.cpp](https://github.com/ggerganov/llama.cpp) to perform inference locally.
 - 🤖 Various types of agents can be deployed:
   - **💬 Generic conversation**: do not need any additional training, just configure settings such as the template prompt
-  - **📚 Documents-based question answering**: automatically build similarity vectors from documents uploaded through the API UI, the chatbot will use them to answer your question, and return which documents were used to generate the answer (PDF, CSV, HTML, JSON, markdown, and more supported).
+  - **📚 Documents-based question answering** (experimental): automatically build similarity vectors from documents uploaded through the API UI, the chatbot will use them to answer your question, and return which documents were used to generate the answer (PDF, CSV, HTML, JSON, markdown, and more supported).
 - 🔍 Readable logs to understand what is going on
 - 🪶 Modern and lightweight chat web interface, working well on desktop and mobile, with support for light/dark theme, streaming response, and markdown rendering.
-
-Checkout the demo at [**chat.semanticscience.org**](https://chat.semanticscience.org)
 
 ## 📖 Documentation
 
@@ -36,15 +34,12 @@ For more details on how to use Libre Chat check the documentation at **[vemonet.
 
 Those checkpoints are features we plan to work on in the future, feel free to let us know in the issues if you have any comment or request.
 
-- [x] Add support for returning sources in UI when using documents-based QA
 - [x] Stream response to the websocket to show words as they are generated
-- [x] Speed up inference, better use of GPUs, especially when doing QA.
-- [ ] Look into using [MLC](https://mlc.ai/mlc-llm/) to run inference (instead of ctransformers)
-- [ ] Add button to let the user stop the chatbot generation (for when it goes wild)
-- [ ] Kubernetes deployment (Helm chart?)
-- [ ] Try with Vicuna model
-- [ ] Add authentication mechanisms (OAuth/OpenID Connect)
+- [ ] Look into using [MLC](https://mlc.ai/mlc-llm/) to run inference?
+- [ ] Add button to let the user stop the chatbot generation
 - [ ] Add an admin dashboard web UI to enable users to upload/inspect/delete documents for QA, see/edit the config of the chatbot. Migrate to svelte with config retrieved from API?
+- [ ] Kubernetes deployment (Helm chart?)
+- [ ] Add authentication mechanisms? (OAuth/OpenID Connect)
 
 
 ![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/screenshot.png)
@@ -53,7 +48,7 @@ Those checkpoints are features we plan to work on in the future, feel free to le
 
 ## 🐳 Deploy with docker
 
-If you just want to quickly deploy it using the pre-trained model `Llama-2-7B-Chat-GGML`, you can use docker:
+If you just want to quickly deploy it using the pre-trained model `Mixtral-8x7B-Instruct`, you can use docker:
 
 ```bash
 docker run -it -p 8000:8000 ghcr.io/vemonet/libre-chat:main
@@ -81,9 +76,8 @@ And create a `chat.yml` file with your configuration in the same folder as the `
 
 ```yaml
 llm:
-  model_type: llama
-  model_path: ./models/llama-2-7b-chat.ggmlv3.q3_K_L.bin # We recommend to predownload the files, but you can provide download URLs that will be used if the files are not present:
-  model_download: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.ggmlv3.q3_K_L.bin
+  model_path: ./models/mixtral-8x7b-instruct-v0.1.Q2_K.gguf
+  model_download: https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF/resolve/main/mixtral-8x7b-instruct-v0.1.Q2_K.gguf
   temperature: 0.01    # Config how creative, but also potentially wrong, the model can be. 0 is safe, 1 is adventurous
   max_new_tokens: 1024 # Max number of words the LLM can generate
 
@@ -115,7 +109,7 @@ info:
   title: "Libre Chat"
   version: "0.1.0"
   description: |
-    Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama) [7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)
+    Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [llama.cpp](https://github.com/ggerganov/llama.cpp)
 
     See also: [📡 API](/docs) | [🖥️ Alternative UI](/ui)
   examples:

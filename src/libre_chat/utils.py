@@ -8,6 +8,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import requests
 from pydantic import BaseModel, validator
+from tqdm import tqdm
 from uvicorn.logging import ColourizedFormatter
 
 __all__ = ["Prompt", "parallel_download", "log"]
@@ -68,19 +69,42 @@ def download_file(url: str, path: str) -> None:
     try:
         with requests.get(url, stream=True, timeout=10800) as response:  # 3h timeout
             response.raise_for_status()
+            total_size_in_bytes = int(response.headers.get("content-length", 0))
+            progress_bar = tqdm(total=total_size_in_bytes, unit="iB", unit_scale=True)
             with open(ddl_path, "wb") as file:
-                for chunk in response.iter_content(
-                    chunk_size=8192
-                ):  # Adjust the chunk size as needed
+                for chunk in response.iter_content(chunk_size=8192):
+                    progress_bar.update(len(chunk))
                     file.write(chunk)
+            progress_bar.close()
         if ddl_path.endswith(".zip"):
             log.info(f"🤐 Unzipping {ddl_path} to {path}")
             with zipfile.ZipFile(ddl_path, "r") as zip_ref:
-                zip_ref.extractall(path)
+                # Extract all the contents into the directory
+                for file in tqdm(zip_ref.infolist(), desc="Extracting "):
+                    zip_ref.extract(file, path)  # type: ignore
         else:
             shutil.move(ddl_path, path)
     except Exception as e:
         log.warning(f"⚠️ Failed to download {url}: {e}")
+    finally:
+        if progress_bar is not None:
+            progress_bar.close()
+    # try:
+    #     with requests.get(url, stream=True, timeout=10800) as response:  # 3h timeout
+    #         response.raise_for_status()
+    #         with open(ddl_path, "wb") as file:
+    #             for chunk in response.iter_content(
+    #                 chunk_size=8192
+    #             ):  # Adjust the chunk size as needed
+    #                 file.write(chunk)
+    #     if ddl_path.endswith(".zip"):
+    #         log.info(f"🤐 Unzipping {ddl_path} to {path}")
+    #         with zipfile.ZipFile(ddl_path, "r") as zip_ref:
+    #             zip_ref.extractall(path)
+    #     else:
+    #         shutil.move(ddl_path, path)
+    # except Exception as e:
+    #     log.warning(f"⚠️ Failed to download {url}: {e}")
     log.info(f"✅ Downloaded: {url} in {path}")
 
 

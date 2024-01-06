@@ -28,7 +28,7 @@ class SettingsInfo(BaseConf):
     ]
     title: str = "Libre Chat"
     version: str = "0.1.0"
-    description: str = """Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [Llama 2](https://ai.meta.com/llama) [7B](https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML)
+    description: str = """Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [llama.cpp](https://github.com/ggerganov/llama.cpp)
 
     See also: [📡 API](/docs) | [🖥️ Alternative UI](/ui)"""
     public_url: str = "https://your-endpoint-url"
@@ -63,7 +63,7 @@ class SettingsVector(BaseConf):
 
 
 class SettingsLlm(BaseConf):
-    model_type: str = "llama"
+    model_type: str = "llama"  # TODO: Remove
     model_path: str = "models/llama-2-7b-chat.ggmlv3.q3_K_L.bin"
     model_download: Optional[str] = None
     max_new_tokens: int = 1024
