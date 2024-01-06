@@ -275,7 +275,7 @@ class Llm:
                     "result": "The vectorstore has not been built, please go to the [API web UI](/docs) (the green icon at the top right of the page), and upload documents to vectorize."
                 }
             # self.setup_dbqa()  # we need to reload the dbqa each time to make sure all workers are up-to-date
-            res = self.dbqa({"query": prompt}, callbacks=callbacks)
+            res: Dict[str, Any] = self.dbqa({"query": prompt}, callbacks=callbacks)
             log.debug(f"💭 Complete response from the LLM: {res}")
             for i, doc in enumerate(res["source_documents"]):
                 res["source_documents"][i] = {
@@ -340,7 +340,7 @@ class Llm:
                 }
             # TODO: handle history
             # self.setup_dbqa()  # we need to reload the dbqa each time to make sure all workers are up-to-date
-            res = await self.dbqa.acall({"query": prompt}, callbacks=callbacks)
+            res: Dict[str, Any] = await self.dbqa.acall({"query": prompt}, callbacks=callbacks)
             log.debug(f"💭 Complete response from the LLM: {res}")
             for i, doc in enumerate(res["source_documents"]):
                 # doc.to_json() not implemented yet
