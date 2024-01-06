@@ -30,7 +30,7 @@ RUN pip3 install -r requirements.txt && \
     rm requirements.txt
 
 ADD . .
-RUN bash -c "if [ $GPU_ENABLED == 'true' ] ; then pip3 install .[gpu] ; else pip3 install . ; fi"
+RUN bash -c "if [ $GPU_ENABLED == 'true' ] ; then pip3 install -e .[gpu] ; else pip3 install -e . ; fi"
 
 # We use /data as workdir for models, embeddings, vectorstore
 WORKDIR /data

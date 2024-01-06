@@ -35,7 +35,7 @@ dependencies = [
     "requests",
     "tqdm",
     "jinja2",
-    "gradio",
+    "gradio >=4.0.0",
     "uvicorn",
     "gunicorn",
     "langchain",
@@ -128,7 +128,7 @@ cov = [
 ]
 cov-start = "python -m http.server 3000 --directory ./htmlcov"
 docs = "mkdocs serve -a localhost:8001 -f docs/mkdocs.yml"
-compile = "pip-compile -o scripts/requirements.txt pyproject.toml"
+requirements = "pip-compile -o scripts/requirements.txt pyproject.toml"
 release = [
     "hatch build",
     "hatch publish",
