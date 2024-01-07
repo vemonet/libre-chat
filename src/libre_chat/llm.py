@@ -4,9 +4,12 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Union
 
 import torch
-from langchain import PromptTemplate
 from langchain.chains import ConversationChain, RetrievalQA
-from langchain.document_loaders import (
+from langchain.memory import ConversationBufferMemory
+from langchain.prompts import PromptTemplate
+from langchain.schema.document import Document
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import (
     CSVLoader,
     DirectoryLoader,
     EverNoteLoader,
@@ -22,12 +25,9 @@ from langchain.document_loaders import (
     UnstructuredPowerPointLoader,
     UnstructuredWordDocumentLoader,
 )
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.memory import ConversationBufferMemory
-from langchain.schema.document import Document
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import FAISS
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.llms import LlamaCpp
+from langchain_community.vectorstores import FAISS
 
 from libre_chat.conf import ChatConf, default_conf
 from libre_chat.utils import BOLD, CYAN, END, log, parallel_download
@@ -67,6 +67,7 @@ class Llm:
         )
         self.prompt_template = prompt_template if prompt_template else self.conf.prompt.template
 
+        # Check if GPU available
         if torch.cuda.is_available():
             self.device = torch.device(0)
             log.info(f"⚡ Using GPU: {self.device}")
@@ -75,7 +76,7 @@ class Llm:
             self.device = torch.device("cpu")
         os.makedirs(self.documents_path, exist_ok=True)
 
-        # Not sure it's the best place to do this
+        # Set max worker threads. Not sure it's the best place to do this
         os.environ["NUMEXPR_MAX_THREADS"] = str(self.conf.info.workers)
 
         if len(self.prompt_variables) < 1:
@@ -89,10 +90,10 @@ class Llm:
             else:
                 self.prompt_template = DEFAULT_CONVERSATION_PROMPT
                 self.prompt_variables = ["input", "history"]
-
         self.prompt = PromptTemplate(
             template=self.prompt_template, input_variables=self.prompt_variables
         )
+
         self.download_data()
         if self.vector_path and not self.has_vectorstore():
             self.build_vectorstore()
@@ -102,6 +103,7 @@ class Llm:
             )
 
         log.info(f"🤖 Loading model from {BOLD}{self.model_path}{END}")
+        self.llm = self.get_llm()
         if self.has_vectorstore():
             log.info(f"💫 Loading vectorstore from {BOLD}{self.vector_path}{END}")
             self.setup_dbqa()
@@ -171,7 +173,7 @@ class Llm:
             if self.conf.vector.score_threshold is not None:
                 search_args["score_threshold"] = self.conf.vector.score_threshold
             self.dbqa = RetrievalQA.from_chain_type(
-                llm=self.get_llm(),
+                llm=self.llm,
                 chain_type=self.conf.vector.chain_type,
                 retriever=vectorstore.as_retriever(
                     search_type=self.conf.vector.search_type, search_kwargs=search_args
@@ -271,7 +273,11 @@ class Llm:
                 template=template, input_variables=self.prompt_variables
             )
             conversation = ConversationChain(
-                llm=self.get_llm(config), prompt=prompt_template, verbose=True, memory=memory
+                llm=self.llm,
+                prompt=prompt_template,
+                verbose=True,
+                memory=memory
+                # llm=self.get_llm(config), prompt=prompt_template, verbose=True, memory=memory
             )
             resp = conversation.predict(input=prompt, callbacks=callbacks)
 
@@ -284,9 +290,8 @@ class Llm:
             #         ("human", "{question}"),
             #     ]
             # )
-            # model = self.get_llm(config)
             # output_parser = StrOutputParser()
-            # chain = chat_prompt | model | output_parser
+            # chain = chat_prompt | self.llm | output_parser
             # resp = chain.invoke({"input": prompt}, callbacks=callbacks)
 
             res = {"result": resp}
@@ -332,7 +337,7 @@ class Llm:
             template = instructions if instructions else self.prompt_template
             PromptTemplate(template=template, input_variables=self.prompt_variables)
             conversation = ConversationChain(
-                llm=self.get_llm(config),
+                llm=self.llm,
                 prompt=self.prompt,
                 verbose=True,
                 memory=memory,
