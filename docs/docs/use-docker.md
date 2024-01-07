@@ -8,7 +8,7 @@ Libre Chat is available as a [docker image](https://github.com/vemonet/libre-cha
 
 ## ⚡ Quickstart
 
-If you just want to quickly deploy it using the pre-trained model `Llama-2-7B-Chat-GGML`, you can use docker:
+If you just want deploy it using the pre-trained Mixtral model, you can use docker:
 
 ```bash
 docker run -it -p 8000:8000 ghcr.io/vemonet/libre-chat:main

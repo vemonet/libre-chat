@@ -8,21 +8,21 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/libre-chat.svg?logo=python&label=Python&logoColor=silver)](https://pypi.org/project/libre-chat/)
 [![License](https://img.shields.io/pypi/l/libre-chat)](https://github.com/vemonet/libre-chat/blob/main/LICENSE.txt) [![Pull requests welcome](https://img.shields.io/badge/pull%20requests-welcome-brightgreen)](https://github.com/vemonet/libre-chat/fork)
 
-Easily configure and deploy a **fully self-hosted chatbot web service** based on open source Large Language Models (LLMs), such as [Mistral](https://mistral.ai/news/mixtral-of-experts) or [Llama 2](https://ai.meta.com/llama/), without the need for knowledge in machine learning.
+Easily configure and deploy a **fully self-hosted chatbot web service** based on open source Large Language Models (LLMs), such as [Mixtral](https://mistral.ai/news/mixtral-of-experts) or [Llama 2](https://ai.meta.com/llama/), without the need for knowledge in machine learning.
 
 </div>
 
 - 🌐 Free and Open Source chatbot web service with UI and API
 - 🏡 Fully self-hosted, not tied to any service, and offline capable. Forget about API keys! Models and embeddings can be pre-downloaded, and the training and inference processes can run off-line if necessary.
 - 🚀 Easy to setup, no need to program, just configure the service with a [YAML](https://yaml.org/) file, and start it with 1 command
+- 🪶 Chat web interface (Gradio-based, or custom HTML), working well on desktop and mobile, with streaming response, and markdown rendering.
 - 📦 Available as a `pip` package 🐍, or `docker` image 🐳
-- 🐌 No need for GPU, this will work even on your laptop CPU! That said, running on CPUs can be quite slow (up to 1min to answer a documents-base question on recent laptops), so we are working on making a better use of GPU when available
-- 🦜 Powered by [`LangChain`](https://python.langchain.com) and [llama.cpp](https://github.com/ggerganov/llama.cpp) to perform inference locally.
+- 🐌 No need for GPU, this will work even on your laptop CPU! That said, just running on CPUs can be quite slow (up to 1min to answer a documents-base question on recent laptops).
+- 🦜 Powered by [`LangChain`](https://python.langchain.com) and [`llama.cpp`](https://github.com/ggerganov/llama.cpp) to perform inference locally.
 - 🤖 Various types of agents can be deployed:
   - **💬 Generic conversation**: do not need any additional training, just configure settings such as the template prompt
   - **📚 Documents-based question answering** (experimental): automatically build similarity vectors from documents uploaded through the API UI, the chatbot will use them to answer your question, and return which documents were used to generate the answer (PDF, CSV, HTML, JSON, markdown, and more supported).
 - 🔍 Readable logs to understand what is going on
-- 🪶 Modern and lightweight chat web interface, working well on desktop and mobile, with support for light/dark theme, streaming response, and markdown rendering.
 
 ## 📖 Documentation
 
@@ -179,8 +179,8 @@ from libre_chat import ChatConf, ChatEndpoint, Llm
 
 logging.basicConfig(level=logging.getLevelName("INFO"))
 conf = ChatConf(
-	model_path="models/llama-2-7b-chat.ggmlv3.q3_K_L.bin",
-    vector_path=None
+  model_path="./models/mixtral-8x7b-instruct-v0.1.Q2_K.gguf",
+  vector_path=None
 )
 llm = Llm(conf=conf)
 print(llm.query("What is the capital of the Netherlands?"))

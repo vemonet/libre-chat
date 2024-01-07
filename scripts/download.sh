@@ -10,7 +10,6 @@ unzip -d all-MiniLM-L6-v2 all-MiniLM-L6-v2.zip
 rm all-MiniLM-L6-v2.zip
 cd ..
 
-# https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML
 mkdir -p models
 cd models
 wget -N https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF/resolve/main/mixtral-8x7b-instruct-v0.1.Q2_K.gguf

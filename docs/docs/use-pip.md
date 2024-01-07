@@ -64,7 +64,7 @@ from libre_chat import ChatConf, ChatEndpoint, Llm
 
 logging.basicConfig(level=logging.getLevelName("INFO"))
 conf = ChatConf(
-	model_path="models/llama-2-7b-chat.ggmlv3.q3_K_L.bin",
+    model_path="./models/mixtral-8x7b-instruct-v0.1.Q2_K.gguf",
     vector_path=None
 )
 llm = Llm(conf=conf)

@@ -14,6 +14,7 @@
 *[JSON]: JavaScript Object Notation
 *[Faiss]: Faiss is a library for efficient similarity search and clustering of dense vectors. It contains algorithms that search in sets of vectors of any size, up to ones that possibly do not fit in RAM. It also contains supporting code for evaluation and parameter tuning.
 *[GGML]: GGML is a C library for machine learning (ML) - the "GG" refers to the initials of its originator (Georgi Gerganov). In addition to defining low-level machine learning primitives (like a tensor type), GGML defines a binary format for distributing large language models (LLMs).
+*[GGUF]: GPT-Generated Unified Format, successor to GGML, is a quantization method that allows users to use the CPU to run a LLM, but also offload some of its layers to the GPU for a speed up.
 *[GPTQ]: GPTQ is a quantization algorithm that lightly reoptimizes the weights during quantization so that the accuracy loss is compensated relative to a round-to-nearest quantization. 4-bit GPTQ models reduce VRAM usage by about 75%.
 *[URL]: Uniform Resource Locator
 *[URI]: Uniform Resource Identifier

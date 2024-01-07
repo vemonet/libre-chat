@@ -46,25 +46,11 @@ class Llm:
         self,
         conf: Optional[ChatConf] = None,
         model_path: Optional[str] = None,
-        model_type: Optional[str] = None,
         model_download: Optional[str] = None,
-        embeddings_path: Optional[str] = None,
-        embeddings_download: Optional[str] = None,
         vector_path: Optional[str] = None,
-        vector_download: Optional[str] = None,
-        documents_path: Optional[str] = None,
-        documents_download: Optional[str] = None,
-        document_loaders: Optional[List[Dict[str, str]]] = None,
+        document_loaders: Optional[List[Dict[str, Any]]] = None,
         prompt_variables: Optional[List[str]] = None,
         prompt_template: Optional[str] = None,
-        max_new_tokens: Optional[int] = None,
-        temperature: Optional[float] = None,
-        chunk_size: Optional[int] = None,
-        chunk_overlap: Optional[int] = None,
-        chain_type: Optional[str] = None,
-        search_type: Optional[str] = None,
-        return_sources_count: Optional[int] = None,
-        score_threshold: Optional[float] = None,
     ) -> None:
         """
         Constructor for the LLM
@@ -73,35 +59,9 @@ class Llm:
         # self.redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
         self.conf = conf if conf else default_conf
         self.model_path = model_path if model_path else self.conf.llm.model_path
-        self.model_type = model_type if model_type else self.conf.llm.model_type
         self.model_download = model_download if model_download else self.conf.llm.model_download
-        self.embeddings_path = (
-            embeddings_path if embeddings_path else self.conf.vector.embeddings_path
-        )
-        self.embeddings_download = (
-            embeddings_download if embeddings_download else self.conf.vector.embeddings_download
-        )
         self.vector_path = vector_path if vector_path else self.conf.vector.vector_path
-        self.vector_download = (
-            vector_download if vector_download else self.conf.vector.vector_download
-        )
-        self.documents_path = documents_path if documents_path else self.conf.vector.documents_path
-        self.documents_download = (
-            documents_download if documents_download else self.conf.vector.documents_download
-        )
         self.document_loaders = document_loaders if document_loaders else DEFAULT_DOCUMENT_LOADERS
-        self.return_sources_count = (
-            return_sources_count if return_sources_count else self.conf.vector.return_sources_count
-        )
-        self.chain_type = chain_type if chain_type else self.conf.vector.chain_type
-        self.search_type = search_type if search_type else self.conf.vector.search_type
-        self.score_threshold = (
-            score_threshold if score_threshold else self.conf.vector.score_threshold
-        )
-        self.chunk_size = chunk_size if chunk_size else self.conf.vector.chunk_size
-        self.chunk_overlap = chunk_overlap if chunk_overlap else self.conf.vector.chunk_overlap
-        self.max_new_tokens = max_new_tokens if max_new_tokens else self.conf.llm.max_new_tokens
-        self.temperature = temperature if temperature else self.conf.llm.temperature
         self.prompt_variables: List[str] = (
             prompt_variables if prompt_variables is not None else self.conf.prompt.variables
         )
@@ -152,9 +112,15 @@ class Llm:
         """Download data"""
         ddl_list = []
         ddl_list.append({"url": self.model_download, "path": self.model_path})
-        ddl_list.append({"url": self.embeddings_download, "path": self.embeddings_path})
-        ddl_list.append({"url": self.vector_download, "path": self.vector_path})
-        ddl_list.append({"url": self.documents_download, "path": self.documents_path})
+        ddl_list.append(
+            {"url": self.conf.vector.embeddings_download, "path": self.conf.vector.embeddings_path}
+        )
+        ddl_list.append(
+            {"url": self.conf.vector.vector_download, "path": self.conf.vector.vector_path}
+        )
+        ddl_list.append(
+            {"url": self.conf.vector.documents_download, "path": self.conf.vector.documents_path}
+        )
         parallel_download(ddl_list, self.conf.info.workers)
 
     def has_vectorstore(self) -> bool:
@@ -169,21 +135,21 @@ class Llm:
         if not config:
             config = {}
         if "temperature" not in config:
-            config["temperature"] = self.temperature
+            config["temperature"] = self.conf.llm.temperature
         if "max_new_tokens" not in config:
-            config["max_new_tokens"] = self.max_new_tokens
+            config["max_new_tokens"] = self.conf.llm.max_new_tokens
         if "stream" not in config:
             config["stream"] = True
         # if "gpu_layers" not in config:
         #     config["gpu_layers"] = self.conf.llm.gpu_layers if self.device.type != "cpu" else 0
-        if self.device.type != "cpu":
-            config["n_gpu_layers"] = 40
-            config["n_batch"] = 512
+        # if self.device.type != "cpu":
+        #     config["n_gpu_layers"] = 40
+        #     config["n_batch"] = 512
         return LlamaCpp(
             model_path=self.model_path,
             config=config,
             top_p=1,
-            # model_type=self.model_type,
+            # model_type=self.conf.llm.model_type,
             # n_gpu_layers=40,  # Change this value based on your model and your GPU VRAM pool.
             # n_batch=512,  # Should be between 1 and n_ctx, consider the amount of VRAM in your GPU.
             # temperature=0.01,
@@ -196,21 +162,21 @@ class Llm:
         """Setup the vectorstore for QA"""
         if self.has_vectorstore():
             embeddings = HuggingFaceEmbeddings(
-                model_name=self.embeddings_path, model_kwargs={"device": self.device}
+                model_name=self.conf.vector.embeddings_path, model_kwargs={"device": self.device}
             )
             # FAISS should automatically use GPU?
             vectorstore = FAISS.load_local(self.get_vectorstore(), embeddings)
 
-            search_args: Dict[str, Any] = {"k": self.return_sources_count}
-            if self.score_threshold is not None:
-                search_args["score_threshold"] = self.score_threshold
+            search_args: Dict[str, Any] = {"k": self.conf.vector.return_sources_count}
+            if self.conf.vector.score_threshold is not None:
+                search_args["score_threshold"] = self.conf.vector.score_threshold
             self.dbqa = RetrievalQA.from_chain_type(
                 llm=self.get_llm(),
-                chain_type=self.chain_type,
+                chain_type=self.conf.vector.chain_type,
                 retriever=vectorstore.as_retriever(
-                    search_type=self.search_type, search_kwargs=search_args
+                    search_type=self.conf.vector.search_type, search_kwargs=search_args
                 ),
-                return_source_documents=self.return_sources_count > 0,
+                return_source_documents=self.conf.vector.return_sources_count > 0,
                 chain_type_kwargs={"prompt": self.prompt},
             )
 
@@ -226,7 +192,7 @@ class Llm:
             )
         else:
             log.info(
-                f"🏗️ Building the vectorstore from the {BOLD}{CYAN}{docs_count}{END} documents found in {BOLD}{documents_path}{END}, using embeddings from {BOLD}{self.embeddings_path}{END}"
+                f"🏗️ Building the vectorstore from the {BOLD}{CYAN}{docs_count}{END} documents found in {BOLD}{documents_path}{END}, using embeddings from {BOLD}{self.conf.vector.embeddings_path}{END}"
             )
             documents: List[Document] = []
             # Loading all file types provided in the document_loaders object
@@ -244,13 +210,20 @@ class Llm:
 
             # Split the text up into small, semantically meaningful chunks (often sentences) https://js.langchain.com/docs/modules/data_connection/document_transformers/
             text_splitter = RecursiveCharacterTextSplitter(
-                chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap
+                chunk_size=self.conf.vector.chunk_size, chunk_overlap=self.conf.vector.chunk_overlap
             )
             splitted_texts = text_splitter.split_documents(documents)
             embeddings = HuggingFaceEmbeddings(
-                model_name=self.embeddings_path, model_kwargs={"device": self.device}
+                model_name=self.conf.vector.embeddings_path, model_kwargs={"device": self.device}
             )
             vectorstore = FAISS.from_documents(splitted_texts, embeddings)
+            # TODO: use Qdrant
+            # vectorstore = Qdrant.from_documents(
+            #     splitted_texts,
+            #     embeddings,
+            #     path=self.vector_path,
+            #     collection_name="libre_chat_rag",
+            # )
             if self.vector_path:
                 vectorstore.save_local(self.vector_path)
             log.info(f"✅ Vectorstore built in {datetime.now() - time_start}")

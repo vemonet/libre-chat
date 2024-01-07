@@ -75,13 +75,12 @@ Once the web service is up you can easily upload more documents through the API 
 
 
 
-Below is an example of configuration using the Llama 2 7B GGML model, with a Faiss vectorstore, to deploy a question answering agent that will source its answers from the documents provided in the `./documents` folder:
+Below is an example of configuration using the Mixtral GGUF model, with a Faiss vectorstore, to deploy a question answering agent that will source its answers from the documents provided in the `./documents` folder:
 
 ```yaml title="chat.yml"
 llm:
-  model_type: llama
-  model_path: ./models/llama-2-7b-chat.ggmlv3.q3_K_L.bin # (1)
-  model_download: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML/resolve/main/llama-2-7b-chat.ggmlv3.q3_K_L.bin
+  model_path: ./models/mixtral-8x7b-instruct-v0.1.Q2_K.gguf # (1)
+  model_download: https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF/resolve/main/mixtral-8x7b-instruct-v0.1.Q2_K.gguf
   temperature: 0.01    # Config how creative (but also potentially wrong) the model can be. 0 is safe, 1 is adventurous
   max_new_tokens: 1024 # Max number of words the LLM can generate
 

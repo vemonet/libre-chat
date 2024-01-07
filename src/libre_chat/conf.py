@@ -63,8 +63,8 @@ class SettingsVector(BaseConf):
 
 
 class SettingsLlm(BaseConf):
-    model_type: str = "llama"  # TODO: Remove
-    model_path: str = "models/llama-2-7b-chat.ggmlv3.q3_K_L.bin"
+    model_type: str = "llama"  # TODO: Remove?
+    model_path: str = "./models/mixtral-8x7b-instruct-v0.1.Q2_K.gguf"
     model_download: Optional[str] = None
     max_new_tokens: int = 1024
     temperature: float = 0.01

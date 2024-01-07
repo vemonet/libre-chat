@@ -14,7 +14,7 @@ log.info("🚀 Initializing the Llm: download files if not present, build vector
 # TODO: take conf as arg?
 conf = parse_conf("chat.yml")
 
-default_model = "llama-2-7b-chat.ggmlv3.q3_K_L.bin"
+default_model = "mixtral-8x7b-instruct-v0.1.Q2_K.gguf"
 default_embeddings = "all-MiniLM-L6-v2"
 default_document = "drug_repositioning_for_alzheimer_disease.pdf"
 
