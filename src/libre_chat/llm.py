@@ -74,7 +74,7 @@ class Llm:
         else:
             log.info("💽 No GPU detected, using CPU")
             self.device = torch.device("cpu")
-        os.makedirs(self.documents_path, exist_ok=True)
+        os.makedirs(self.conf.vector.documents_path, exist_ok=True)
 
         # Set max worker threads. Not sure it's the best place to do this
         os.environ["NUMEXPR_MAX_THREADS"] = str(self.conf.info.workers)
@@ -185,8 +185,7 @@ class Llm:
     def build_vectorstore(self, documents_path: Optional[str] = None) -> Optional[FAISS]:
         """Build vectorstore from PDF documents with FAISS."""
         time_start = datetime.now()
-        if not documents_path:
-            documents_path = self.documents_path
+        documents_path = documents_path if documents_path else self.conf.vector.documents_path
         docs_count = len(os.listdir(documents_path))
         if docs_count < 1:
             log.warning(
