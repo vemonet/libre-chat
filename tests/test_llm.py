@@ -57,9 +57,9 @@ def test_build_vectorstore() -> None:
 
 def test_build_failed_no_docs() -> None:
     """Test fail building the vectorstore when no documents"""
-    llm_empt = Llm(
-        conf=parse_conf("config/chat-vectorstore-qa.yml"), documents_path="tests/tmp/nothinghere"
-    )
+    conf = parse_conf("config/chat-vectorstore-qa.yml")
+    conf.vector.documents_path = "tests/tmp/nothinghere"
+    llm_empt = Llm(conf)
     shutil.rmtree(llm.conf.vector.vector_path)
     # with pytest.raises(ValueError) as exc_info:
     llm_empt.build_vectorstore()
@@ -71,11 +71,10 @@ def test_build_failed_no_docs() -> None:
 
 def test_similarity_score_threshold() -> None:
     """Test similarity_score_threshold with vectorstore"""
-    Llm(
-        conf=parse_conf("config/chat-vectorstore-qa.yml"),
-        search_type="similarity_score_threshold",
-        score_threshold=0.4,
-    )
+    conf = parse_conf("config/chat-vectorstore-qa.yml")
+    conf.vector.search_type = "similarity_score_threshold"
+    conf.vector.score_threshold = 0.4
+    Llm(conf)
     resp = llm.query(capital_query)
     assert len(resp["source_documents"]) >= 1
 
@@ -83,7 +82,9 @@ def test_similarity_score_threshold() -> None:
 def test_documents_dir_dont_exist() -> None:
     """Test documents dir created if doesn't exist"""
     tmp_docs = "tests/tmp/docs"
-    Llm(conf=parse_conf("config/chat-conversation.yml"), documents_path=tmp_docs)
+    conf = parse_conf("config/chat-conversation.yml")
+    conf.vector.documents_path = tmp_docs
+    Llm(conf)
     assert os.path.exists(tmp_docs)
 
 

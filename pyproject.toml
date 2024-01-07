@@ -29,7 +29,7 @@ classifiers = [
 dynamic = ["version"]
 
 dependencies = [
-    "gradio",
+    "gradio >=4.0.0",
     "langchain",
     "langchain-community",
     "llama-cpp-python",      # To perform LLM inference
