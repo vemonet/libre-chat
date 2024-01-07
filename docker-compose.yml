@@ -13,13 +13,6 @@ services:
       - ./data/vectorstore:/data/vectorstore
       # - ./data:/data # Or directly share the data directory with chat.yml, and folders for models, vectorstore, etc
     shm_size: '16g'
-    environment:
-      - LIBRECHAT_WORKERS=1
-      # For deployment with nginx-proxy https://github.com/nginx-proxy/nginx-proxy
-      - VIRTUAL_HOST=chat.semanticscience.org
-      - LETSENCRYPT_HOST=chat.semanticscience.org
-      - VIRTUAL_PORT=8000
-      # - CUDA_VISIBLE_DEVICES=0 # Limit which GPU is made available
     # ports:
     #   - 8000:8000
     # entrypoint: uvicorn scripts.main:app --reload
@@ -30,11 +23,25 @@ services:
             - driver: nvidia
               count: 3
               capabilities: [gpu]
+    environment:
+      - LIBRECHAT_WORKERS=1
+      # For deployment with nginx-proxy https://github.com/nginx-proxy/nginx-proxy
+      - VIRTUAL_HOST=chat.semanticscience.org
+      - LETSENCRYPT_HOST=chat.semanticscience.org
+      - VIRTUAL_PORT=8000
+      # - CUDA_VISIBLE_DEVICES=0 # Limit which GPU is made available
+      # Configuring proxy manually is required to access internet within UM network
+      - HTTP_PROXY=http://proxy.unimaas.nl:3128
+      - HTTPS_PROXY=http://proxy.unimaas.nl:3128
+      - http_proxy=http://proxy.unimaas.nl:3128
+      - https_proxy=http://proxy.unimaas.nl:3128
+      - NO_PROXY=127.0.0.1,localhost,137.120.0.0/16
+    # Containers deployed publicly need to be on the nginx network
+    networks:
+      - nginx
 
-    # networks:
-    #   - no-internet
-
-# networks:
-#   no-internet:
-#     driver: bridge
-#     internal: true
+# Also required to deploy containers publicly
+networks:
+  nginx:
+    name: nginx
+    external: true
