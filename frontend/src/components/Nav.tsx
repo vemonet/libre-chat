@@ -19,38 +19,46 @@ export default function Nav() {
 
   return (
     <nav class="bg-gray-200 dark:bg-gray-900 text-black dark:text-white">
-      <div class="nav-btns-desktop flex space-x-1 items-center">
-        <ul class="flex p-3 text-gray-200">
+      <div class="nav-btns-desktop flex justify-between items-center">
+        {/* Left-side menu */}
+        <div></div>
+        {/* <ul class="flex p-3 text-gray-200">
           <li class={`border-b-2 ${active("/")} mx-1.5 sm:mx-6`}>
             <a href="/">Home</a>
           </li>
           <li class={`border-b-2 ${active("/about")} mx-1.5 sm:mx-6`}>
             <a href="/about">About</a>
           </li>
-        </ul>
-        <div style={{"flex-grow": 1}}></div>
+        </ul> */}
+
+        <div class="text-xl font-semibold">
+          {conf.title}
+        </div>
+
         {/* <button data-tooltip="Switch theme" id="theme-switch-btn" class="px-4 py-2 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
             <i id="sun-icon" class="fas fa-sun"></i>
             <i id="moon-icon" class="fas fa-moon hidden"></i>
         </button> */}
-        <a href="/gradio" target="_blank" rel="noopener noreferrer" data-tooltip="Gradio UI"
-            class="text-black hover:text-black dark:text-white">
-            <button class="px-4 py-3 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
-                <img class="h-5" src="https://gradio-theme-soft.hf.space/assets/logo-3707f936.svg" />
-            </button>
-        </a>
-        <a href="/docs" target="_blank" rel="noopener noreferrer" data-tooltip="OpenAPI documentation"
-            class="text-black hover:text-black dark:text-white">
-            <button class="px-4 py-3 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
-                <img class="h-5" src="https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/openapi_logo.svg" />
-            </button>
-        </a>
-        <a href={conf.repo_url} target="_blank" rel="noopener noreferrer"
-            class="text-black hover:text-black dark:text-white">
-            <button data-tooltip="Source code" class="px-4 py-2 mr-6 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
-                <i class="fab fa-github text-xl"></i>
-            </button>
-        </a>
+        <div class="flex">
+          <a href="/gradio" target="_blank" rel="noopener noreferrer" data-tooltip="Gradio UI"
+              class="text-black hover:text-black dark:text-white">
+              <button class="px-4 py-3 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
+                  <img class="h-5" src="https://gradio-theme-soft.hf.space/assets/logo-3707f936.svg" />
+              </button>
+          </a>
+          <a href="/docs" target="_blank" rel="noopener noreferrer" data-tooltip="OpenAPI documentation"
+              class="text-black hover:text-black dark:text-white">
+              <button class="px-4 py-3 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
+                  <img class="h-5" src="https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/openapi_logo.svg" />
+              </button>
+          </a>
+          <a href={conf.repo_url} target="_blank" rel="noopener noreferrer"
+              class="text-black hover:text-black dark:text-white">
+              <button data-tooltip="Source code" class="px-4 py-2 mr-6 rounded-lg hover:bg-gray-300 dark:hover:bg-slate-500">
+                  <i class="fab fa-github text-xl"></i>
+              </button>
+          </a>
+        </div>
     </div>
     {/* Nav on mobile */}
     <div class="nav-btns-mobile flex gap-1 absolute top-2 right-3">

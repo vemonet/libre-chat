@@ -3,9 +3,10 @@ import {marked} from 'marked';
 
 export default function Home() {
   const [messages, setMessages] = createSignal([
-		{message: "How can I help you today?", type: "bot"}
+		{message: "How can I help you today?", type: "bot", sources: []}
 	]);
   const [prompt, setPrompt] = createSignal("");
+  const [selectedSource, setSelectedSource]: any = createSignal(null);
   const [warningMsg, setWarningMsg] = createSignal("");
   const [loading, setLoading] = createSignal(false);
   let socket: WebSocket;
@@ -23,7 +24,7 @@ export default function Home() {
 	}
 
   const appendMessage = (message: string, type = "bot") => {
-    setMessages(messages => [...messages, { message, type }]);
+    setMessages(messages => [...messages, { message, type, sources: [] }]);
     setLoading(false);
     chatContainer.scrollTop = chatContainer.scrollHeight;
   };
@@ -108,7 +109,20 @@ export default function Home() {
           return newMessages;
         });
 			} else if (data.type === "end") {
-				// TODO: if (data.sources) appendSources(data.sources)
+				if (data.sources) {
+          setMessages(messages => {
+            const newMessages = [...messages];
+            const lastIndex = newMessages.length - 1;
+            if (lastIndex >= 0) {
+              newMessages[lastIndex] = {
+                ...newMessages[lastIndex],
+                sources: data.sources
+              };
+            }
+            return newMessages;
+          });
+        }
+        console.log(messages())
         setLoading(false);
         setWarningMsg("");
 			}
@@ -128,24 +142,17 @@ export default function Home() {
 
       <div ref={chatContainer} id="chat-container" class="flex-grow overflow-y-auto">
 
-          {/* Title, top nav, and description */}
+          {/* Website description */}
           <div class="container mx-auto px-2 max-w-5xl">
-              {/* <div class="container mx-auto max-w-5xl p-4 border-b border-slate-300 dark:border-slate-600 flex justify-center items-center">
-                  <h2 class="text-xl font-semibold flex">
-                      <img class="h-8 mr-3" src={conf.favicon} />
-                      {conf.title}
-                  </h2>
-              </div> */}
-              {/* Website description */}
               <div class="py-4 text-center" innerHTML={marked.parse(conf.description).toString()}>
               </div>
           </div>
 
+          {/* Chat messages */}
           <div id="chat-thread" class="w-full border-t border-slate-400">
-              {/* Chat messages */}
               <For each={messages()}>{(msg, i) =>
                   // messageElement.className = `border-b border-slate-400 ${sender === "user" ? "bg-gray-100 dark:bg-gray-700" : "bg-gray-200 dark:bg-gray-600 hidden"}`;
-                  <div class="border-b border-slate-400">
+                  <div class={`border-b border-slate-400 ${msg.type === "user" ? "bg-gray-100 dark:bg-gray-700" : "bg-gray-200 dark:bg-gray-600"}`}>
                     <div class="px-2 py-8 mx-auto max-w-5xl">
                       <div class="container flex items-center">
                         {msg.type === "user" ? (
@@ -156,6 +163,24 @@ export default function Home() {
                         <div>
                           <article class="prose dark:prose-invert max-w-full" innerHTML={marked.parse(msg.message).toString()}>
                           </article>
+                          {/* TODO: add sources */}
+                          { msg.sources.length > 0 &&
+                            <>
+                              <For each={msg.sources}>{(source: any, i) =>
+                                  <button class="m-2 px-3 py-1 text-sm bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-800 rounded-lg"
+                                    onClick={() => setSelectedSource(selectedSource() === source ? null : source)}
+                                  >
+                                    {source.metadata.filename}
+                                  </button>
+                              }</For>
+                              {selectedSource() &&
+                                <article class="prose dark:prose-invert bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 mx-3">
+                                  📖 {selectedSource().metadata.filename} [p. {selectedSource().metadata.page}]<br/>
+                                  {selectedSource().page_content}
+                                </article>
+                              }
+                            </>
+                          }
                         </div>
                       </div>
                     </div>
