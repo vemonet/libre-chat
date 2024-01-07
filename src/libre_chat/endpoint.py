@@ -123,7 +123,7 @@ class ChatEndpoint(FastAPI):
 
         self = gr.mount_gradio_app(self, gradio_app(self.llm), path="/")
 
-        # TODO: Try with svelte https://github.com/OriginalStefikO/fastapi-svelte-starter/blob/main/main.py
+        # TODO: UI with SolidJS
         # self.mount(
         #     "/",
         #     StaticFiles(

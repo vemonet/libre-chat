@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
-export default {
-  content: ['./src/**/*.{html,js,svelte,ts}'],
-  darkMode: 'class',
+module.exports = {
+  content: ["./src/**/*.{html,js,jsx,ts,tsx}"],
+  // darkMode: 'class',
   theme: {
       extend: {
           // Remove backticks from inline code
@@ -28,4 +28,4 @@ export default {
       },
   },
   plugins: [],
-}
+};
