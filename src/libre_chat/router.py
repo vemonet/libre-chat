@@ -7,7 +7,6 @@ from fastapi import APIRouter, Body, File, HTTPException, Request, UploadFile, W
 from fastapi.responses import JSONResponse
 from langchain.callbacks.base import AsyncCallbackHandler
 from langchain.memory import ConversationBufferMemory
-from langchain.schema.document import Document
 
 from libre_chat.conf import ChatConf, default_conf
 from libre_chat.utils import ChatResponse, Prompt, log
@@ -34,7 +33,7 @@ api_responses: Optional[Dict[Union[int, str], Dict[str, Any]]] = {
 @dataclass
 class PromptResponse:
     result: str
-    source_documents: Optional[List[Document]] = None
+    source_documents: Optional[List[Any]] = None
 
 
 class ChatRouter(APIRouter):

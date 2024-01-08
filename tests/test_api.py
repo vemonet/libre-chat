@@ -54,7 +54,7 @@ def test_get_gradio_ui() -> None:
     assert response.status_code == 200
 
 
-def test_get_alternative_ui() -> None:
-    """Test get alternative UI"""
-    response = client.get("/ui")
-    assert response.status_code == 200
+# def test_get_alternative_ui() -> None:
+#     """Test get alternative UI"""
+#     response = client.get("/ui")
+#     assert response.status_code == 200

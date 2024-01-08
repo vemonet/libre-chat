@@ -1,7 +1,9 @@
-import { createSignal, For } from 'solid-js';
+import { createSignal, For, useContext } from 'solid-js';
 import {marked} from 'marked';
+import {ChatContext} from '~/app';
 
 export default function Home() {
+  const [conf, setConf]: any = useContext(ChatContext);
   const [messages, setMessages] = createSignal([
 		{message: "How can I help you today?", type: "bot", sources: []}
 	]);
@@ -11,17 +13,6 @@ export default function Home() {
   const [loading, setLoading] = createSignal(false);
   let socket: WebSocket;
   let chatContainer: any;
-
-  // TODO: Retrieve from API
-  const conf = {
-		title: "Libre Chat",
-		description: "Hey `there`",
-		repo_url: "https://github.com/vemonet/libre-chat",
-		favicon: "https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/logo.png",
-		examples: [
-			"What is the capital of the Netherlands?"
-		]
-	}
 
   const appendMessage = (message: string, type = "bot") => {
     setMessages(messages => [...messages, { message, type, sources: [] }]);
@@ -55,7 +46,6 @@ export default function Home() {
 		}
 		if (prompt().trim() !== "") {
 			appendMessage(prompt(), "user");
-			// userInput.innerText = "";
 			// TODO: next line needed to reset placeholder
 			// if (userInput) userInput.innerText = '';
 			const params = {
@@ -96,7 +86,7 @@ export default function Home() {
 			if (data.type === "start") {
 				appendMessage("", "bot");
 			} else if (data.type === "stream") {
-				console.log("STREAM", data.message)
+				// console.log("STREAM", data.message)
         setMessages(messages => {
           const newMessages = [...messages];
           const lastIndex = newMessages.length - 1;
@@ -122,18 +112,13 @@ export default function Home() {
             return newMessages;
           });
         }
-        console.log(messages())
+        console.log("Messages:", messages())
         setLoading(false);
         setWarningMsg("");
 			}
 		};
 	};
-  // https://chat.semanticscience.org/chat
-  const chatUrl = new URL("https://chat.semanticscience.org/chat")
-  // const chatUrl = new URL("http://127.0.0.1:8000/chat")
-  // const currentLocation = window.location;
-  // const protocol = currentLocation.protocol === "https:" ? "wss:" : "ws:";
-  // const websocketUrl = `${protocol}//${currentLocation.host}/chat`;
+  const chatUrl = new URL(`${conf().apiUrl}/chat`)
   createWebSocket(chatUrl)
 
   // <main class="text-center mx-auto text-gray-700 p-4">
@@ -144,13 +129,13 @@ export default function Home() {
 
           {/* Website description */}
           <div class="container mx-auto px-2 max-w-5xl">
-              <div class="py-4 text-center" innerHTML={marked.parse(conf.description).toString()}>
+              <div class="py-4 text-center font-thin" innerHTML={marked.parse(conf().info.description).toString()}>
               </div>
           </div>
 
           {/* Chat messages */}
           <div id="chat-thread" class="w-full border-t border-slate-400">
-              <For each={messages()}>{(msg, i) =>
+              <For each={messages()}>{(msg, iMsg) =>
                   // messageElement.className = `border-b border-slate-400 ${sender === "user" ? "bg-gray-100 dark:bg-gray-700" : "bg-gray-200 dark:bg-gray-600 hidden"}`;
                   <div class={`border-b border-slate-400 ${msg.type === "user" ? "bg-gray-100 dark:bg-gray-700" : "bg-gray-200 dark:bg-gray-600"}`}>
                     <div class="px-2 py-8 mx-auto max-w-5xl">
@@ -163,22 +148,35 @@ export default function Home() {
                         <div>
                           <article class="prose dark:prose-invert max-w-full" innerHTML={marked.parse(msg.message).toString()}>
                           </article>
-                          {/* TODO: add sources */}
+                          {/* Add sources when RAG */}
                           { msg.sources.length > 0 &&
                             <>
-                              <For each={msg.sources}>{(source: any, i) =>
-                                  <button class="m-2 px-3 py-1 text-sm bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-800 rounded-lg"
-                                    onClick={() => setSelectedSource(selectedSource() === source ? null : source)}
-                                  >
-                                    {source.metadata.filename}
-                                  </button>
+                              <For each={msg.sources}>{(source: any, iSource) =>
+                                  // <button class="m-2 px-3 py-1 text-sm bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-800 rounded-lg"
+                                  //   onClick={() => setSelectedSource(selectedSource() === source ? null : source)}
+                                  // >
+                                  //   {source.metadata.filename}
+                                  // </button>
+                                  <>
+                                    <button class="m-2 px-3 py-1 text-sm bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-800 rounded-lg"
+                                      // @ts-ignore
+                                      onClick={()=>document.getElementById(`source_modal_${iMsg}_${iSource}`)?.showModal()}
+                                    >
+                                      {source.metadata.filename}
+                                    </button>
+                                    <dialog id={`source_modal_${iMsg}_${iSource}`} class="modal">
+                                      <div class="modal-box">
+                                        <h3 class="font-bold text-lg">📖 {source.metadata.filename} [p. {source.metadata.page}]</h3>
+                                        <p class="py-4">
+                                          {source.page_content}
+                                        </p>
+                                      </div>
+                                      <form method="dialog" class="modal-backdrop">
+                                        <button>close</button>
+                                      </form>
+                                    </dialog>
+                                  </>
                               }</For>
-                              {selectedSource() &&
-                                <article class="prose dark:prose-invert bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 mx-3">
-                                  📖 {selectedSource().metadata.filename} [p. {selectedSource().metadata.page}]<br/>
-                                  {selectedSource().page_content}
-                                </article>
-                              }
                             </>
                           }
                         </div>
@@ -200,7 +198,7 @@ export default function Home() {
 
         {/* List of examples */}
         <div class="py-2 px-4 justify-center items-center text-xs flex space-x-2" id="example-buttons">
-          <For each={conf.examples}>{(example, i) =>
+          <For each={conf().info.examples}>{(example, i) =>
             <button onClick={() => {setPrompt(example) ; submitInput()}} class="px-4 py-1 bg-slate-300 text-slate-600 rounded-lg hover:bg-gray-400">
               {example}
             </button>

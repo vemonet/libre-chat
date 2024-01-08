@@ -5,9 +5,7 @@ import gradio as gr
 import pkg_resources
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 
 from libre_chat.conf import ChatConf, default_conf
 from libre_chat.router import ChatRouter
@@ -78,56 +76,56 @@ class ChatEndpoint(FastAPI):
             return response
 
         # Mount web wroker asset:
-        self.mount(
-            "/static",
-            StaticFiles(directory=pkg_resources.resource_filename("libre_chat", "static")),
-            name="static",
-        )
-
-        # TODO: not found when used after installing from pip, cf. https://github.com/vemonet/libre-chat/issues/2
-        templates = Jinja2Templates(
-            directory=pkg_resources.resource_filename("libre_chat", "templates")
-            # directory="templates"
-        )
-
-        # Serve UI from index.html directly
-        @self.get("/ui", response_class=HTMLResponse, include_in_schema=False)
-        def chat_ui(request: Request) -> Any:
-            return templates.TemplateResponse(
-                "index.html",
-                {
-                    "request": request,
-                    "title": self.conf.info.title,
-                    "description": self.conf.info.description,
-                    "short_description": self.conf.info.description.split("\n")[0].replace('"', ""),
-                    "repository_url": self.conf.info.repository_url,
-                    "examples": self.conf.info.examples,
-                    "favicon": self.conf.info.favicon,
-                },
-            )
-
-        @self.get("/admin", response_class=HTMLResponse, include_in_schema=False)
-        def admin_ui(request: Request) -> Any:
-            return templates.TemplateResponse(
-                "admin.html",
-                {
-                    "request": request,
-                    "title": self.conf.info.title,
-                    "description": self.conf.info.description,
-                    "short_description": self.conf.info.description.split("\n")[0].replace('"', ""),
-                    "repository_url": self.conf.info.repository_url,
-                    "examples": self.conf.info.examples,
-                    "favicon": self.conf.info.favicon,
-                },
-            )
-
-        self = gr.mount_gradio_app(self, gradio_app(self.llm), path="/")
-
-        # TODO: UI with SolidJS
         # self.mount(
-        #     "/",
-        #     StaticFiles(
-        #         directory=pkg_resources.resource_filename("libre_chat", "webapp"), html=True
-        #     ),
+        #     "/static",
+        #     StaticFiles(directory=pkg_resources.resource_filename("libre_chat", "static")),
         #     name="static",
         # )
+
+        # TODO: not found when used after installing from pip, cf. https://github.com/vemonet/libre-chat/issues/2
+        # templates = Jinja2Templates(
+        #     directory=pkg_resources.resource_filename("libre_chat", "templates")
+        #     # directory="templates"
+        # )
+
+        # # Serve UI from index.html directly
+        # @self.get("/ui", response_class=HTMLResponse, include_in_schema=False)
+        # def chat_ui(request: Request) -> Any:
+        #     return templates.TemplateResponse(
+        #         "index.html",
+        #         {
+        #             "request": request,
+        #             "title": self.conf.info.title,
+        #             "description": self.conf.info.description,
+        #             "short_description": self.conf.info.description.split("\n")[0].replace('"', ""),
+        #             "repository_url": self.conf.info.repository_url,
+        #             "examples": self.conf.info.examples,
+        #             "favicon": self.conf.info.favicon,
+        #         },
+        #     )
+
+        # @self.get("/admin", response_class=HTMLResponse, include_in_schema=False)
+        # def admin_ui(request: Request) -> Any:
+        #     return templates.TemplateResponse(
+        #         "admin.html",
+        #         {
+        #             "request": request,
+        #             "title": self.conf.info.title,
+        #             "description": self.conf.info.description,
+        #             "short_description": self.conf.info.description.split("\n")[0].replace('"', ""),
+        #             "repository_url": self.conf.info.repository_url,
+        #             "examples": self.conf.info.examples,
+        #             "favicon": self.conf.info.favicon,
+        #         },
+        #     )
+
+        gr.mount_gradio_app(self, gradio_app(self.llm), path="/gradio")
+
+        # UI with SolidJS
+        self.mount(
+            "/",
+            StaticFiles(
+                directory=pkg_resources.resource_filename("libre_chat", "webapp"), html=True
+            ),
+            name="static",
+        )

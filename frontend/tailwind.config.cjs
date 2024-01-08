@@ -2,6 +2,10 @@
 module.exports = {
   content: ["./src/**/*.{html,js,jsx,ts,tsx}"],
   // darkMode: 'class',
+  plugins: [require("daisyui")],
+  // daisyui: {
+  //   themes: ["light", "dark"],
+  // },
   theme: {
       extend: {
           // Remove backticks from inline code
@@ -27,5 +31,4 @@ module.exports = {
           },
       },
   },
-  plugins: [],
 };

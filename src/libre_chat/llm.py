@@ -151,7 +151,6 @@ class Llm:
             model_path=self.model_path,
             top_p=1,
             **config
-            # config=config,
             # model_type=self.conf.llm.model_type,
             # n_gpu_layers=40,  # Change this value based on your model and your GPU VRAM pool.
             # n_batch=512,  # Should be between 1 and n_ctx, consider the amount of VRAM in your GPU.
