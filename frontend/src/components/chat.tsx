@@ -18,7 +18,6 @@ export default function Chat() {
 
   const appendMessage = (message: string, type = "bot") => {
     setMessages(messages => [...messages, { message, type, sources: [] }]);
-    setLoading(false);
     chatContainer.scrollTop = chatContainer.scrollHeight;
   };
 
@@ -71,6 +70,7 @@ export default function Chat() {
 		socket.onclose = (event) => {
 			console.warn("WebSocket closed with code:", event.code, "reason:", event.reason);
 			appendMessage("Sorry, an error happened, please retry.")
+      setLoading(false);
 			// Attempt to reconnect after a delay
 			setTimeout(() => {
 				console.log("♻️ Attempting to reconnect...");
@@ -80,6 +80,7 @@ export default function Chat() {
 		socket.onerror = (error) => {
 			console.error("WebSocket error:", error);
 			appendMessage("An error happened, please retry.")
+      setLoading(false);
 		};
 
 		// Receive response from the websocket
@@ -124,7 +125,7 @@ export default function Chat() {
   createWebSocket(chatUrl)
 
   return (
-    <main class="flex flex-col bg-gray-100 dark:bg-gray-800 text-black dark:text-white" style={{"flex-grow": 1, "overflow-y": "auto"}}>
+    <main class="flex flex-col overflow-y-auto flex-grow">
 
       <div ref={chatContainer} id="chat-container" class="flex-grow overflow-y-auto">
 
@@ -135,10 +136,10 @@ export default function Chat() {
           </div>
 
           {/* Chat messages */}
-          <div id="chat-thread" class="w-full border-t border-slate-400">
+          <div id="chat-thread" class="w-full border-t border-slate-500">
               <For each={messages()}>{(msg, iMsg) =>
-                  // messageElement.className = `border-b border-slate-400 ${sender === "user" ? "bg-gray-100 dark:bg-gray-700" : "bg-gray-200 dark:bg-gray-600 hidden"}`;
-                  <div class={`border-b border-slate-400 ${msg.type === "user" ? "bg-gray-100 dark:bg-gray-700" : "bg-gray-200 dark:bg-gray-600"}`}>
+                  // messageElement.className = `border-b border-slate-500 ${sender === "user" ? "bg-gray-100 dark:bg-gray-700" : "bg-gray-200 dark:bg-gray-600 hidden"}`;
+                  <div class={`border-b border-slate-500 ${msg.type === "user" ? "bg-accent" : "bg-secondary"}`}>
                     <div class="px-2 py-8 mx-auto max-w-5xl">
                       <div class="container flex items-center">
                         {msg.type === "user" ? (
@@ -147,25 +148,20 @@ export default function Chat() {
                           <i class="fas fa-robot text-xl mr-4"></i>
                         )}
                         <div>
-                          <article class="prose dark:prose-invert max-w-full" innerHTML={marked.parse(msg.message).toString()}>
+                          <article class="prose max-w-full" innerHTML={marked.parse(msg.message).toString()}>
                           </article>
                           {/* Add sources when RAG */}
                           { msg.sources.length > 0 &&
                             <>
                               <For each={msg.sources}>{(source: any, iSource) =>
-                                  // <button class="m-2 px-3 py-1 text-sm bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-800 rounded-lg"
-                                  //   onClick={() => setSelectedSource(selectedSource() === source ? null : source)}
-                                  // >
-                                  //   {source.metadata.filename}
-                                  // </button>
                                   <>
-                                    <button class="m-2 px-3 py-1 text-sm bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-800 rounded-lg"
+                                    <button class="m-2 px-3 py-1 text-sm bg-accent hover:bg-base-100 rounded-lg"
                                       // @ts-ignore
-                                      onClick={()=>document.getElementById(`source_modal_${iMsg}_${iSource}`)?.showModal()}
+                                      onClick={()=>document.getElementById(`source_modal_${iMsg()}_${iSource()}`)?.showModal()}
                                     >
                                       {source.metadata.filename}
                                     </button>
-                                    <dialog id={`source_modal_${iMsg}_${iSource}`} class="modal">
+                                    <dialog id={`source_modal_${iMsg()}_${iSource()}`} class="modal">
                                       <div class="modal-box">
                                         <h3 class="font-bold text-lg">📖 {source.metadata.filename} [p. {source.metadata.page}]</h3>
                                         <p class="py-4">
@@ -199,25 +195,25 @@ export default function Chat() {
 
         {/* List of examples */}
         <div class="py-2 px-4 justify-center items-center text-xs flex space-x-2" id="example-buttons">
-          <For each={chatConfig().info.examples}>{(example, i) =>
-            <button onClick={() => {setPrompt(example) ; submitInput()}} class="px-4 py-1 bg-slate-300 text-slate-600 rounded-lg hover:bg-gray-400">
+          <For each={chatConfig().info.examples}>{(example, _i) =>
+            <button onClick={() => {setPrompt(example) ; submitInput()}} class="px-4 py-1 bg-neutral-content text-slate-600 rounded-lg hover:bg-slate-400">
               {example}
             </button>
           }</For>
         </div>
 
-        {/* User input border-t border-slate-400 dark:border-slate-500 */}
+        {/* User input border-t border-slate-500 dark:border-slate-500 */}
         <form class="p-2 flex" id="chat-form" onSubmit={(e) => handleSubmit(e)}>
           <div class="container flex mx-auto max-w-5xl">
               <div id="user-input" contenteditable={true} style="height: max-content;"
-                  class="flex-grow px-4 py-2 border border-slate-400 dark:border-slate-500 rounded-lg focus:outline-none focus:ring focus:ring-blue-200 dark:focus:ring-blue-400"
+                  class="flex-grow px-4 py-2 border border-slate-500 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
                   // placeholder="Send a message..."
                   onInput={(e) => handleInput(e)}
                   onKeyDown={(e) => handleKeyPress(e)}
               ></div>
-              <button type="submit" id="submit-btn" class="ml-2 px-4 py-2 rounded-lg text-slate-500 bg-slate-200 hover:bg-slate-300 dark:text-slate-400 dark:bg-slate-700 dark:hover:bg-slate-600">
+              <button type="submit" id="submit-btn" class="ml-2 px-4 py-2 rounded-lg text-slate-400 bg-slate-600 hover:bg-slate-700">
                 { loading() ? (
-                  <i id="loading-spinner" class="hidden fas fa-spinner fa-spin"></i>
+                  <i id="loading-spinner" class="fas fa-spinner fa-spin"></i>
                 ) : (
                   <i id="send-icon" class="fas fa-paper-plane"></i>
                 )}
@@ -226,28 +222,6 @@ export default function Chat() {
         </form>
       </div>
 
-      {/* <h1 class="max-6-xs text-6xl text-sky-700 font-thin uppercase my-16">
-        Hello world!
-      </h1>
-      <Counter />
-      <p class="mt-8">
-        Visit{" "}
-        <a
-          href="https://solidjs.com"
-          target="_blank"
-          class="text-sky-600 hover:underline"
-        >
-          solidjs.com
-        </a>{" "}
-        to learn how to build Solid apps.
-      </p>
-      <p class="my-4">
-        <span>Home</span>
-        {" - "}
-        <A href="/about" class="text-sky-600 hover:underline">
-          About Page
-        </A>{" "}
-      </p> */}
     </main>
   );
 }

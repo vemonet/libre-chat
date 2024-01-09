@@ -2,8 +2,25 @@
 export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	plugins: [require("daisyui")],
+	// https://daisyui.com/docs/colors/
   daisyui: {
-    themes: ["light", "dark"],
+    themes: [
+      {
+        light: {
+          ...require("daisyui/src/theming/themes")["cupcake"],
+					'accent': '#f3f4f6',
+					'secondary': '#e5e7eb',
+					// primary: "teal",
+        },
+      },
+			{
+        dark: {
+          ...require("daisyui/src/theming/themes")["dark"],
+					'accent': '#374151',
+					'secondary': '#4b5563',
+        },
+      },
+    ],
   },
   theme: {
       extend: {

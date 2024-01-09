@@ -20,8 +20,6 @@ info:
   version: "0.1.0"
   description: |
     Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [llama.cpp](https://github.com/ggerganov/llama.cpp)
-
-    See also: [📡 API](/docs) | [🖥️ Alternative UI](/ui)
   examples:
   - What is the capital of the Netherlands?
   - Which drugs are approved by the FDA to mitigate Alzheimer symptoms?
