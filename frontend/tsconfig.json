@@ -1,19 +1,7 @@
 {
-	"compilerOptions": {
-		"target": "ESNext",
-		"module": "ESNext",
-		"moduleResolution": "node",
-		"allowSyntheticDefaultImports": true,
-		"esModuleInterop": true,
-		"jsx": "preserve",
-		"jsxImportSource": "solid-js",
-		"allowJs": true,
-		"noEmit": true,
-		"strict": true,
-		"types": ["vinxi/client"],
-		"isolatedModules": true,
-		"paths": {
-			"~/*": ["./src/*"]
-		}
-	}
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js"
+  }
 }

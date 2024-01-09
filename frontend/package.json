@@ -1,25 +1,88 @@
 {
   "name": "frontend",
   "type": "module",
+  "version": "0.0.1",
   "scripts": {
-    "dev": "VITE_API_URL=https://chat.semanticscience.org vinxi dev",
-    "build": "vinxi build && cp -R .output/public ../src/libre_chat/webapp",
-    "start": "vinxi start"
+    "dev": "PUBLIC_API_URL=https://chat.semanticscience.org astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build && rm -rf ../src/libre_chat/webapp && cp -R dist ../src/libre_chat/webapp",
+    "preview": "astro preview",
+    "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/check": "^0.4.1",
+    "@astrojs/solid-js": "^4.0.1",
+    "@astrojs/tailwind": "^5.1.0",
+    "@nanostores/solid": "^0.4.2",
+    "astro": "^4.1.1",
+    "daisyui": "^4.5.0",
     "marked": "^11.1.1",
-    "solid-js": "^1.8.8"
+    "nanostores": "^0.9.5",
+    "solid-js": "^1.8.9",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.3.3"
   },
   "devDependencies": {
-    "@solidjs/router": "^0.10.6",
-    "@solidjs/start": "^0.4.4",
-    "autoprefixer": "^10.4.14",
-    "daisyui": "^4.5.0",
-    "postcss": "^8.4.26",
-    "tailwindcss": "^3.3.3",
-    "vinxi": "0.1.1"
+    "@tailwindcss/typography": "^0.5.9",
+    "@types/node": "18.14.1",
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
+    "@vite-pwa/astro": "^0.2.0",
+    "eslint": "^8.36.0",
+    "eslint-plugin-astro": "^0.24.0",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-solid": "latest",
+    "prettier": "^3.0.0",
+    "prettier-plugin-astro": "^0.11.0"
   },
-  "engines": {
-    "node": ">=18"
+  "prettier": {
+    "trailingComma": "none",
+    "tabWidth": 2,
+    "singleQuote": true,
+    "bracketSpacing": false,
+    "arrowParens": "avoid",
+    "useTabs": false,
+    "printWidth": 120,
+    "pluginSearchDirs": [
+      "."
+    ]
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es2021": true
+    },
+    "extends": [
+      "plugin:astro/recommended",
+      "plugin:solid/recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
+    "plugins": [
+      "solid",
+      "@typescript-eslint"
+    ],
+    "rules": {},
+    "overrides": [
+      {
+        "files": [
+          "*.astro"
+        ],
+        "parser": "astro-eslint-parser",
+        "parserOptions": {
+          "parser": "@typescript-eslint/parser",
+          "extraFileExtensions": [
+            ".astro"
+          ]
+        }
+      }
+    ],
+    "ignorePatterns": [
+      "*.lock"
+    ]
   }
 }

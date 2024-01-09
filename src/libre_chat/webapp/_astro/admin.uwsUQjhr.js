@@ -1,0 +1,1 @@
+import{g as e,t as r}from"./web.zg9RI5L8.js";var a=r('<main class="flex flex-col bg-gray-100 dark:bg-gray-800 text-black dark:text-white"><div class="container mx-auto p-4 max-w-5xl"><p>Work in progress');function o(){return(()=>{var t=e(a);return t.style.setProperty("flex-grow","1"),t.style.setProperty("overflow-y","auto"),t})()}export{o as default};
