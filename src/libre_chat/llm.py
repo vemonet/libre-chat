@@ -171,7 +171,7 @@ class Llm:
             # FAISS should automatically use GPU?
             # vectorstore = FAISS.load_local(self.get_vectorstore(), embeddings)
             vectorstore = Qdrant(
-                QdrantClient(url=self.conf.vector.vector_path),
+                QdrantClient(host=self.conf.vector.vector_path, prefer_grpc=True),
                 collection_name="libre_chat_rag",
                 embeddings=embeddings,
             )
@@ -231,9 +231,9 @@ class Llm:
                 splitted_texts,
                 embeddings,
                 # path=self.conf.vector.vector_path,
-                url=self.conf.vector.vector_path,
+                host=self.conf.vector.vector_path,
                 collection_name="libre_chat_rag",
-                # prefer_grpc=True,
+                prefer_grpc=True,
                 # force_recreate=True,
             )
             # vectorstore = FAISS.from_documents(splitted_texts, embeddings)
