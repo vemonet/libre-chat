@@ -226,6 +226,7 @@ class Llm:
             embeddings = HuggingFaceEmbeddings(
                 model_name=self.conf.vector.embeddings_path, model_kwargs={"device": self.device}
             )
+            os.makedirs(self.conf.vector.vector_path, exist_ok=True)
             vectorstore = Qdrant.from_documents(
                 splitted_texts,
                 embeddings,

@@ -1,10 +1,6 @@
 [![Image size](https://ghcr-badge.egpl.dev/vemonet/libre-chat/size)](https://github.com/vemonet/libre-chat/pkgs/container/libre-chat)
 
-Libre Chat is available as a [docker image](https://github.com/vemonet/libre-chat/pkgs/container/libre-chat), it is recommended to use docker for deploying in production as it uses gunicorn to run multiple workers.
-
-!!! Warning "Shared memory for multiple users"
-
-    Memory of the chatbot is shared betweem the users that are on the same worker.
+Libre Chat is available as a [docker image](https://github.com/vemonet/libre-chat/pkgs/container/libre-chat) that will use CUDA when available. It is recommended to use docker for deploying in production as it uses gunicorn to run multiple workers.
 
 ## ⚡ Quickstart
 
@@ -13,6 +9,11 @@ If you just want deploy it using the pre-trained Mixtral model, you can use dock
 ```bash
 docker run -it -p 8000:8000 ghcr.io/vemonet/libre-chat:main
 ```
+
+!!! Warning "Loading the model takes time"
+
+    Downloading the model will take time the first time, you can also pre-download it manually.
+    If you are using GPU, loading the model when the application starts also takes some time (can take a few minutes)
 
 ## ⚙️ Configure with docker compose
 
