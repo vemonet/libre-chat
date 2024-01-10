@@ -2,6 +2,7 @@ version: "3"
 services:
 
   libre-chat:
+    depends_on: [qdrant]
     build: .
     # image: ghcr.io/vemonet/libre-chat:main
     volumes:

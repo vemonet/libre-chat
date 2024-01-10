@@ -34,9 +34,12 @@ fi
 # Initialize the Llm (ddl files if not present, build vectors) runs before the API to avoid running on multiple workers
 python3 /app/scripts/init.py
 
+# Wait for Qdrant to start
+sleep 10
+
 echo "🦄 Starting gunicorn with $LIBRECHAT_WORKERS workers on $BIND for the module $APP_MODULE with a timeout of $TIMEOUT sec"
-# exec gunicorn -w "$LIBRECHAT_WORKERS" -k "$WORKER_CLASS" -b "$BIND" --timeout "$TIMEOUT" "$APP_MODULE"
-exec uvicorn --host "0.0.0.0" --port 8000 "$APP_MODULE"
+exec gunicorn -w "$LIBRECHAT_WORKERS" -k "$WORKER_CLASS" -b "$BIND" --timeout "$TIMEOUT" "$APP_MODULE"
+# exec uvicorn --host "0.0.0.0" --port 8000 "$APP_MODULE"
 
 # -w: number of worker processes for handling requests [1]
 # --threads: number of worker threads for handling requests. [1]
