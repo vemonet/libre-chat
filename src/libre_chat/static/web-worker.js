@@ -1,4 +1,5 @@
 // Web worker to cache assets
+// TODO: remove? Now unused
 const CACHE_NAME = 'libre-chat-assets';
 
 self.addEventListener('install', event => {

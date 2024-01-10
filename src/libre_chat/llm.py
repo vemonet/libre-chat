@@ -231,7 +231,10 @@ class Llm:
                 splitted_texts,
                 embeddings,
                 path=self.conf.vector.vector_path,
+                # url=qdrant_url,
+                # prefer_grpc=True,
                 collection_name="libre_chat_rag",
+                force_recreate=True,
             )
             # vectorstore = FAISS.from_documents(splitted_texts, embeddings)
             # if self.vector_path:

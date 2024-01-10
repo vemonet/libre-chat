@@ -46,7 +46,6 @@ dependencies = [
     "pydantic-yaml",
     "requests",
     "tqdm",
-    "jinja2",
     "uvicorn",
     "gunicorn",
     # "redis",               # To add a shared store for all workers

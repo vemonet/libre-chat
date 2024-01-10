@@ -4,11 +4,9 @@ llm:
   model_download: https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF/resolve/main/mixtral-8x7b-instruct-v0.1.Q2_K.gguf
   temperature: 0.01    # Config how creative, but also potentially wrong, the model can be. 0 is safe, 1 is adventurous
   max_new_tokens: 1024 # Max number of words the LLM can generate
-
-prompt:
   # Always use input for the human input variable with a generic agent
-  variables: [input, history]
-  template: |
+  prompt_variables: [input, history]
+  prompt_template: |
     Your are an assistant, please help me
 
     {history}
