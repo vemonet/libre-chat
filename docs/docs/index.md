@@ -10,10 +10,11 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 
 </div>
 
-- 🌐 Free and Open Source chatbot web service with UI and API
+- 🌐 Free and Open Source chatbot web service with UI and API.
 - 🏡 Fully self-hosted, not tied to any service, and offline capable. Forget about API keys! Models and embeddings can be pre-downloaded, and the training and inference processes can run off-line if necessary.
+- 🔌 Web API described using OpenAPI specs: GET/POST operations, websocket for streaming response
+- 🪶 Chat web UI working well on desktop and mobile, with streaming response, and markdown rendering. Alternative gradio-based UI also available.
 - 🚀 Easy to setup, no need to program, just configure the service with a [YAML](https://yaml.org/) file, and start it with 1 command
-- 🪶 Chat web interface (Gradio-based, or custom HTML), working well on desktop and mobile, with streaming response, and markdown rendering.
 - 📦 Available as a `pip` package 🐍, or `docker` image 🐳
 - 🐌 No need for GPU, this will work even on your laptop CPU! That said, just running on CPUs can be quite slow (up to 1min to answer a documents-base question on recent laptops).
 - 🦜 Powered by [`LangChain`](https://python.langchain.com) and [`llama.cpp`](https://github.com/ggerganov/llama.cpp) to perform inference locally.
@@ -37,7 +38,7 @@ No need to program! The whole deployment can be configured from a YAML file: pat
 
 2. Configure the service in a `chat.yml` file
 
-3. Start the chat web service from the terminal with `libre-chat start` or `docker compose up`
+3. Start the chat web service from the terminal with `libre-chat start` or `docker compose up`. The first time it will take some time to download the model if not already done (models size are around 15+GB)
 
 Seasoned developers can also manipulate LLM models, and deploy the API in python scripts using the `libre_chat` module.
 
@@ -63,8 +64,7 @@ The web service is deployed using a [**⚡ FastAPI**](https://fastapi.tiangolo.c
 
 - 📮 `GET` and `POST` on `/prompt` to query the model
 - 🔌 Websocket on `/chat` to open a connection with the API, and query the model
-- 🖥️ Chatbot web UI served on the root URL `/`
-    - The web UI is contained within a single HTML file templated using [Jinja2](https://jinja.palletsprojects.com), written in vanilla JS, using [Tailwind](https://tailwindcss.com) CSS for styling, and [marked](https://marked.js.org/) for markdown rendering
+- 🖥️ Chatbot web UI served on the root URL `/`, built with Astro, SolidJS, [Tailwind](https://tailwindcss.com) and daisyUI for styling, and [marked](https://marked.js.org/) for markdown rendering.
 
 All files required for querying the model are stored and accessed locally using [**🦜🔗 LangChain**](https://python.langchain.com): the main model binary, the embeddings and documents to create the vectors, and the [vectorstore](https://python.langchain.com/docs/modules/data_connection/vectorstores/).
 

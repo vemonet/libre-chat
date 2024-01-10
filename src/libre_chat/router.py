@@ -132,6 +132,7 @@ class ChatRouter(APIRouter):
                         with zipfile.ZipFile(file_path, "r") as zip_ref:
                             zip_ref.extractall(self.conf.vector.documents_path)
                         os.remove(file_path)
+            # TODO: add just the uploaded files instead of rebuilding the triplestore
             self.llm.build_vectorstore()
             self.llm.setup_dbqa()
             return JSONResponse(

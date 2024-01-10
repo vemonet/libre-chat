@@ -33,4 +33,3 @@ info:
   license_info:
     name: MIT license
     url: https://raw.github.com/vemonet/libre-chat/main/LICENSE.txt
-  workers: 4

@@ -12,7 +12,7 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 
 </div>
 
-- 🌐 Free and Open Source chatbot web service with UI and API
+- 🌐 Free and Open Source chatbot web service with UI and API.
 - 🏡 Fully self-hosted, not tied to any service, and offline capable. Forget about API keys! Models and embeddings can be pre-downloaded, and the training and inference processes can run off-line if necessary.
 - 🔌 Web API described using OpenAPI specs: GET/POST operations, websocket for streaming response
 - 🪶 Chat web UI working well on desktop and mobile, with streaming response, and markdown rendering. Alternative gradio-based UI also available.
@@ -23,7 +23,7 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 - 🤖 Various types of agents can be deployed:
   - **💬 Generic conversation**: do not need any additional training, just configure settings such as the template prompt
   - **📚 Documents-based question answering** (experimental): automatically build similarity vectors from documents uploaded through the API UI, the chatbot will use them to answer your question, and return which documents were used to generate the answer (PDF, CSV, HTML, JSON, markdown, and more supported).
-- 🔍 Readable logs to understand what is going on
+- 🔍 Readable logs to understand what is going on.
 
 ## 📖 Documentation
 
