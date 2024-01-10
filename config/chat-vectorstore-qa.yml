@@ -5,10 +5,8 @@ llm:
   model_download: https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF/resolve/main/mixtral-8x7b-instruct-v0.1.Q2_K.gguf
   temperature: 0.01    # Config how creative (but also potentially wrong) the model can be. 0 is safe, 1 is adventurous
   max_new_tokens: 1024 # Max number of words the LLM can generate
-
-prompt:
-  variables: ["question", "context"]
-  template: |
+  prompt_variables: ["question", "context"]
+  prompt_template: |
     Use the following pieces of information to answer the user's question.
     If you don't know the answer, just say that you don't know, don't try to make up an answer.
 
@@ -19,7 +17,7 @@ prompt:
     Helpful answer:
 
 vector:
-  vector_path: ./vectorstore/db_faiss # Path to the vectorstore to do QA retrieval
+  vector_path: ./vectorstore/qdrant # Path to the vectorstore to do QA retrieval
   vector_download: null
   embeddings_path: ./embeddings/all-MiniLM-L6-v2 # Embeddings used to generate the vectors. To use from HF: sentence-transformers/all-MiniLM-L6-v2
   embeddings_download: https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/v0.2/all-MiniLM-L6-v2.zip

@@ -141,7 +141,7 @@ def gradio_app(llm: Llm) -> Any:
             with gr.Column(), gr.Accordion("Instructions", open=False):
                 instructions = gr.Textbox(
                     placeholder="LLM instructions",
-                    value=llm.conf.prompt.template,
+                    value=llm.conf.llm.prompt_template,
                     lines=6,
                     interactive=True,
                     label="Instructions",

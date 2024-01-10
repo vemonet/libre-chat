@@ -63,9 +63,9 @@ class Llm:
         self.vector_path = vector_path if vector_path else self.conf.vector.vector_path
         self.document_loaders = document_loaders if document_loaders else DEFAULT_DOCUMENT_LOADERS
         self.prompt_variables: List[str] = (
-            prompt_variables if prompt_variables is not None else self.conf.prompt.variables
+            prompt_variables if prompt_variables is not None else self.conf.llm.prompt_variables
         )
-        self.prompt_template = prompt_template if prompt_template else self.conf.prompt.template
+        self.prompt_template = prompt_template if prompt_template else self.conf.llm.prompt_template
 
         # Check if GPU available
         if torch.cuda.is_available():

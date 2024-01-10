@@ -15,11 +15,6 @@ class BaseConf(BaseSettings):
     )
 
 
-class SettingsPrompt(BaseConf):
-    variables: List[str] = ["input", "history"]
-    template: str = ""
-
-
 class SettingsInfo(BaseConf):
     examples: List[str] = [
         "What is the capital of the Netherlands?",
@@ -66,6 +61,8 @@ class SettingsLlm(BaseConf):
     max_new_tokens: int = 1024
     temperature: float = 0.01
     gpu_layers: int = 100  # Number of layers to run on the GPU (if detected)
+    prompt_variables: List[str] = ["input", "history"]
+    prompt_template: str = ""
 
 
 class SettingsAuth(BaseConf):
@@ -86,7 +83,6 @@ class ChatConf(BaseConf):
     llm: SettingsLlm = SettingsLlm()
     vector: SettingsVector = SettingsVector()
     info: SettingsInfo = SettingsInfo()
-    prompt: SettingsPrompt = SettingsPrompt()
     auth: SettingsAuth = SettingsAuth()
 
 

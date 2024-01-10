@@ -1,53 +1,33 @@
-# Config for a Question Answering (qa) agent
-# Will answer based on provided documents, and return which docs was used to answer the question
+# Config for a generic conversational agent
 llm:
   model_path: ./models/mixtral-8x7b-instruct-v0.1.Q2_K.gguf
   model_download: https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF/resolve/main/mixtral-8x7b-instruct-v0.1.Q2_K.gguf
-  temperature: 0.01    # Config how creative (but also potentially wrong) the model can be. 0 is safe, 1 is adventurous
+  temperature: 0.01    # Config how creative, but also potentially wrong, the model can be. 0 is safe, 1 is adventurous
   max_new_tokens: 1024 # Max number of words the LLM can generate
+  # Always use input for the human input variable with a generic agent
+  prompt_variables: [input, history]
+  prompt_template: |
+    Your are an assistant, answer the question briefly.
 
-prompt:
-  variables: ["question", "context"]
-  template: |
-    Use the following pieces of information to answer the user's question.
-    If you don't know the answer, just say that you don't know, don't try to make up an answer.
-
-    Context: {context}
-    Question: {question}
-
-    Only return the helpful answer below and nothing else.
-    Helpful answer:
-
-vector:
-  vector_path: ./vectorstore/db_faiss # Path to the vectorstore to do QA retrieval
-  vector_download: null
-  embeddings_path: ./embeddings/all-MiniLM-L6-v2 # Embeddings used to generate the vectors. To use from HF: sentence-transformers/all-MiniLM-L6-v2
-  embeddings_download: https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/v0.2/all-MiniLM-L6-v2.zip
-  documents_path: ./documents # Path to documents to vectorize
-  # When vectorizing we split the text up into small, semantically meaningful chunks (often sentences):
-  chunk_size: 500             # Maximum size of chunks, in terms of number of characters
-  chunk_overlap: 50           # Overlap in characters between chunks
-  chain_type: stuff           # Or: map_reduce, reduce, map_rerank. More details: https://docs.langchain.com/docs/components/chains/index_related_chains
-  search_type: similarity     # Or: similarity_score_threshold, mmr. More details: https://python.langchain.com/docs/modules/data_connection/retrievers/vectorstore
-  return_sources_count: 2     # Number of sources to return when generating an answer
-  score_threshold: null       # If using the similarity_score_threshold search_type. Between 0 and 1
+    {history}
+    User: {input}
+    AI Assistant:
 
 info:
   title: "Libre Chat"
   version: "0.1.0"
   description: |
-    Open source and free **question-answering** chatbot powered by [LangChain](https://python.langchain.com) and [llama.cpp](https://github.com/ggerganov/llama.cpp)
+    Open source and free chatbot powered by [LangChain](https://python.langchain.com) and [llama.cpp](https://github.com/ggerganov/llama.cpp)
   examples:
   - What is the capital of the Netherlands?
   - Which drugs are approved by the FDA to mitigate Alzheimer symptoms?
-  - What was the GDP of France in 1998?
+  - How can I create a logger with timestamp using python logging?
   favicon: https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/logo.png
   repository_url: https://github.com/vemonet/libre-chat
   public_url: https://chat.semanticscience.org
   contact:
-    name: "Vincent Emonet"
-    email: "vincent.emonet@gmail.com"
+    name: Vincent Emonet
+    email: vincent.emonet@gmail.com
   license_info:
-    name: "MIT license"
-    url: "https://raw.github.com/vemonet/libre-chat/main/LICENSE.txt"
-  workers: 4
+    name: MIT license
+    url: https://raw.github.com/vemonet/libre-chat/main/LICENSE.txt
