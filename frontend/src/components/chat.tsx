@@ -1,7 +1,9 @@
+/* eslint-disable solid/no-innerhtml */
 import { createSignal, For } from 'solid-js';
-import {marked} from 'marked';
 import {useStore} from '@nanostores/solid'
 import {$chatConfig, apiUrl} from '../components/nanostores'
+import {marked} from 'marked';
+import DOMPurify from 'dompurify';
 
 export default function Chat() {
   const chatConfig = useStore($chatConfig)
@@ -40,7 +42,6 @@ export default function Chat() {
 
 	// Send the user input to the chat API
 	function submitInput() {
-		console.log("submitInput")
 		if (loading()) {
 			setWarningMsg("⏳ Thinking...");
 			return
@@ -131,8 +132,7 @@ export default function Chat() {
 
           {/* Website description */}
           <div class="container mx-auto px-2 max-w-5xl">
-              <div class="py-4 text-center font-thin" innerHTML={marked.parse(chatConfig().info.description).toString()}>
-              </div>
+              <div class="py-4 text-center font-thin" innerHTML={DOMPurify.sanitize(marked.parse(chatConfig().info.description))} />
           </div>
 
           {/* Chat messages */}
@@ -143,8 +143,7 @@ export default function Chat() {
                     <div class="px-2 py-8 mx-auto max-w-5xl">
                       <div class="container flex items-center">
                         <div>
-                          <article class="prose max-w-full" innerHTML={marked.parse(msg.message).toString()}>
-                          </article>
+                          <article class="prose max-w-full" innerHTML={DOMPurify.sanitize(marked.parse(msg.message).toString())} />
                           {/* Add sources when RAG */}
                           { msg.sources.length > 0 &&
                             <>
@@ -184,20 +183,20 @@ export default function Chat() {
         {/* Warning message */}
         { warningMsg().length > 0 &&
           <div class="text-center">
-            <div id="warning-card" class="bg-orange-300 p-2 text-orange-900 text-sm rounded-lg font-semibold mb-2 hidden inline-block"></div>
+            <div id="warning-card" class="bg-orange-300 p-2 text-orange-900 text-sm rounded-lg font-semibold mb-2 hidden inline-block" />
           </div>
         }
 
         {/* List of examples */}
         <div class="py-2 px-4 justify-center items-center text-xs flex space-x-2" id="example-buttons">
-          <For each={chatConfig().info.examples}>{(example, _i) =>
+          <For each={chatConfig().info.examples}>{(example) =>
             <button onClick={() => {setPrompt(example) ; submitInput()}} class="px-4 py-1 bg-neutral-content text-slate-600 rounded-lg hover:bg-slate-400">
               {example}
             </button>
           }</For>
         </div>
 
-        {/* User input border-t border-slate-500 dark:border-slate-500 */}
+        {/* User input */}
         <form class="p-2 flex" id="chat-form" onSubmit={(e) => handleSubmit(e)}>
           <div class="container flex mx-auto max-w-5xl">
               <div id="user-input" contenteditable={true} style="height: max-content;"
@@ -205,12 +204,12 @@ export default function Chat() {
                   // placeholder="Send a message..."
                   onInput={(e) => handleInput(e)}
                   onKeyDown={(e) => handleKeyPress(e)}
-              ></div>
+              />
               <button type="submit" id="submit-btn" class="ml-2 px-4 py-2 rounded-lg text-slate-400 bg-slate-600 hover:bg-slate-700">
                 { loading() ? (
-                  <i id="loading-spinner" class="fas fa-spinner fa-spin"></i>
+                  <i id="loading-spinner" class="fas fa-spinner fa-spin"/>
                 ) : (
-                  <i id="send-icon" class="fas fa-paper-plane"></i>
+                  <i id="send-icon" class="fas fa-paper-plane"/>
                 )}
               </button>
           </div>

@@ -16,6 +16,7 @@
     "@nanostores/solid": "^0.4.2",
     "astro": "^4.1.1",
     "daisyui": "^4.5.0",
+    "dompurify": "^3.0.8",
     "marked": "^11.1.1",
     "nanostores": "^0.9.5",
     "solid-js": "^1.8.9",
