@@ -15,7 +15,7 @@ services:
     shm_size: '16g'
     # ports:
     #   - 8000:8000
-    entrypoint: uvicorn scripts.main:app
+    # entrypoint: uvicorn scripts.main:app
     deploy:  # Enable GPU in the container
       resources:
         reservations:
