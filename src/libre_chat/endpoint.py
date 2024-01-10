@@ -75,6 +75,46 @@ class ChatEndpoint(FastAPI):
             response.headers["X-Process-Time"] = str(time.time() - start_time)
             return response
 
+        # TODO: Add OAuth
+        # Move get_current_user to conf.py
+        # async def get_current_user(token: str = Depends(oauth2_scheme)):
+        #     if not self.conf.auth.client_id:
+        #         return {"sub": "anonymous"}  # Bypass auth and use a default user
+        #     # Else, proceed with the usual token verification process
+        #     async with httpx.AsyncClient() as client:
+        #         response = await client.get("https://www.googleapis.com/oauth2/v2/userinfo", headers={"Authorization": f"Bearer {token}"})
+        #         user_info = response.json()
+        #         return user_info
+
+        # if self.conf.auth.client_id:
+        #     from fastapi import Depends, status
+        #     from fastapi.security import OAuth2AuthorizationCodeBearer
+        #     import httpx
+        #     from starlette.responses import RedirectResponse
+
+        #     oauth2_scheme = OAuth2AuthorizationCodeBearer(
+        #         authorizationUrl=f"{self.conf.auth.authorization_url}?response_type=code&client_id={self.conf.auth.client_id}&redirect_uri={self.conf.auth.redirect_uri}&scope={self.conf.auth.scope}",
+        #         tokenUrl=self.conf.auth.token_url,
+        #     )
+        #     @self.get("/login")
+        #     def login():
+        #         return RedirectResponse(url=oauth2_scheme.authorizationUrl)
+
+        #     @self.get("/auth/callback")
+        #     async def auth_callback(code: str = Depends(oauth2_scheme)):
+        #         token_payload = {
+        #             "client_id": self.conf.auth.client_id,
+        #             "client_secret": self.conf.auth.client_secret,
+        #             "code": code,
+        #             "grant_type": "authorization_code",
+        #             "redirect_uri": self.conf.auth.redirect_uri,
+        #         }
+        #         async with httpx.AsyncClient() as client:
+        #             response = await client.post(self.conf.auth.token_url, data=token_payload)
+        #             response.raise_for_status()
+        #             token = response.json()
+        #             return token
+
         # Mount web wroker asset:
         # self.mount(
         #     "/static",

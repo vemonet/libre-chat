@@ -142,11 +142,6 @@ export default function Chat() {
                   <div class={`border-b border-slate-500 ${msg.type === "user" ? "bg-accent" : "bg-secondary"}`}>
                     <div class="px-2 py-8 mx-auto max-w-5xl">
                       <div class="container flex items-center">
-                        {msg.type === "user" ? (
-                          <i class="fas fa-user-astronaut text-xl mr-4"></i>
-                        ) : (
-                          <i class="fas fa-robot text-xl mr-4"></i>
-                        )}
                         <div>
                           <article class="prose max-w-full" innerHTML={marked.parse(msg.message).toString()}>
                           </article>

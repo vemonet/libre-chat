@@ -149,6 +149,7 @@ class ChatRouter(APIRouter):
         )
         def list_documents(
             admin_pass: Optional[str] = None,
+            # Depends(get_current_user)
         ) -> JSONResponse:
             """List all documents in the documents folder."""
             if self.conf.auth.admin_pass and admin_pass != self.conf.auth.admin_pass:

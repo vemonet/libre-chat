@@ -70,6 +70,14 @@ class SettingsLlm(BaseConf):
 
 class SettingsAuth(BaseConf):
     admin_pass: Optional[str] = None
+    client_id: Optional[str] = None
+    client_secret: Optional[str] = None
+    redirect_uri: str = "http://localhost:8000/auth/callback"
+    scope: str = "https://www.googleapis.com/auth/userinfo.email"
+    token_url: str = "https://oauth2.googleapis.com/token"
+    authorization_url: str = "https://accounts.google.com/o/oauth2/auth"
+    admin_users: List[str] = []
+    regular_users: List[str] = []
 
 
 class ChatConf(BaseConf):

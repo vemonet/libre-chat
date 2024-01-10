@@ -15,7 +15,7 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 - 🌐 Free and Open Source chatbot web service with UI and API
 - 🏡 Fully self-hosted, not tied to any service, and offline capable. Forget about API keys! Models and embeddings can be pre-downloaded, and the training and inference processes can run off-line if necessary.
 - 🔌 Web API described using OpenAPI specs: GET/POST operations, websocket for streaming response
-- 🪶 Chat web UI (Gradio-based, or custom HTML) working well on desktop and mobile, with streaming response, and markdown rendering
+- 🪶 Chat web UI working well on desktop and mobile, with streaming response, and markdown rendering. Alternative gradio-based UI also available.
 - 🚀 Easy to setup, no need to program, just configure the service with a [YAML](https://yaml.org/) file, and start it with 1 command
 - 📦 Available as a `pip` package 🐍, or `docker` image 🐳
 - 🐌 No need for GPU, this will work even on your laptop CPU! That said, just running on CPUs can be quite slow (up to 1min to answer a documents-base question on recent laptops).
@@ -29,22 +29,23 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 
 For more details on how to use Libre Chat check the documentation at **[vemonet.github.io/libre-chat](http://vemonet.github.io/libre-chat)**
 
+
+![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/screenshot.png)
+
+![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/screenshot-light.png)
+
 ## 🏗️ Work in progress
 
-⚠️ This project is a work in progress, use it with caution
+> [!WARNING]
+> This project is a work in progress, use it with caution.
 
 Those checkpoints are features we plan to work on in the future, feel free to let us know in the issues if you have any comment or request.
 
 - [x] Stream response to the websocket to show words as they are generated
 - [ ] Add button to let the user stop the chatbot generation
-- [ ] Add an admin dashboard web UI to enable users to upload/inspect/delete documents for QA, see/edit the config of the chatbot. Migrate to solidjs or svelte with config retrieved from API?
+- [ ] Add authentication mechanisms? (OAuth/OpenID Connect) https://github.com/vemonet/libre-chat/issues/5
+- [ ] Add an admin dashboard web UI to enable users to upload/inspect/delete documents for QA, see/edit the config of the chatbot.
 - [ ] Kubernetes deployment (Helm chart?)
-- [ ] Add authentication mechanisms? (OAuth/OpenID Connect)
-
-
-![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/screenshot.png)
-
-![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/screenshot-light.png)
 
 ## 🐳 Deploy with docker
 
