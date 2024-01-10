@@ -95,12 +95,12 @@ class Llm:
         )
 
         self.download_data()
-        if self.vector_path and not self.has_vectorstore():
+        if self.vector_path:
             self.build_vectorstore()
-        else:
-            log.info(
-                f"♻️  Reusing existing vectorstore at {BOLD}{self.vector_path}{END}, skip building the vectorstore"
-            )
+        # if self.vector_path and not self.has_vectorstore():
+        #     self.build_vectorstore()
+        # else:
+        #     log.info(f"♻️  Reusing existing vectorstore at {BOLD}{self.vector_path}{END}, skip building the vectorstore")
 
         log.info(f"🤖 Loading model from {BOLD}{self.model_path}{END}")
         self.llm = self.get_llm()
@@ -232,7 +232,7 @@ class Llm:
                 embeddings,
                 # path=self.conf.vector.vector_path,
                 url=self.conf.vector.vector_path,
-                # prefer_grpc=True,
+                prefer_grpc=True,
                 collection_name="libre_chat_rag",
                 force_recreate=True,
             )
