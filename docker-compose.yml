@@ -47,12 +47,12 @@ services:
     restart: unless-stopped
     volumes:
       - ./data/vectorstore/qdrant:/qdrant/storage
-      - ./scripts/qdrant_config.yml:/qdrant/config/production.yaml
+      # - ./scripts/qdrant_config.yml:/qdrant/config/production.yaml
     environment:
       - QDRANT_ALLOW_RECOVERY_MODE=true
-      - VIRTUAL_HOST=qdrant.137.120.31.148.nip.io
-      - LETSENCRYPT_HOST=qdrant.137.120.31.148.nip.io
-      - VIRTUAL_PORT=6333
+      # - VIRTUAL_HOST=qdrant.137.120.31.148.nip.io
+      # - LETSENCRYPT_HOST=qdrant.137.120.31.148.nip.io
+      # - VIRTUAL_PORT=6333
     # ports:
     #   - 6333:6333
     # command:

@@ -17,7 +17,7 @@ llm:
     Helpful answer:
 
 vector:
-  vector_path: "http://qdrant:6333"
+  vector_path: "http://qdrant:6334"
   # vector_path: ./vectorstore/qdrant # Path to the vectorstore to do QA retrieval
   vector_download: null
   embeddings_path: ./embeddings/all-MiniLM-L6-v2 # Embeddings used to generate the vectors. To use from HF: sentence-transformers/all-MiniLM-L6-v2
