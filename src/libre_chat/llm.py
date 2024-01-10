@@ -233,7 +233,7 @@ class Llm:
                 # path=self.conf.vector.vector_path,
                 url=self.conf.vector.vector_path,
                 collection_name="libre_chat_rag",
-                prefer_grpc=True,
+                # prefer_grpc=True,
                 # force_recreate=True,
             )
             # vectorstore = FAISS.from_documents(splitted_texts, embeddings)

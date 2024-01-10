@@ -1,6 +1,12 @@
-The whole deployment can be configured from a YAML file: paths to the model and vectorstore, model settings, web services infos. Create a `chat.yml` file with your configuration before starting the web service.
+!!! warning "Experimental"
+
+    Documents-based question answering is still experimental and subject to changes.
+
+The deployment can be configured from a YAML file: paths to the model and vectorstore, model settings, web services infos. Create a `chat.yml` file with your configuration before starting the web service.
 
 Libre Chat can be used to train and deploy a **documents-based question answering chatbot**
+
+It requires to deploy a Qdrant similarity search service beside Libre Chat. We recommend to depoy the 2 services with a [`docker-compose.yml`](https://github.com/vemonet/libre-chat/blob/main/docker-compose.yml) file.
 
 When starting the service Libre Chat will automatically check if the `vectorstore` is already available, if not, it will build it from the documents provided in the directory available at the given `documents_path`.
 
@@ -83,10 +89,8 @@ llm:
   model_download: https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF/resolve/main/mixtral-8x7b-instruct-v0.1.Q2_K.gguf
   temperature: 0.01    # Config how creative (but also potentially wrong) the model can be. 0 is safe, 1 is adventurous
   max_new_tokens: 1024 # Max number of words the LLM can generate
-
-prompt:
-  variables: ["question", "context"]
-  template: |
+  prompt_variables: ["question", "context"]
+  prompt_template: |
     Use the following pieces of information to answer the user's question.
     If you don't know the answer, just say that you don't know, don't try to make up an answer.
 
