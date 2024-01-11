@@ -42,22 +42,22 @@ services:
       - nginx
 
 
-  qdrant:
-    # https://hub.docker.com/r/qdrant/qdrant/tags
-    image: qdrant/qdrant:v1.5.1
-    restart: unless-stopped
-    volumes:
-      - ./data/vectorstore/qdrant:/qdrant/storage
-      # - ./scripts/qdrant_config.yml:/qdrant/config/production.yaml
-    environment:
-      - QDRANT_ALLOW_RECOVERY_MODE=true
-      # - VIRTUAL_HOST=qdrant.137.120.31.148.nip.io
-      # - LETSENCRYPT_HOST=qdrant.137.120.31.148.nip.io
-      # - VIRTUAL_PORT=6333
-    # ports:
-    #   - 6333:6333
-    # command:
-    #   - ./qdrant --config-path /qdrant/qdrant_config.yml
+  # qdrant:
+  #   # https://hub.docker.com/r/qdrant/qdrant/tags
+  #   image: qdrant/qdrant:v1.5.1
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./data/vectorstore/qdrant:/qdrant/storage
+  #     # - ./scripts/qdrant_config.yml:/qdrant/config/production.yaml
+  #   environment:
+  #     - QDRANT_ALLOW_RECOVERY_MODE=true
+  #     # - VIRTUAL_HOST=qdrant.137.120.31.148.nip.io
+  #     # - LETSENCRYPT_HOST=qdrant.137.120.31.148.nip.io
+  #     # - VIRTUAL_PORT=6333
+  #   # ports:
+  #   #   - 6333:6333
+  #   # command:
+  #   #   - ./qdrant --config-path /qdrant/qdrant_config.yml
 
 
 # Also required to deploy containers publicly

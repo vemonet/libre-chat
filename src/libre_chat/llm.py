@@ -27,7 +27,7 @@ from langchain_community.document_loaders import (
 )
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.llms import LlamaCpp
-from langchain_community.vectorstores import Qdrant
+from langchain_community.vectorstores import FAISS
 
 from libre_chat.conf import ChatConf, default_conf
 from libre_chat.utils import BOLD, CYAN, END, log, parallel_download
@@ -163,18 +163,16 @@ class Llm:
     def setup_dbqa(self) -> None:
         """Setup the vectorstore for QA"""
         if self.has_vectorstore():
-            from qdrant_client import QdrantClient
-
             embeddings = HuggingFaceEmbeddings(
                 model_name=self.conf.vector.embeddings_path, model_kwargs={"device": self.device}
             )
             # FAISS should automatically use GPU?
-            # vectorstore = FAISS.load_local(self.get_vectorstore(), embeddings)
-            vectorstore = Qdrant(
-                QdrantClient(host=self.conf.vector.vector_path, prefer_grpc=True),
-                collection_name="libre_chat_rag",
-                embeddings=embeddings,
-            )
+            vectorstore = FAISS.load_local(self.get_vectorstore(), embeddings)
+            # vectorstore = Qdrant(
+            #     QdrantClient(host=self.conf.vector.vector_path, prefer_grpc=True),
+            #     collection_name="libre_chat_rag",
+            #     embeddings=embeddings,
+            # )
 
             search_args: Dict[str, Any] = {"k": self.conf.vector.return_sources_count}
             if self.conf.vector.score_threshold is not None:
@@ -189,7 +187,7 @@ class Llm:
                 chain_type_kwargs={"prompt": self.prompt},
             )
 
-    def build_vectorstore(self, documents_path: Optional[str] = None) -> Optional[Qdrant]:
+    def build_vectorstore(self, documents_path: Optional[str] = None) -> Optional[FAISS]:
         """Build vectorstore from documents."""
         # https://github.com/langchain-ai/langchain/blob/master/libs/community/langchain_community/vectorstores/qdrant.py
         time_start = datetime.now()
@@ -226,19 +224,20 @@ class Llm:
             embeddings = HuggingFaceEmbeddings(
                 model_name=self.conf.vector.embeddings_path, model_kwargs={"device": self.device}
             )
-            os.makedirs(str(self.conf.vector.vector_path), exist_ok=True)
-            vectorstore = Qdrant.from_documents(
-                splitted_texts,
-                embeddings,
-                # path=self.conf.vector.vector_path,
-                host=self.conf.vector.vector_path,
-                collection_name="libre_chat_rag",
-                prefer_grpc=True,
-                # force_recreate=True,
-            )
-            # vectorstore = FAISS.from_documents(splitted_texts, embeddings)
-            # if self.vector_path:
-            #     vectorstore.save_local(self.vector_path)
+            # TODO: use Qdrant vectorstore
+            # os.makedirs(str(self.conf.vector.vector_path), exist_ok=True)
+            # vectorstore = Qdrant.from_documents(
+            #     splitted_texts,
+            #     embeddings,
+            #     # path=self.conf.vector.vector_path,
+            #     host=self.conf.vector.vector_path,
+            #     collection_name="libre_chat_rag",
+            #     prefer_grpc=True,
+            #     # force_recreate=True,
+            # )
+            vectorstore = FAISS.from_documents(splitted_texts, embeddings)
+            if self.vector_path:
+                vectorstore.save_local(self.vector_path)
             log.info(f"✅ Vectorstore built in {datetime.now() - time_start}")
             return vectorstore
         return None
