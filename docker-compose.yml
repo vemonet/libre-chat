@@ -36,7 +36,7 @@ services:
       - HTTPS_PROXY=http://proxy.unimaas.nl:3128
       - http_proxy=http://proxy.unimaas.nl:3128
       - https_proxy=http://proxy.unimaas.nl:3128
-      - NO_PROXY=127.0.0.1,localhost,137.120.0.0/16
+      - NO_PROXY=127.0.0.1,localhost,137.120.0.0/16,qdrant
     # Containers deployed publicly need to be on the nginx network
     networks:
       - nginx
@@ -58,6 +58,8 @@ services:
   #   #   - 6333:6333
   #   # command:
   #   #   - ./qdrant --config-path /qdrant/qdrant_config.yml
+  #   networks:
+  #     - nginx
 
 
 # Also required to deploy containers publicly
