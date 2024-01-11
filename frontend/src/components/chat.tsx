@@ -70,7 +70,6 @@ export default function Chat() {
 		};
 		socket.onclose = (event) => {
 			console.warn("WebSocket closed with code:", event.code, "reason:", event.reason);
-			appendMessage("Sorry, an error happened, please retry.")
       setLoading(false);
 			// Attempt to reconnect after a delay
 			setTimeout(() => {
@@ -127,7 +126,6 @@ export default function Chat() {
 
   return (
     <main class="flex flex-col overflow-y-auto flex-grow">
-
       <div ref={chatContainer} id="chat-container" class="flex-grow overflow-y-auto">
 
           {/* Website description */}
@@ -141,37 +139,31 @@ export default function Chat() {
                   // messageElement.className = `border-b border-slate-500 ${sender === "user" ? "bg-gray-100 dark:bg-gray-700" : "bg-gray-200 dark:bg-gray-600 hidden"}`;
                   <div class={`border-b border-slate-500 ${msg.type === "user" ? "bg-accent" : "bg-secondary"}`}>
                     <div class="px-2 py-8 mx-auto max-w-5xl">
-                      <div class="container flex items-center">
-                        <div>
-                          <article class="prose max-w-full" innerHTML={DOMPurify.sanitize(marked.parse(msg.message).toString())} />
-                          {/* Add sources when RAG */}
-                          { msg.sources.length > 0 &&
-                            <>
-                              <For each={msg.sources}>{(source: any, iSource) =>
-                                  <>
-                                    <button class="m-2 px-3 py-1 text-sm bg-accent hover:bg-base-100 rounded-lg"
-                                      // @ts-ignore
-                                      onClick={()=>document.getElementById(`source_modal_${iMsg()}_${iSource()}`)?.showModal()}
-                                    >
-                                      {source.metadata.filename}
-                                    </button>
-                                    <dialog id={`source_modal_${iMsg()}_${iSource()}`} class="modal">
-                                      <div class="modal-box">
-                                        <h3 class="font-bold text-lg">📖 {source.metadata.filename} [p. {source.metadata.page}]</h3>
-                                        <p class="py-4">
-                                          {source.page_content}
-                                        </p>
-                                      </div>
-                                      <form method="dialog" class="modal-backdrop">
-                                        <button>close</button>
-                                      </form>
-                                    </dialog>
-                                  </>
-                              }</For>
-                            </>
-                          }
-                        </div>
-                      </div>
+                      <article class="prose max-w-full" innerHTML={DOMPurify.sanitize(marked.parse(msg.message).toString())} />
+                      {/* Add sources when RAG */}
+                      { msg.sources.length > 0 &&
+                        <For each={msg.sources}>{(source: any, iSource) =>
+                          <>
+                            <button class="m-2 px-3 py-1 text-sm bg-accent hover:bg-base-100 rounded-lg"
+                              // @ts-ignore
+                              onClick={()=>document.getElementById(`source_modal_${iMsg()}_${iSource()}`)?.showModal()}
+                            >
+                              {source.metadata.filename}
+                            </button>
+                            <dialog id={`source_modal_${iMsg()}_${iSource()}`} class="modal">
+                              <div class="modal-box">
+                                <h3 class="font-bold text-lg">📖 {source.metadata.filename} [p. {source.metadata.page}]</h3>
+                                <p class="py-4">
+                                  {source.page_content}
+                                </p>
+                              </div>
+                              <form method="dialog" class="modal-backdrop">
+                                <button>close</button>
+                              </form>
+                            </dialog>
+                          </>
+                        }</For>
+                      }
                     </div>
                   </div>
                 }
@@ -201,7 +193,8 @@ export default function Chat() {
           <div class="container flex mx-auto max-w-5xl">
               <div id="user-input" contenteditable={true} style="height: max-content;"
                   class="flex-grow px-4 py-2 border border-slate-500 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
-                  // placeholder="Send a message..."
+                  // @ts-ignore
+                  placeholder="Ask something..."
                   onInput={(e) => handleInput(e)}
                   onKeyDown={(e) => handleKeyPress(e)}
               />
@@ -215,7 +208,6 @@ export default function Chat() {
           </div>
         </form>
       </div>
-
     </main>
   );
 }
