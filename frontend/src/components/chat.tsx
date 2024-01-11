@@ -132,7 +132,7 @@ export default function Chat() {
 
           {/* Website description */}
           <div class="container mx-auto px-2 max-w-5xl">
-              <div class="py-4 text-center font-thin" innerHTML={DOMPurify.sanitize(marked.parse(chatConfig().info.description))} />
+              <div class="py-4 text-center font-thin" innerHTML={DOMPurify.sanitize(marked.parse(chatConfig().info.description).toString())} />
           </div>
 
           {/* Chat messages */}

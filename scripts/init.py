@@ -2,7 +2,9 @@ import logging
 import os
 import shutil
 
-from libre_chat import Llm, log, parse_conf
+from libre_chat import log, parse_conf
+
+# from libre_chat.vectorstore import build_vectorstore
 
 # Initialize the Llm at docker run (pre-download files if not present, build the vectorstore)
 # Runs before the API to avoid running on multiple workers
@@ -39,4 +41,6 @@ if not os.path.exists(conf.vector.embeddings_path) and conf.vector.embeddings_pa
 #     # If no docs we add a default one to enable building the vectorstore
 #     shutil.copy(f"/app/documents/{default_document}", conf.vector.documents_path)
 
-llm = Llm(conf=conf)
+# build_vectorstore(conf)
+
+# llm = Llm(conf=conf)
