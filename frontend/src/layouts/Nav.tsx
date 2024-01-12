@@ -70,7 +70,7 @@ export default function Nav() {
               </button>
           </a>
           <a href={chatConfig().info.repository_url} target="_blank" rel="noopener noreferrer">
-              <button data-tooltip="Source code" class="px-2 py-1 mr-6 rounded-lg hover:bg-gray-500">
+              <button data-tooltip="Source code" class="px-2 py-1 mr-8 rounded-lg hover:bg-gray-500">
                   <i class="fab fa-github text-xl" />
               </button>
           </a>
