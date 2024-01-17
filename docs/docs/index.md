@@ -70,13 +70,26 @@ All files required for querying the model are stored and accessed locally using 
 
 ## 🗺️ More mature projects
 
-If you are looking for more mature tools to play with LLMs locally we recommend to look into those really good projects:
+If you are looking for more mature tools to play with LLMs locally we recommend to look into those really good projects.
 
-* [chat-langchain](https://github.com/langchain-ai/chat-langchain): chat UI for LangChain
-* [ollama](https://github.com/jmorganca/ollama): Get up and running with Llama 2 and other large language models locally
-* [GPT4All](https://gpt4all.io): open-source LLM chatbots that you can run anywhere
-* [llm](https://github.com/simonw/llm): Python library for interacting with Large Language Models, both via remote APIs and models that can be installed and run on your own machine, by Simon Willison (checkout their blog [simonwillison.net](https://simonwillison.net), for a lot of really well written articles about LLMs)
-* [vLLM](https://github.com/vllm-project/vllm): A high-throughput and memory-efficient inference and serving engine for LLMs (includes OpenAI-compatible server, requires GPU)
-* [ChatDocs](https://github.com/marella/chatdocs): UI to Chat with your documents offline, by the developer of [ctransformers](https://github.com/marella/ctransformers)
+Web UI for chat:
+
+* [HuggingFace chat-ui](https://github.com/huggingface/chat-ui): a Svelte chat web UI. With multiple conversation history, and OIDC login
+* [chatbot-ui](https://github.com/mckaywrigley/chatbot-ui): a React chat web UI. With multiple conversation history, no login
+* [chat-langchain](https://github.com/langchain-ai/chat-langchain): a React chat web UI for LangChain. Connect well with LangSmith to show trace. No login, no multiple conversation history.
+* [oobabooga/text-generation-webui](https://github.com/oobabooga/text-generation-webui): A Gradio web UI for Large Language Models, with panels to config the LLM params adapted for experimentation.
+* [chainlit](https://github.com/Chainlit/chainlit): build LLM app with your own business logic, with React web UI
+* [FastChat](https://github.com/lm-sys/FastChat): platform for training, serving, and evaluating LLMs in an arena, with Gradio web UI.
+* [GPT4All](https://gpt4all.io): open-source LLM chatbots that you can run anywhere,  with a web UI
 * [localGPT](https://github.com/PromtEngineer/localGPT): Chat with your documents on your local device using GPT models
-* [text-generation-webui](https://github.com/oobabooga/text-generation-webui): A Gradio web UI for Large Language Models
+* [ChatDocs](https://github.com/marella/chatdocs): UI to Chat with your documents offline
+
+Run LLM inference locally:
+
+* [LocalAI](https://github.com/mudler/LocalAI): OpenAI compatible API. Self-hosted, community-driven and local-first.
+
+* [vLLM](https://github.com/vllm-project/vllm): A high-throughput and memory-efficient inference and serving engine for LLMs (includes OpenAI-compatible server, requires GPU)
+
+* [ollama](https://github.com/jmorganca/ollama): Get up and running with Llama 2 and other large language models locally
+
+* [llm](https://github.com/simonw/llm): Python library for interacting with Large Language Models, both via remote APIs and models that can be installed and run on your own machine, by Simon Willison (checkout their blog [simonwillison.net](https://simonwillison.net), for a lot of really well written articles about LLMs)
