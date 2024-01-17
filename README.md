@@ -44,6 +44,7 @@ Those checkpoints are features we plan to work on in the future, feel free to le
 - [x] Stream response to the websocket to show words as they are generated
 - [ ] Add button to let the user stop the chatbot generation
 - [ ] Add authentication mechanisms? (OAuth/OpenID Connect) https://github.com/vemonet/libre-chat/issues/5
+- [ ] Add conversational history? https://milvus.io/blog/conversational-memory-in-langchain.md
 - [ ] Add an admin dashboard web UI to enable users to upload/inspect/delete documents for QA, see/edit the config of the chatbot.
 - [ ] Kubernetes deployment (Helm chart?)
 
